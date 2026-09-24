@@ -18,7 +18,7 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G3 novel_dev QA stage-trace observability commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G3 scoped-audit budget-preflight result commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a0106bd5eff93646f34f5e50e161e8be8a49d680
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
@@ -45,11 +45,11 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G3_OBSERVABILITY_PREREQUISITE_COMPLETE
+PHASE_G = IN_PROGRESS / G3_SCOPED_AUDIT_BUDGET_PREFLIGHT_BLOCKED
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
-G3 = AUDIT DESIGN COMPLETE / TRACE-CAPABILITY PREFLIGHT COMPLETE / OBSERVABILITY PREREQUISITE COMPLETE / SCOPED AUDIT READY / PRODUCT CHANGE NOT_AUTHORIZED
-NEXT_TASK_RECOMMENDATION = G3 EVIDENCE ADMISSION / ANSWERABILITY GAP SCOPED AUDIT
+G3 = COHORT FROZEN / SELECTED-ID ARTIFACT QUALIFICATION COMPLETE / INCONCLUSIVE / PRODUCT CHANGE NOT_AUTHORIZED
+NEXT_TASK_RECOMMENDATION = G3 FRESH-CAPTURE BUDGET RESOLUTION FOR THE FROZEN 28-ID COHORT
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -63,7 +63,9 @@ G1 implements [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_O
 
 G2 implements [the selected design](../evaluation/G2_COVERAGE_REVIEW_LOCAL_FAILURE_ROBUSTNESS_DESIGN.md): one shared claim/mapping validation seam, a production-only coverage receipt, exact canonical relation-local containment, conservative ordinary point-local containment, and whole-review rejection for ambiguous ownership or broken global authority. Independently validated children determine point aggregates and bounded A1 targets; V2 rechecks the full canonical inventory. Focused deterministic and fake-provider regression tests passed with zero scientific calls/tokens. Provider schema, prompts, mode, versions, fingerprint, evaluator, Gold, and calibration are unchanged. Real-provider malformed-output frequency, answer-quality benefit, and release readiness are unmeasured.
 
-G3 [audit design](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_AUDIT_DESIGN.md) remains methodologically complete. The [metadata-only preflight](../evaluation/G3_TRACE_CAPABILITY_ARTIFACT_APPLICABILITY_PREFLIGHT.md) identified the standard runner's novel_dev QA stage-trace split guard. The [narrow observability prerequisite](../evaluation/G3_NOVEL_DEV_QA_STAGE_TRACE_OBSERVABILITY_PREREQUISITE.md) now admits explicit non-formal, non-candidate novel_dev QA/full stage tracing through the existing programmatic runner, while protected/formal/retrieval-only requests remain rejected. Focused RED→GREEN, the O1 fake-only observability module (45 passed), and two synthetic store/resume tests passed with zero scientific calls. CLI, trace/manifest schemas, provider behavior, QA/retrieval/admission semantics, product identity, and the G2 product-behavior lineage are unchanged. A separately authorized scoped audit may now freeze its outcome-blind cohort and qualify selected-ID artifacts; no audit cases were collected, no admission defect or empirical benefit is established, and no policy change is authorized.
+G3 [audit design](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_AUDIT_DESIGN.md) remains methodologically complete. The [metadata-only preflight](../evaluation/G3_TRACE_CAPABILITY_ARTIFACT_APPLICABILITY_PREFLIGHT.md) identified the standard runner's novel_dev QA stage-trace split guard. The [narrow observability prerequisite](../evaluation/G3_NOVEL_DEV_QA_STAGE_TRACE_OBSERVABILITY_PREREQUISITE.md) admits explicit non-formal, non-candidate novel_dev QA/full stage tracing through the existing programmatic runner, while protected/formal/retrieval-only requests remain rejected. Focused RED→GREEN, the O1 fake-only observability module (45 passed), and two synthetic store/resume tests passed with zero scientific calls. CLI, trace/manifest schemas, provider behavior, QA/retrieval/admission semantics, product identity, and the G2 product-behavior lineage are unchanged. At the prerequisite closeout, no audit cases had been collected and no admission defect or empirical benefit had been established.
+
+The [G3 scoped-audit budget-preflight result](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_SCOPED_AUDIT.md) froze all 28 reviewed novel_dev IDs outcome-blind in a dedicated commit before inspecting case results. Selected-ID artifact qualification found no reusable current-lineage novel_dev QA stage trace. All 28 require fresh capture. The runner checks model-call and token budgets only between whole cases; retry capacity on the basic QA path alone permits at least 560 calls across the frozen cohort, above the authorized 300-call hard cap, with no proven hard token bound. Fresh execution stopped before the first case. The decision is INCONCLUSIVE: no QA or retrieval run, model call, case-content/outcome access, causal classification, or empirical admission-gap estimate occurred. The cohort remains frozen for a separately authorized budget resolution; product changes remain unauthorized.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 

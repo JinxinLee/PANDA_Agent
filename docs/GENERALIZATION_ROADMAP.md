@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G3 novel_dev QA stage-trace observability commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G3 scoped-audit budget-preflight result commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a0106bd5eff93646f34f5e50e161e8be8a49d680
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
@@ -52,11 +52,11 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G3_OBSERVABILITY_PREREQUISITE_COMPLETE
+PHASE_G = IN_PROGRESS / G3_SCOPED_AUDIT_BUDGET_PREFLIGHT_BLOCKED
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
-G3 = AUDIT DESIGN COMPLETE / TRACE-CAPABILITY PREFLIGHT COMPLETE / OBSERVABILITY PREREQUISITE COMPLETE / SCOPED AUDIT READY / PRODUCT CHANGE NOT_AUTHORIZED
-NEXT_TASK_RECOMMENDATION = G3 EVIDENCE ADMISSION / ANSWERABILITY GAP SCOPED AUDIT
+G3 = COHORT FROZEN / SELECTED-ID ARTIFACT QUALIFICATION COMPLETE / INCONCLUSIVE / PRODUCT CHANGE NOT_AUTHORIZED
+NEXT_TASK_RECOMMENDATION = G3 FRESH-CAPTURE BUDGET RESOLUTION FOR THE FROZEN 28-ID COHORT
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -1060,11 +1060,11 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 
 ### G3 — Evidence Admission / Answerability Gap Audit
 
-- **Status:** AUDIT DESIGN COMPLETE / TRACE-CAPABILITY PREFLIGHT COMPLETE / OBSERVABILITY PREREQUISITE COMPLETE / SCOPED AUDIT READY / PRODUCT CHANGE NOT_AUTHORIZED.
+- **Status:** COHORT FROZEN / SELECTED-ID ARTIFACT QUALIFICATION COMPLETE / INCONCLUSIVE / PRODUCT CHANGE NOT_AUTHORIZED.
 - **Goal:** Measure where evidence is retrieved, visible, or selected but cannot become answer-authorized citable backing.
-- **Selected methodology and trace readiness:** [G3 audit design](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_AUDIT_DESIGN.md) retains the outcome-blind reviewed novel_dev cohort, selected-evidence denominator, S0–S8 funnel, source/reason stratification, G1/G2 relation linkage, and causal tiers. The [preflight](../evaluation/G3_TRACE_CAPABILITY_ARTIFACT_APPLICABILITY_PREFLIGHT.md) found a missing supported novel_dev QA stage-trace path; the [observability prerequisite](../evaluation/G3_NOVEL_DEV_QA_STAGE_TRACE_OBSERVABILITY_PREREQUISITE.md) now enables it through the existing non-formal programmatic runner. Protected/formal/retrieval-only trace restrictions remain. The separately authorized scoped audit must still freeze its cohort outcome-blind and qualify selected-ID artifact completeness before classification.
+- **Selected methodology and trace readiness:** [G3 audit design](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_AUDIT_DESIGN.md) retains the outcome-blind reviewed novel_dev cohort, selected-evidence denominator, S0–S8 funnel, source/reason stratification, G1/G2 relation linkage, and causal tiers. The [preflight](../evaluation/G3_TRACE_CAPABILITY_ARTIFACT_APPLICABILITY_PREFLIGHT.md) found a missing supported novel_dev QA stage-trace path; the [observability prerequisite](../evaluation/G3_NOVEL_DEV_QA_STAGE_TRACE_OBSERVABILITY_PREREQUISITE.md) enabled it through the existing non-formal programmatic runner. Protected/formal/retrieval-only trace restrictions remain. The [scoped-audit result](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_SCOPED_AUDIT.md) froze all 28 reviewed IDs before case-result inspection and found that none has a reusable current-lineage QA stage trace. Fresh capture stopped before the first case because the runner's between-case budget checks cannot guarantee the authorized hard caps: basic QA retries alone permit at least 560 calls versus the 300-call cap. No case was semantically classified; the decision is INCONCLUSIVE.
 - **Implementation gate:** Change admission policy only if the audit establishes a generic defect. Do not broaden citation eligibility merely to repair g013 or any other exposed case.
-- **Planned evidence:** A scoped audit under separate authorization; this prerequisite collected no cases, ran no live retrieval or QA, and accessed no case or protected content. NO_CHANGE and INCONCLUSIVE remain valid audit outcomes.
+- **Planned evidence:** A separately authorized budget resolution is needed before fresh capture of the fixed 28-ID cohort. This audit attempt ran no live retrieval or QA and accessed no case or protected content. No admission defect or empirical benefit has been established.
 
 ### G4 — False-Insufficiency / Conservatism Regression
 
@@ -1094,7 +1094,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G3 EVIDENCE ADMISSION / ANSWERABILITY GAP SCOPED AUDIT
+NEXT_TASK_RECOMMENDATION = G3 FRESH-CAPTURE BUDGET RESOLUTION FOR THE FROZEN 28-ID COHORT
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 

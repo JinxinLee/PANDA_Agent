@@ -1,0 +1,990 @@
+{
+  "schema_version": "g3-scoped-audit-result-v1",
+  "audit_id": "g3-evidence-admission-audit-novel-dev-v1",
+  "generated_at_utc": "2026-09-24T21:18:24.741393+00:00",
+  "frozen_cohort": {
+    "path": "evaluation/G3_SCOPED_AUDIT_COHORT.json",
+    "commit": "a5adb94387d11dfa23a3e5ea1423332749f96b0e",
+    "starting_repository_head": "910c4fcd4db03c8fcce1a81a7cf15366122b234a",
+    "dataset_identity": {
+      "dataset_identity": "novel-v1-dev-expansion",
+      "dataset_version": "0.3.0",
+      "benchmark_version": "novel-v1-dev-0.3.0",
+      "dataset_path": "evaluation/novel/v1/novel_dev.yaml",
+      "curation_metadata_path": "evaluation/novel/v1/curation_metadata.yaml",
+      "authority_manifest_path": "evaluation/novel/v1/manifest.json",
+      "dataset_sha256": "25ad18fcf76ab2796aa18ae961bdc4faf076f0c98a8a5226413ec95e58252223",
+      "dataset_git_blob": "e35ed81c03b8af97db48b61c4ba238f487c3c42c"
+    },
+    "eligible_reviewed_count": 28,
+    "selected_count": 28,
+    "selected_question_ids": [
+      "n001",
+      "n002",
+      "n003",
+      "n004",
+      "n005",
+      "n006",
+      "n007",
+      "n008",
+      "n009",
+      "n010",
+      "n014",
+      "n015",
+      "n016",
+      "n017",
+      "n018",
+      "n019",
+      "n020",
+      "n021",
+      "n022",
+      "n023",
+      "n024",
+      "n025",
+      "n026",
+      "n027",
+      "n028",
+      "n029",
+      "n030",
+      "n031"
+    ],
+    "cohort_changed_after_freeze": false
+  },
+  "status": "STOPPED_BEFORE_FRESH_EXECUTION",
+  "primary_decision": "INCONCLUSIVE",
+  "decision_basis": "All 28 frozen IDs require fresh current-lineage QA capture. The supported runner cannot enforce the authorized 300-call and 2,500,000-token hard caps for the whole cohort: per-case retry capacity alone permits more than 300 calls, and budget checks occur only between cases.",
+  "artifact_inventory": {
+    "matching_novel_dev_qa_stage_traced_runs": 0,
+    "pre_g2_novel_dev_retrieval_only_runs": 1,
+    "reused_cases": 0,
+    "fresh_capture_required_cases": 28,
+    "fresh_capture_cases": 0,
+    "completed_fresh_cases": 0,
+    "incomplete_fresh_cases": 0,
+    "unexecuted_cases": 28
+  },
+  "question_summaries": [
+    {
+      "question_id": "n001",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n002",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n003",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n004",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n005",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n006",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n007",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n008",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n009",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n010",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n014",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n015",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n016",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n017",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n018",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n019",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n020",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n021",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n022",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n023",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n024",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n025",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n026",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n027",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n028",
+      "representativeness_class": "exploratory",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n029",
+      "representativeness_class": "exploratory",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n030",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    },
+    {
+      "question_id": "n031",
+      "representativeness_class": "representative",
+      "artifact_qualification": "FRESH_CAPTURE_REQUIRED",
+      "fresh_capture_status": "NOT_STARTED_BUDGET_PREFLIGHT_BLOCK",
+      "trace_completeness": "NOT_OBSERVABLE",
+      "stage_status": {
+        "S0": "NOT_OBSERVABLE",
+        "S1": "NOT_OBSERVABLE",
+        "S2": "NOT_OBSERVABLE",
+        "S3": "NOT_OBSERVABLE",
+        "S4": "NOT_OBSERVABLE",
+        "S5": "NOT_OBSERVABLE",
+        "S6": "NOT_OBSERVABLE",
+        "S7": "NOT_OBSERVABLE",
+        "S8": "NOT_OBSERVABLE"
+      },
+      "primary_root_cause": null,
+      "root_cause_classification": "NOT_OBSERVABLE_NO_QA_ARTIFACT"
+    }
+  ],
+  "evidence_opportunities": [],
+  "relation_check_links": [],
+  "trace_completeness": {
+    "complete": 0,
+    "partial": 0,
+    "not_observable": 28
+  },
+  "stage_completeness": {
+    "S0": {
+      "yes": 0,
+      "no": 0,
+      "not_observable_questions": 28,
+      "not_applicable": 0,
+      "auditable_denominator": 0
+    },
+    "S1": {
+      "yes": 0,
+      "no": 0,
+      "not_observable_questions": 28,
+      "not_applicable": 0,
+      "auditable_denominator": 0
+    },
+    "S2": {
+      "yes": 0,
+      "no": 0,
+      "not_observable_questions": 28,
+      "not_applicable": 0,
+      "auditable_denominator": 0
+    },
+    "S3": {
+      "yes": 0,
+      "no": 0,
+      "not_observable_questions": 28,
+      "not_applicable": 0,
+      "auditable_denominator": 0
+    },
+    "S4": {
+      "yes": 0,
+      "no": 0,
+      "not_observable_questions": 28,
+      "not_applicable": 0,
+      "auditable_denominator": 0
+    },
+    "S5": {
+      "yes": 0,
+      "no": 0,
+      "not_observable_questions": 28,
+      "not_applicable": 0,
+      "auditable_denominator": 0
+    },
+    "S6": {
+      "yes": 0,
+      "no": 0,
+      "not_observable_questions": 28,
+      "not_applicable": 0,
+      "auditable_denominator": 0
+    },
+    "S7": {
+      "yes": 0,
+      "no": 0,
+      "not_observable_questions": 28,
+      "not_applicable": 0,
+      "auditable_denominator": 0
+    },
+    "S8": {
+      "yes": 0,
+      "no": 0,
+      "not_observable_questions": 28,
+      "not_applicable": 0,
+      "auditable_denominator": 0
+    }
+  },
+  "admission_outcome_codes_checked_against_runtime": [
+    "DIRECTLY_CITATION_ELIGIBLE",
+    "RESOLVED_EXACT_BACKING",
+    "INVALID_LOCATOR",
+    "CONTENT_RELATION_NOT_ESTABLISHED",
+    "BOUND_EXCEEDED",
+    "LOOKUP_FAILED",
+    "VERSION_MISMATCH",
+    "AMBIGUOUS_BACKING",
+    "NO_VALID_BACKING"
+  ],
+  "trace_fallback_not_runtime_decision": "INCOMPLETE_SPHINX_LOCATOR",
+  "admission_outcome_counts": {
+    "DIRECTLY_CITATION_ELIGIBLE": null,
+    "RESOLVED_EXACT_BACKING": null,
+    "INVALID_LOCATOR": null,
+    "CONTENT_RELATION_NOT_ESTABLISHED": null,
+    "BOUND_EXCEEDED": null,
+    "LOOKUP_FAILED": null,
+    "VERSION_MISMATCH": null,
+    "AMBIGUOUS_BACKING": null,
+    "NO_VALID_BACKING": null
+  },
+  "metrics": {
+    "a0_selected_evidence_admission": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "selected_evidence",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "a0_selected_evidence_rejection": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "selected_evidence",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "a1_target_exposure": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "admitted_backing",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "question_selected_but_unadmitted_incidence": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "question",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "valid_named_relation_admission_state_distribution": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "valid_named_relation",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "valid_ordinary_check_admission_state_distribution": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "valid_ordinary_check",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "traceable_visible_only_linkage": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "valid_visible_only_disposition",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "tier1_incomplete_question_incidence": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "question",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "tier2_candidate_incidence": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "question",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "admission_policy_primary_incidence": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "question",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "primary_root_cause_distribution": {
+      "numerator": null,
+      "denominator": 0,
+      "rate": null,
+      "unknown_question_count": 28,
+      "unknown_unit": "question",
+      "unknown_unit_count": null,
+      "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+    },
+    "admission_outcomes": {
+      "DIRECTLY_CITATION_ELIGIBLE": {
+        "numerator": null,
+        "denominator": 0,
+        "rate": null,
+        "unknown_question_count": 28,
+        "unknown_unit": "selected_evidence",
+        "unknown_unit_count": null,
+        "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+      },
+      "RESOLVED_EXACT_BACKING": {
+        "numerator": null,
+        "denominator": 0,
+        "rate": null,
+        "unknown_question_count": 28,
+        "unknown_unit": "selected_evidence",
+        "unknown_unit_count": null,
+        "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+      },
+      "INVALID_LOCATOR": {
+        "numerator": null,
+        "denominator": 0,
+        "rate": null,
+        "unknown_question_count": 28,
+        "unknown_unit": "selected_evidence",
+        "unknown_unit_count": null,
+        "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+      },
+      "CONTENT_RELATION_NOT_ESTABLISHED": {
+        "numerator": null,
+        "denominator": 0,
+        "rate": null,
+        "unknown_question_count": 28,
+        "unknown_unit": "selected_evidence",
+        "unknown_unit_count": null,
+        "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+      },
+      "BOUND_EXCEEDED": {
+        "numerator": null,
+        "denominator": 0,
+        "rate": null,
+        "unknown_question_count": 28,
+        "unknown_unit": "selected_evidence",
+        "unknown_unit_count": null,
+        "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+      },
+      "LOOKUP_FAILED": {
+        "numerator": null,
+        "denominator": 0,
+        "rate": null,
+        "unknown_question_count": 28,
+        "unknown_unit": "selected_evidence",
+        "unknown_unit_count": null,
+        "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+      },
+      "VERSION_MISMATCH": {
+        "numerator": null,
+        "denominator": 0,
+        "rate": null,
+        "unknown_question_count": 28,
+        "unknown_unit": "selected_evidence",
+        "unknown_unit_count": null,
+        "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+      },
+      "AMBIGUOUS_BACKING": {
+        "numerator": null,
+        "denominator": 0,
+        "rate": null,
+        "unknown_question_count": 28,
+        "unknown_unit": "selected_evidence",
+        "unknown_unit_count": null,
+        "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+      },
+      "NO_VALID_BACKING": {
+        "numerator": null,
+        "denominator": 0,
+        "rate": null,
+        "unknown_question_count": 28,
+        "unknown_unit": "selected_evidence",
+        "unknown_unit_count": null,
+        "reason": "NO_COMPATIBLE_QA_ARTIFACT_AND_FRESH_CAPTURE_BLOCKED"
+      }
+    }
+  },
+  "root_cause_counts": {
+    "classified_questions": 0,
+    "unknown_questions": 28,
+    "counts": {}
+  },
+  "tiers": {
+    "tier0_observed": 0,
+    "tier1_observed": 0,
+    "tier2_candidates": 0,
+    "unknown_questions": 28
+  },
+  "manual_review": {
+    "tier1_reviewed": 0,
+    "tier2_candidates": 0,
+    "tier2_independent_review_completed": false,
+    "tier2_independent_review_pending": false,
+    "status": "NOT_APPLICABLE_NO_SEMANTIC_ARTIFACT"
+  },
+  "execution": {
+    "run_id": null,
+    "planned_run_id": "g3-evidence-admission-audit-novel-dev-v1",
+    "mode": "qa",
+    "capture_stage_trace": true,
+    "retrieval_runs": 0,
+    "qa_runs": 0,
+    "external_judge_calls": 0,
+    "scientific_calls": 0,
+    "scientific_tokens": 0,
+    "model_client_identities": [],
+    "exceptions": [],
+    "max_model_calls_authorized": 300,
+    "max_token_usage_authorized": 2500000,
+    "budget_preflight": {
+      "result": "FAIL_STOP_BEFORE_EXECUTION",
+      "basic_successful_qa_path_max_retry_calls_per_case_at_least": 20,
+      "cohort_possible_calls_from_basic_path_at_least": 560,
+      "runner_budget_check": "BETWEEN_CASES_ONLY",
+      "token_usage_hard_bound": "NOT_ESTABLISHED",
+      "required_authorization": "Explicit revised call/token budget or a separately authorized hard-cap execution contract that safely covers the frozen 28-ID cohort."
+    }
+  },
+  "representativeness": {
+    "representative": 26,
+    "exploratory": 2,
+    "measured_by_class": false
+  },
+  "data_access": {
+    "novel_dev_case_content_access": 0,
+    "novel_dev_outcome_access": 0,
+    "novel_validation_content_access": 0,
+    "novel_validation_outcome_access": 0,
+    "holdout_content_access": 0,
+    "holdout_outcome_access": 0,
+    "protected_leakage": 0
+  },
+  "materiality": {
+    "product_source_change": false,
+    "material_product_change": false,
+    "product_behavior_change": false,
+    "audit_artifact_change": true,
+    "status_doc_change": true,
+    "prompt_change": false,
+    "schema_change": false,
+    "trace_schema_change": false,
+    "manifest_schema_change": false,
+    "retrieval_behavior_change": false,
+    "admission_behavior_change": false,
+    "g1_g2_behavior_change": false,
+    "evaluator_scoring_change": false,
+    "gold_change": false,
+    "calibration_change": false,
+    "audit_executed": false,
+    "empirical_admission_gap_established": false,
+    "source_change": false
+  },
+  "limitations": [
+    "No compatible QA stage-trace artifact was found for any frozen ID.",
+    "No fresh QA case ran because the authorized hard caps cannot be proven enforceable.",
+    "No selected evidence, admission decision, verifier semantic linkage, answer authorization, or primary root cause is observable.",
+    "No evidence-level, relation-level, or question-level causal rate can be estimated."
+  ],
+  "next_task_recommendation": "G3 FRESH-CAPTURE BUDGET RESOLUTION FOR THE FROZEN 28-ID COHORT",
+  "next_task_execution_authorized": false
+}
