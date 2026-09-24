@@ -287,24 +287,33 @@ def test_invocations_do_not_share_registry_or_collector(tmp_path):
     assert right["evidence_registry"]
 
 
-def test_runner_opt_in_persistence_resume_and_routing(tmp_path, monkeypatch):
+@pytest.mark.parametrize("split", ["dev", "novel_dev"])
+def test_runner_opt_in_persistence_resume_and_routing(tmp_path, monkeypatch, split):
     from types import SimpleNamespace
     from unittest.mock import Mock
     from panda_agent import evaluation_runner as er
     from panda_agent.evaluation import EvaluationRunStore
-    manifest = {"official": False, "mode": "qa", "split": "dev"}
+    manifest = {"official": False, "mode": "qa", "split": split}
     er._configure_stage_trace(manifest, False)
     assert manifest["capture_stage_trace"] is False
     er._configure_stage_trace(manifest, True)
     store = EvaluationRunStore(tmp_path, "synthetic", manifest)
     saved = json.loads(store.manifest_path.read_text(encoding="utf-8"))
     assert saved["capture_stage_trace"] is True
-    resumed = {"official": False, "mode": "qa", "split": "dev"}
+    resumed = {"official": False, "mode": "qa", "split": split}
     er._configure_stage_trace(resumed, False, saved)
     assert resumed == saved
     EvaluationRunStore(tmp_path, "synthetic", resumed, resume=True)
-    legacy = {"official": False, "mode": "qa", "split": "dev"}
-    er._configure_stage_trace(deepcopy(legacy), False, legacy)
+    disabled = {"official": False, "mode": "qa", "split": split, "capture_stage_trace": False}
+    disabled_resumed = {"official": False, "mode": "qa", "split": split}
+    er._configure_stage_trace(disabled_resumed, False, disabled)
+    assert disabled_resumed == disabled
+    with pytest.raises(ValueError):
+        er._configure_stage_trace({"official": False, "mode": "qa", "split": split}, True, disabled)
+    legacy = {"official": False, "mode": "qa", "split": split}
+    legacy_resumed = deepcopy(legacy)
+    er._configure_stage_trace(legacy_resumed, False, legacy)
+    assert legacy_resumed == legacy
     with pytest.raises(ValueError):
         er._configure_stage_trace(deepcopy(legacy), True, legacy)
     monkeypatch.setattr(er, "deterministic_case_metrics", lambda *a: {})
@@ -326,16 +335,32 @@ def test_runner_opt_in_persistence_resume_and_routing(tmp_path, monkeypatch):
     assert dispatch.call_args.kwargs["capture_stage_trace"] is True
 
 
+@pytest.mark.parametrize("split, mode", [
+    ("dev", "qa"), ("challenge", "qa"), ("regression", "qa"),
+    ("novel_dev", "qa"), ("novel_dev", "full"),
+])
+def test_runner_allows_explicit_development_stage_trace(split, mode):
+    from panda_agent.evaluation_runner import _configure_stage_trace
+    manifest = {"official": False, "mode": mode, "split": split}
+    _configure_stage_trace(manifest, True)
+    assert manifest["capture_stage_trace"] is True
+
+
 @pytest.mark.parametrize("change", [{"official": True}, {"candidate_id": "formal"},
-    {"split": "novel_validation"}, {"split": "acceptance"}, {"mode": "retrieval"}])
+    {"split": "novel_validation"}, {"split": "novel_holdout"},
+    {"split": "acceptance"}, {"mode": "retrieval"},
+    {"split": "novel_dev", "official": True},
+    {"split": "novel_dev", "candidate_id": "formal"},
+    {"split": "novel_dev", "mode": "retrieval"}])
 def test_runner_rejects_capture_outside_development_without_execution(change):
     from panda_agent.evaluation_runner import _configure_stage_trace
     with pytest.raises(ValueError):
         _configure_stage_trace({"official": False, "mode": "qa", "split": "dev", **change}, True)
 
 
+@pytest.mark.parametrize("split", ["dev", "novel_dev"])
 @pytest.mark.parametrize("capture", [False, True])
-def test_run_manifest_records_choice_before_any_runtime_client(tmp_path, monkeypatch, capture):
+def test_run_manifest_records_choice_before_any_runtime_client(tmp_path, monkeypatch, capture, split):
     from types import SimpleNamespace
     from panda_agent import evaluation_runner as er
     from panda_agent.evaluation import EvaluationRunStore
@@ -350,12 +375,12 @@ def test_run_manifest_records_choice_before_any_runtime_client(tmp_path, monkeyp
         raise StopBeforeRuntime
     monkeypatch.setattr(er, "EvaluationRunStore", save_and_stop)
     with pytest.raises(StopBeforeRuntime):
-        er.run_evaluation(tmp_path, mode="qa", split="dev", run_id="synthetic",
+        er.run_evaluation(tmp_path, mode="qa", split=split, run_id="synthetic",
                           allow_draft=True, capture_stage_trace=capture)
     saved = json.loads((tmp_path / "data/evaluation/runs/synthetic/manifest.json").read_text(encoding="utf-8"))
     assert saved["capture_stage_trace"] is capture
     with pytest.raises(StopBeforeRuntime):
-        er.run_evaluation(tmp_path, mode="qa", split="dev", run_id="synthetic",
+        er.run_evaluation(tmp_path, mode="qa", split=split, run_id="synthetic",
                           allow_draft=True, resume=True)
     assert json.loads((tmp_path / "data/evaluation/runs/synthetic/manifest.json").read_text(encoding="utf-8")) == saved
 

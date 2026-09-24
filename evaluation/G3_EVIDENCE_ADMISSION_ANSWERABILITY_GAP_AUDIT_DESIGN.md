@@ -7,8 +7,8 @@ production_answer_obligations_v1 path. Join the retrieval funnel when an authori
 retrieval trace exists, but use final selected evidence as the admission denominator.
 Preselect a reviewed novel_dev development cohort without looking at QA outcomes.
 Reuse compatible immutable artifacts first. A separately authorized scoped run
-may fill missing current-lineage artifacts only after a supported QA stage-trace
-path exists for novel_dev. This document authorizes neither route.
+may fill missing current-lineage artifacts through the supported QA stage-trace
+path for novel_dev. This document authorizes neither route.
 
 The audit asks how often evidence reached selection yet failed to become citable,
 verifier-used, and answer-authorized backing, and which layer owns each break.
@@ -18,8 +18,9 @@ is stronger semantic linkage, but still does not establish a policy defect.
 
 No admission, retrieval, G1/G2, verifier, or composer behavior changes here. No
 questions, outcomes, protected datasets, or historical expected answers were inspected
-for this design. The next recommended, separately authorized task is a
-trace-capability / artifact-applicability preflight; audit execution remains conditional.
+for this design. The trace-capability preflight and its narrow observability
+prerequisite are complete; the next recommended task is a separately authorized
+scoped audit.
 
 ## 2. Current production architecture
 
@@ -36,14 +37,14 @@ test_post_a5_c1_coverage_completeness.py,
 test_g1_relationship_obligations.py, and
 test_g2_coverage_local_failure.py.
 
-EvaluationSplit includes novel_dev, but the standard run_evaluation path calls
-_configure_stage_trace before execution. With capture_stage_trace=true, that
-guard rejects splits outside dev, challenge, and regression, as well as formal
-or candidate-bound runs and modes other than qa/full. Thus it currently rejects
-novel_dev QA stage-trace capture. The runner writes a retrieval trace separately
-from optional QA stage tracing; retrieval candidate/selection records do not
-contain EA_ADMISSION, A1_INPUT, or V1/V2 stage events. A fresh novel_dev run
-through the current standard runner cannot be assumed to supply S5–S8 authority.
+EvaluationSplit includes novel_dev. The standard run_evaluation path calls
+_configure_stage_trace before execution; its explicit development allowlist now
+includes novel_dev for non-formal, non-candidate qa/full runs with
+capture_stage_trace=true. Protected/formal and retrieval-only requests remain
+rejected. The runner writes a retrieval trace separately from optional QA stage
+tracing; retrieval candidate/selection records do not contain EA_ADMISSION,
+A1_INPUT, or V1/V2 stage events. Stage capture remains bounded and best-effort,
+so each future artifact still requires a completeness check.
 
 Retriever.retrieve produces bounded per-channel rankings, top fusion scores,
 reranked and ranked object IDs, and a final bundle.evidence. The selected Evidence
@@ -203,7 +204,7 @@ Field classifications for current artifacts:
 | Sphinx page/section subtype | DERIVABLE_DETERMINISTICALLY | Requires same-version object lookup or exact-backing record; selected Evidence alone lacks object_type. Otherwise NOT_RELIABLY_OBSERVABLE. |
 | Admission decision and successful parent-to-backing link | EXISTING_AUTHORITATIVE_FIELD | EA_ADMISSION.decisions after ID/count reconciliation, plus admitted IDs and backing IDs. |
 | Exact S4 attempted substage for all rejection codes | REQUIRES_SMALL_OBSERVABILITY_CHANGE if essential | Existing reason alone conflates pre-lookup bounds and later bounds or lookup failure stages; do not require this extra field unless artifact qualification shows the audit cannot otherwise answer its question. |
-| A0/A1 exposure and V1/V2 review exposure | EXISTING_AUTHORITATIVE_FIELD | Complete EA_ADMISSION/A1_INPUT/V1_INPUT/V2_INPUT stage events, when present in compatible immutable artifacts or captured through a supported path. The current standard runner cannot capture them for fresh novel_dev runs. A1 absence means NOT_APPLICABLE only when it was not executed. |
+| A0/A1 exposure and V1/V2 review exposure | EXISTING_AUTHORITATIVE_FIELD | Complete EA_ADMISSION/A1_INPUT/V1_INPUT/V2_INPUT stage events, when present in compatible immutable artifacts or captured through the supported non-formal novel_dev QA/full path. A1 absence means NOT_APPLICABLE only when it was not executed. |
 | G2 final valid coverage and final claim mapping | EXISTING_AUTHORITATIVE_FIELD | Final answer_point_audit and result, with status/lineage checked. |
 | V1 PARTIAL per-relation validated dispositions | DERIVABLE_DETERMINISTICALLY only with complete frozen V1 input/output, evidence, canonical points, and exact G2 code; otherwise REQUIRES_SMALL_OBSERVABILITY_CHANGE | The saved V1_OUTPUT validation summary has status/error codes, not the full per-round receipt. |
 | Corpus-wide relevant evidence absent from retrieval | NOT_RELIABLY_OBSERVABLE | Needs an independent reviewed corpus search; never infer it from selected evidence. |
@@ -221,17 +222,16 @@ Positional merge also needs a length/order/ID consistency check before using
 reason codes. Mark inconsistent or incomplete traces NOT_OBSERVABLE and report
 their count; do not silently coerce them into NO_VALID_BACKING.
 
-If fresh novel_dev capture is needed, a separate observability-only prerequisite
-must first enable bounded QA stage tracing through an explicit supported path
-for authorized non-formal novel_dev QA runs. This is mandatory audit-enablement,
-not an admission-policy change. Explicit per-selected resolution_applicable,
+The bounded QA stage-trace path for explicit non-formal novel_dev runs is now
+available through run_evaluation; its enablement was not an admission-policy
+change. Explicit per-selected resolution_applicable,
 resolution_attempted, decision source/substage, consistent parent/backing
 disposition fields, and bounded per-round G2 validated states are conditional
 improvements only. Reuse authoritative fields or exact-lineage deterministic
 replay when sufficient; request an additional field only if artifact qualification
 shows its absence prevents a reliable audit answer. Any such future task must
 preserve admission decisions, provider contracts, and product behavior. This
-design changes no instrumentation.
+design itself changes no instrumentation.
 
 ## 7. Current admission reason-code accounting
 
@@ -345,20 +345,20 @@ may be described in a separately labeled secondary diagnostic appendix,
 never pooled into primary rates or used to choose a rule. novel_validation
 and holdout remain inaccessible.
 
-Execution-readiness decision: a separately authorized preflight checks the
-supported tracing contract and possible artifact identities without opening
-case outcomes. After separate scoped-audit authorization, freeze the cohort
+The trace-capability preflight found no current-lineage novel_dev QA stage-trace
+artifact class, and the supported capture prerequisite is complete. After
+separate scoped-audit authorization, freeze the cohort
 outcome-blind and inspect compatibility for those selected IDs. Path A: if
 every selected ID has sufficient compatible immutable artifacts, reuse them.
-Path B: otherwise stop before empirical classification and recommend a
-separately authorized G3 observability-only prerequisite to enable supported,
-bounded non-formal novel_dev QA stage tracing. Once that path exists, a
-separately authorized scoped capture may fill only missing preselected
-development artifacts. Do not rerun model stages for convenience or use an
+Path B: otherwise use the supported bounded non-formal novel_dev path to
+capture only missing preselected development artifacts within the separately
+authorized audit execution scope. Do not rerun model stages for convenience or use an
 undocumented QAAgent._run_detailed(..., capture_stage_trace=True) invocation
 to bypass _configure_stage_trace. An internal call is not the supported audit
 artifact path. Potentially reusable artifacts, if discovered by metadata
-alone, are not declared sufficient before selected-ID qualification.
+alone, are not declared sufficient before selected-ID qualification. If stage
+capture remains incomplete, stop semantic classification and report
+NOT_OBSERVABLE or INCONCLUSIVE rather than assuming another policy change.
 
 Required future artifact bundle per question: immutable dataset/run/lineage
 identity, same-run retrieval trace and selected evidence, source/object
@@ -456,16 +456,13 @@ primary denominator, joins S0/S1 when authoritative, and permits an
 outcome-focused secondary drilldown only after the outcome-blind cohort
 is fixed.
 
-Future execution sequence: (1) separately authorize a trace-capability /
-artifact-applicability preflight without case-outcome inspection; (2)
-separately authorize the scoped audit and freeze the reviewed novel_dev
-cohort outcome-blind; (3) qualify compatible immutable artifacts only for
-the frozen IDs; (4) reuse them if sufficient, or stop before classification
-for a separately authorized observability-only prerequisite; (5) after
-supported capture exists, obtain only missing preselected development
-artifacts under separate execution authorization; (6) build deterministic
-stage and reason records; (7) review Tier 1/Tier 2 candidates; (8)
-publish denominators, unknowns, taxonomy, and one decision.
+Future execution sequence: (1) separately authorize the scoped audit and
+freeze the reviewed novel_dev cohort outcome-blind; (2) qualify compatible
+immutable artifacts only for the frozen IDs; (3) reuse them where sufficient
+and capture only missing preselected development artifacts through the
+supported path within the authorized scope; (4) build deterministic stage
+and reason records; (5) review Tier 1/Tier 2 candidates; (6) publish
+denominators, unknowns, taxonomy, and one decision.
 Stop or return INCONCLUSIVE when the required trace or provenance
 cannot be established. Do not silently expand the cohort.
 
@@ -474,9 +471,9 @@ it separates availability from authority, identifies proof and
 NOT_OBSERVABLE boundaries for S0–S8, exhausts current admission
 outcome codes, excludes retrieval/G2/G4 failures from policy evidence,
 defines outcome-blind sampling and denominators, and allows NO_CHANGE
-or INCONCLUSIVE. Execution readiness remains conditional on compatible
-artifacts or supported novel_dev QA stage-trace capture. This document
-neither executes nor authorizes the preflight, prerequisite, or audit.
+or INCONCLUSIVE. The supported novel_dev QA stage-trace path is available;
+selected-ID artifact completeness remains for the separately authorized
+audit to establish. This document neither executes nor authorizes that audit.
 
 Future identity handling is conditional: a trace-only change should
 record its artifact/trace schema identity without bumping provider

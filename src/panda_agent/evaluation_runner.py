@@ -1616,7 +1616,7 @@ def _configure_stage_trace(
         if type(enabled) is not bool or (requested and not enabled):
             raise ValueError("evaluation resume capture_stage_trace choice cannot change")
     if enabled and (manifest.get("official") or manifest.get("candidate_id")
-                    or manifest.get("split") not in {"dev", "challenge", "regression"}
+                    or manifest.get("split") not in {"dev", "challenge", "regression", "novel_dev"}
                     or manifest.get("mode") not in {"qa", "full"}):
         raise ValueError("stage tracing is restricted to explicit non-formal development QA runs")
     if existing is not None and "capture_stage_trace" not in existing:
