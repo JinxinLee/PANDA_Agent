@@ -1,0 +1,22 @@
+{
+  "schema_version": "g3-scoped-audit-execution-authorization-v1",
+  "audit_id": "g3-evidence-admission-audit-novel-dev-v1",
+  "frozen_cohort_commit": "a5adb94387d11dfa23a3e5ea1423332749f96b0e",
+  "frozen_cohort_path": "evaluation/G3_SCOPED_AUDIT_COHORT.json",
+  "frozen_cohort_size": 28,
+  "authorization_basis": "Explicit user authorization after the budget-preflight stop",
+  "superseded_execution_limits": {
+    "max_model_calls": 300,
+    "max_token_usage": 2500000
+  },
+  "authorized_execution_limits": {
+    "max_model_calls": null,
+    "max_token_usage": null
+  },
+  "execution_mode": "qa",
+  "split": "novel_dev",
+  "capture_stage_trace": true,
+  "external_judge": false,
+  "cohort_selection_changed": false,
+  "product_behavior_change_authorized": false
+}
