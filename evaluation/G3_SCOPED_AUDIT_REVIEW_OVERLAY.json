@@ -1,0 +1,22 @@
+{
+  "schema_version": "g3-scoped-audit-review-overlay-v1",
+  "audit_id": "g3-evidence-admission-audit-novel-dev-v1",
+  "reviewer": "Codex host analyst",
+  "method": "Single-reviewer bounded inspection of selected question, selected page excerpt, admission decision, and final validated coverage; no Gold answer used for factual adjudication",
+  "tier1_reviewed": 0,
+  "targeted_ambiguous_classification_reviewed": 4,
+  "targeted_question_ids": [
+    "n004",
+    "n006",
+    "n017",
+    "n027"
+  ],
+  "targeted_finding": "Each reviewed incomplete question had a selected Sphinx page rejected as AMBIGUOUS_BACKING, but no VALID visible-only verifier disposition cited that rejected page as basis. n004 and n027 also lack an authoritative per-round validated semantic receipt after PARTIAL review. Page relevance alone was not promoted to Tier 1 or Tier 2.",
+  "tier2_candidates": 0,
+  "tier2_independent_review_completed": false,
+  "tier2_independent_review_pending": false,
+  "primary_decision": "INCONCLUSIVE",
+  "decision_basis": "Four frozen IDs remain without QA artifacts after the initial attempt and two supported resume attempts, all due to retryable Vertex 429 infrastructure errors. Three additional PARTIAL reviews lack authoritative per-round valid-disposition detail. The 20 fully admission-and-semantic-auditable questions show no Tier 1 selected-unadmitted linkage, but the incomplete cohort prevents a whole-cohort causal conclusion.",
+  "next_task_recommendation": "RESUME THE SAME G3 FROZEN-COHORT QA RUN AFTER VERTEX 429 RECOVERY",
+  "next_task_execution_authorized": false
+}
