@@ -12,14 +12,21 @@ from pathlib import Path
 
 import yaml
 
-from panda_agent.qa import _evidence_source_types, _is_public_claim_citation_eligible
+from panda_agent.qa import (
+    _answer_requirements,
+    _build_coverage_receipt,
+    _evidence_source_types,
+    _is_public_claim_citation_eligible,
+    _model_claims,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 COHORT = ROOT / "evaluation/G3_SCOPED_AUDIT_COHORT.json"
 AUTH = ROOT / "evaluation/G3_SCOPED_AUDIT_EXECUTION_AUTHORIZATION.json"
-REVIEW = ROOT / "evaluation/G3_SCOPED_AUDIT_REVIEW_OVERLAY.json"
-OUT = ROOT / "evaluation/G3_SCOPED_AUDIT_EXECUTION_RESULT.json"
+REVIEW = ROOT / "evaluation/G3_SCOPED_AUDIT_COMPLETION_REVIEW_OVERLAY.json"
+OUT = ROOT / "evaluation/G3_SCOPED_AUDIT_COMPLETION_RESULT.json"
+PRIOR = ROOT / "evaluation/G3_SCOPED_AUDIT_EXECUTION_RESULT.json"
 REASONS = (
     "DIRECTLY_CITATION_ELIGIBLE", "RESOLVED_EXACT_BACKING", "INVALID_LOCATOR",
     "CONTENT_RELATION_NOT_ESTABLISHED", "BOUND_EXCEEDED", "LOOKUP_FAILED",
@@ -50,6 +57,104 @@ def resolved_items(items: list, registry: dict) -> list[dict]:
     return result
 
 
+def replay_partial(diag: dict, trace: dict, vin: dict | None, vout: dict | None) -> tuple[dict, dict | None]:
+    """Replay one frozen V1/V2 response through the unchanged production G2 validator."""
+    provenance = {"replay_attempted": True, "replay_input_complete": False,
+                  "replay_consistent": False, "replay_receipt_status": None,
+                  "valid_point_count": 0, "local_invalid_point_count": 0,
+                  "valid_named_relation_count": 0, "valid_ordinary_check_count": 0,
+                  "new_semantic_basis_links_recovered": 0,
+                  "new_visible_only_links_recovered": 0,
+                  "remaining_not_observable_reason": None}
+    if not vin or not vout or vin.get("status") != "CAPTURED" or vout.get("status") != "CAPTURED":
+        provenance["remaining_not_observable_reason"] = "FINAL_ROUND_TRACE_NOT_CAPTURED"
+        return provenance, None
+    input_payload, output_payload = vin.get("payload") or {}, vout.get("payload") or {}
+    model_input = input_payload.get("model_input") or {}
+    registry = trace.get("evidence_registry") or {}
+    points = model_input.get("runtime_answer_points")
+    raw_evidence = model_input.get("untrusted_evidence")
+    draft = input_payload.get("normalized_draft")
+    claim_errors = input_payload.get("deterministic_claim_errors")
+    review = output_payload.get("response")
+    plan = diag.get("plan")
+    question = model_input.get("untrusted_question")
+    admitted = model_input.get("admitted_evidence_ids")
+    if not (isinstance(points, list) and isinstance(raw_evidence, list)
+            and isinstance(draft, list) and isinstance(claim_errors, dict)
+            and isinstance(review, dict) and isinstance(plan, dict)
+            and isinstance(question, str) and isinstance(admitted, list)
+            and model_input.get("answer_requirements") == []
+            and points == (diag.get("answer_point_audit") or {}).get("answer_points")):
+        provenance["remaining_not_observable_reason"] = "PRODUCTION_REPLAY_INPUT_MISSING"
+        return provenance, None
+    evidence = []
+    for item in raw_evidence:
+        if not isinstance(item, dict):
+            provenance["remaining_not_observable_reason"] = "EVIDENCE_PROJECTION_INVALID"
+            return provenance, None
+        value = registry.get(item["evidence_projection_ref"]) if "evidence_projection_ref" in item else item
+        if not isinstance(value, dict) or not isinstance(value.get("evidence_id"), str):
+            provenance["remaining_not_observable_reason"] = "EVIDENCE_PROJECTION_MISSING"
+            return provenance, None
+        evidence.append(value)
+    lookup = {item["evidence_id"]: item for item in evidence}
+    if len(lookup) != len(evidence) or not all(isinstance(eid, str) for eid in admitted):
+        provenance["remaining_not_observable_reason"] = "EVIDENCE_ID_INVENTORY_INVALID"
+        return provenance, None
+    claims = [c for c in draft if not claim_errors.get(str(c.get("claim_id") or ""))]
+    if _model_claims(claims) != model_input.get("untrusted_claims"):
+        provenance["remaining_not_observable_reason"] = "REVIEWABLE_CLAIMS_MISMATCH"
+        return provenance, None
+    requirement_ids = {str(item["id"]) for item in _answer_requirements(question, plan)}
+    provenance["replay_input_complete"] = True
+    try:
+        receipt = _build_coverage_receipt(
+            review, claims, {p["answer_point_id"] for p in points}, requirement_ids,
+            lookup, set(admitted), canonical_points=points)
+    except (KeyError, TypeError, ValueError) as exc:
+        provenance["remaining_not_observable_reason"] = f"PRODUCTION_REPLAY_ERROR:{type(exc).__name__}"
+        return provenance, None
+    provenance["replay_receipt_status"] = receipt["status"]
+    audit = diag.get("answer_point_audit") or {}
+    stored = audit.get("coverage_validation") or {}
+    expected_points = [
+        {"answer_point_id": p["answer_point_id"], "state": p["state"],
+         "complete": p["complete"], "scope_status": p["scope_status"],
+         "relations": [{"relation_id": r["relation_id"], "state": r["state"]}
+                       for r in p["relations"]]}
+        for p in receipt["point_results"]
+    ]
+    summary = output_payload.get("validation") or {}
+    mapping_rows = audit.get("claim_mappings") or []
+    stored_mappings = {row["claim_id"]: row.get("verified_answer_point_ids") for row in mapping_rows}
+    consistent = (
+        receipt["status"] == stored.get("status") == summary.get("status") == "PARTIAL"
+        and receipt["errors"] == stored.get("errors")
+        and [e["reason_code"] for e in receipt["errors"]] == summary.get("error_codes")
+        and (receipt["errors"][0]["reason_code"] if receipt["errors"] else None)
+            == summary.get("error") == audit.get("review_error")
+        and expected_points == stored.get("point_results")
+        and receipt["mapping_valid"] is True
+        and receipt["mappings"] == stored_mappings
+    )
+    if not consistent:
+        provenance["remaining_not_observable_reason"] = "REPLAY_SUMMARY_MISMATCH"
+        return provenance, None
+    provenance["replay_consistent"] = True
+    provenance["valid_point_count"] = sum(p["state"] == "VALID" for p in receipt["point_results"])
+    provenance["local_invalid_point_count"] = sum(p["state"] == "LOCAL_INVALID" for p in receipt["point_results"])
+    provenance["valid_named_relation_count"] = sum(
+        r["state"] == "VALID" for p in receipt["point_results"] for r in p["relations"])
+    raw_points = {p["answer_point_id"]: p for p in review["answer_point_coverage"]}
+    provenance["valid_ordinary_check_count"] = sum(
+        len(raw_points[p["answer_point_id"]].get("relationship_checks") or [])
+        for p in receipt["point_results"] if p["state"] == "VALID")
+    if provenance["local_invalid_point_count"]:
+        provenance["remaining_not_observable_reason"] = "LOCAL_INVALID_SIBLING_DISPOSITION"
+    return provenance, {"receipt": receipt, "raw_points": raw_points}
+
+
 def metric(n: int | None, d: int, unknown: int, *, not_applicable: int = 0) -> dict:
     return {"numerator": n if d else None, "denominator": d,
             "rate": n / d if d and n is not None else None,
@@ -57,7 +162,7 @@ def metric(n: int | None, d: int, unknown: int, *, not_applicable: int = 0) -> d
 
 
 def main() -> None:
-    cohort, auth = read(COHORT), read(AUTH)
+    cohort, auth, prior = read(COHORT), read(AUTH), read(PRIOR)
     review = read(REVIEW)
     ids = cohort["selected_question_ids"]
     assert len(ids) == len(set(ids)) == 28
@@ -81,6 +186,7 @@ def main() -> None:
     assert not manifest["repository_identity"]["dirty"]
 
     questions, evidence_records, semantic_links = [], [], []
+    replay_provenance = {}
     reason_counts = Counter()
     source_counts = defaultdict(Counter)
     admission_question_ids, rejection_question_ids = set(), set()
@@ -104,6 +210,7 @@ def main() -> None:
         if not path.exists():
             q["artifact_status"] = "NOT_OBSERVABLE"
             q["limitation"] = "CASE_RECORD_MISSING"
+            q["primary_root_cause"] = "INFRASTRUCTURE"
             q["stage_status"] = {f"S{i}": "NOT_OBSERVABLE" for i in range(9)}
             unknown_questions.add(qid)
             trace_completeness["NOT_OBSERVABLE"] += 1
@@ -113,6 +220,7 @@ def main() -> None:
         if rec.get("exception"):
             q["artifact_status"] = "NOT_OBSERVABLE"
             q["exception"] = rec["exception"]
+            q["primary_root_cause"] = "INFRASTRUCTURE"
             q["stage_status"] = {f"S{i}": "NOT_OBSERVABLE" for i in range(9)}
             unknown_questions.add(qid)
             trace_completeness["NOT_OBSERVABLE"] += 1
@@ -197,29 +305,43 @@ def main() -> None:
         claim_mappings = {x.get("claim_id"): x for x in final_audit.get("claim_mappings") or []}
         final_round = "V2" if v2out and v2out.get("status") == "CAPTURED" else "V1" if v1out and v1out.get("status") == "CAPTURED" else None
         final_coverage = final_audit.get("answer_point_coverage") or []
-        semantic_authoritative = bool(final_round and validation.get("status") in {"VALID", "PARTIAL"}
-                                      and final_coverage)
+        semantic_complete = bool(final_round and validation.get("status") == "VALID" and final_coverage)
+        partial_replay = None
+        if final_round and validation.get("status") == "PARTIAL":
+            vin, vout = (v2in, v2out) if final_round == "V2" else (v1in, v1out)
+            provenance, partial_replay = replay_partial(diag, qa_trace, vin, vout)
+            replay_provenance[qid] = provenance
+            q["partial_replay"] = provenance
+        semantic_authoritative = semantic_complete or partial_replay is not None
+        semantic_rows = (list(partial_replay["raw_points"].values()) if partial_replay
+                         else final_coverage)
+        if partial_replay:
+            valid_results = {p["answer_point_id"]: p for p in partial_replay["receipt"]["point_results"]}
         q["semantic_authoritative"] = semantic_authoritative
+        q["semantic_complete"] = semantic_complete
         q["verification_rounds"] = {}
         for label, ve in (("V1", v1out), ("V2", v2out)):
             status = ve.get("status") if ve else "MISSING"
             q["verification_rounds"][label] = {
                 "event_status": status,
                 "raw_validation_status": (ve.get("payload") or {}).get("validation", {}).get("status") if ve else None,
-                "semantic_authority": "FINAL_G2_AUDIT" if semantic_authoritative and final_round == label
-                                      else "NOT_OBSERVABLE" if status == "CAPTURED" else "NOT_APPLICABLE" if status == "NOT_EXECUTED" else "NOT_OBSERVABLE",
+                "semantic_authority": ("FINAL_G2_AUDIT" if semantic_complete and final_round == label
+                                       else "EXACT_G2_PARTIAL_REPLAY" if partial_replay and final_round == label
+                                       else "NOT_OBSERVABLE" if status == "CAPTURED"
+                                       else "NOT_APPLICABLE" if status == "NOT_EXECUTED"
+                                       else "NOT_OBSERVABLE"),
             }
         if final_round and not semantic_authoritative:
             q["semantic_limitation"] = "PER_ROUND_VALID_DISPOSITIONS_NOT_OBSERVABLE"
+        elif partial_replay:
+            q["semantic_limitation"] = "PARTIAL_REPLAY_VALID_CHILDREN_ONLY"
         basis_by_id = defaultdict(list)
         if semantic_authoritative:
-            for point in final_coverage:
+            for point in semantic_rows:
                 pid = point.get("answer_point_id")
                 state = valid_results.get(pid, {}).get("state")
-                if state != "VALID":
-                    continue
                 named = point.get("required_relation_checks") or []
-                ordinary = point.get("relationship_checks") or []
+                ordinary = (point.get("relationship_checks") or []) if state == "VALID" else []
                 relation_states = {x.get("relation_id"): x.get("state") for x in valid_results.get(pid, {}).get("relations") or []}
                 for kind, checks in (("named_relation", named), ("ordinary_check", ordinary)):
                     for ordinal, check in enumerate(checks):
@@ -235,7 +357,8 @@ def main() -> None:
                                 "validation_state": "VALID", "admission_state": state_name,
                                 "basis_evidence_ids": [x.get("evidence_id") for x in check.get("basis") or []],
                                 "supporting_claim_ids": check.get("supporting_claim_ids") or [],
-                                "satisfied": check.get("satisfied"), "point_complete": point.get("complete") is True}
+                                "satisfied": check.get("satisfied"),
+                                "point_complete": state == "VALID" and valid_results.get(pid, {}).get("complete") is True}
                         link["supported_claim_ids"] = [cid for cid in link["supporting_claim_ids"]
                             if claim_mappings.get(cid, {}).get("supported") is True]
                         link["rendered_claim_ids"] = [cid for cid in link["supported_claim_ids"]
@@ -292,8 +415,8 @@ def main() -> None:
                 "S4": "NOT_APPLICABLE" if direct else "YES" if resolution_applicable else "NO",
                 "S5": "YES" if admission_success else "NO" if decision else "NOT_APPLICABLE" if qid in no_a0_questions else "NOT_OBSERVABLE",
                 "S6": "YES" if eid in visible_ids or (backing and backing in visible_ids) else "NO" if verifier_executed else "NOT_APPLICABLE",
-                "S7": "YES" if links else "NO" if semantic_authoritative else "NOT_APPLICABLE" if not final_round else "NOT_OBSERVABLE",
-                "S8": "YES" if any(authorization.values()) else "NO" if semantic_authoritative else "NOT_OBSERVABLE" if final_round else "NOT_APPLICABLE",
+                "S7": "YES" if links else "NO" if semantic_complete else "NOT_APPLICABLE" if not final_round else "NOT_OBSERVABLE",
+                "S8": "YES" if any(authorization.values()) else "NO" if semantic_complete else "NOT_OBSERVABLE" if final_round else "NOT_APPLICABLE",
             }
             for stage, value in stages.items():
                 stage_counts[stage][value] += 1
@@ -318,6 +441,12 @@ def main() -> None:
             and bool(set(x["basis_evidence_ids"]) & rejected_selected)
             for x in semantic_links if x["question_id"] == qid
         )
+        if partial_replay:
+            provenance["new_semantic_basis_links_recovered"] = sum(
+                x["question_id"] == qid and bool(x["basis_evidence_ids"]) for x in semantic_links)
+            provenance["new_visible_only_links_recovered"] = sum(
+                x["question_id"] == qid and x["admission_state"] == "VISIBLE_ONLY_WITHOUT_CITABLE_BACKING"
+                for x in semantic_links)
         q["tier0"], q["tier1"] = qid in tier0_questions, qid in tier1_questions
         q["selected_count"] = len(q_evidence)
         for stage in (f"S{i}" for i in range(9)):
@@ -329,14 +458,21 @@ def main() -> None:
             )
         q["final_verify_round"] = final_round
         q["coverage_validation_status"] = validation.get("status")
-        q["final_point_complete_count"] = sum(x.get("complete") is True for x in final_coverage)
+        q["final_point_complete_count"] = sum(
+            x.get("state") == "VALID" and x.get("complete") is True
+            for x in valid_results.values())
         q["final_point_count"] = len(final_audit.get("answer_points") or [])
-        q["primary_root_cause"] = "UNRESOLVED" if q["qa_status"] != "answered" else "NOT_APPLICABLE"
+        q["primary_root_cause"] = "UNRESOLVED"
+        if (q["qa_status"] == "answered" and semantic_complete
+                and q["final_point_count"] > 0
+                and q["final_point_complete_count"] == q["final_point_count"]
+                and qid not in tier1_questions):
+            q["primary_root_cause"] = "NOT_APPLICABLE"
         if qid in no_a0_questions:
             q["primary_root_cause"] = "UNRESOLVED"
         if qid in tier1_questions:
             q["primary_root_cause"] = "UNRESOLVED"
-        if final_round and not semantic_authoritative:
+        if final_round and (not semantic_authoritative or partial_replay):
             q["primary_root_cause"] = "OBSERVABILITY_LIMITATION"
         if qid in qualified_questions:
             a1 = event(qa_trace, "A1_INPUT")
@@ -357,11 +493,22 @@ def main() -> None:
     usage["token_usage"] = sum(x.get("token_usage", 0) for x in attempts)
     completed = sum(q["qa_status"] is not None for q in questions)
     incomplete = len(ids) - completed
+    prior_evidence = {(x["question_id"], x["selected_evidence_id"]): x["admission_reason_code"]
+                      for x in prior["evidence_opportunities"]}
+    current_prior_evidence = {(x["question_id"], x["selected_evidence_id"]): x["admission_reason_code"]
+                              for x in evidence_records if x["question_id"] in {
+                                  q["question_id"] for q in prior["question_summaries"] if q.get("qa_status")}}
+    assert current_prior_evidence == prior_evidence, "previous 24-case admission decisions drifted"
+    assert sum(x == "DIRECTLY_CITATION_ELIGIBLE" for x in current_prior_evidence.values()) == 250
+    assert sum(x == "AMBIGUOUS_BACKING" for x in current_prior_evidence.values()) == 17
     denom_evidence = sum(reason_counts.values())
     unknown_admission = len(ids) - len(qualified_questions) - len(no_a0_questions)
-    valid_final_questions = {q["question_id"] for q in questions if q.get("semantic_authoritative") and q["admission_denominator_eligible"]}
+    valid_final_questions = {q["question_id"] for q in questions if q.get("semantic_complete") and q["admission_denominator_eligible"]}
+    semantic_auditable_questions = {q["question_id"] for q in questions
+                                    if q.get("semantic_authoritative") and q["admission_denominator_eligible"]}
+    tier1_denominator_questions = valid_final_questions | tier1_questions
     adjudicated_primary_questions = sum(q["primary_root_cause"] not in (None, "UNRESOLVED") for q in questions)
-    tier1_incomplete = sum(q["question_id"] in tier1_questions and q["final_point_complete_count"] < q["final_point_count"] for q in questions if q["question_id"] in valid_final_questions)
+    tier1_incomplete = sum(q["question_id"] in tier1_questions and q["final_point_complete_count"] < q["final_point_count"] for q in questions if q["question_id"] in tier1_denominator_questions)
     metrics = {
         "a0_admission": metric(reason_counts["DIRECTLY_CITATION_ELIGIBLE"] + reason_counts["RESOLVED_EXACT_BACKING"], denom_evidence, unknown_admission, not_applicable=len(no_a0_questions)),
         "a0_rejection": metric(denom_evidence - reason_counts["DIRECTLY_CITATION_ELIGIBLE"] - reason_counts["RESOLVED_EXACT_BACKING"], denom_evidence, unknown_admission, not_applicable=len(no_a0_questions)),
@@ -369,8 +516,8 @@ def main() -> None:
         "a1_target_exposure": metric(a1_exposed, a1_admitted, len(unknown_questions),
                                       not_applicable=len(ids) - a1_questions - len(unknown_questions)),
         "traceable_visible_only_linkage": metric(traceable_visible_only, valid_visible_only, len(ids) - len(valid_final_questions)),
-        "tier1_incomplete_question_incidence": metric(tier1_incomplete, len(valid_final_questions), len(ids) - len(valid_final_questions)),
-        "tier2_candidate_incidence": metric(0, len(valid_final_questions), len(ids) - len(valid_final_questions)),
+        "tier1_incomplete_question_incidence": metric(tier1_incomplete, len(tier1_denominator_questions), len(ids) - len(tier1_denominator_questions)),
+        "tier2_candidate_incidence": metric(review["tier2_candidates"], len(tier1_denominator_questions), len(ids) - len(tier1_denominator_questions)),
         "admission_policy_primary_incidence": metric(0, adjudicated_primary_questions,
                                                     len(ids) - adjudicated_primary_questions),
         "admission_outcomes": {reason: metric(reason_counts[reason], denom_evidence, unknown_admission, not_applicable=len(no_a0_questions)) for reason in REASONS},
@@ -381,7 +528,7 @@ def main() -> None:
     assert review["tier1_reviewed"] == 0 if not tier1_questions else review["tier1_reviewed"] <= len(tier1_questions)
     assert review["tier2_candidates"] == 0 if not tier1_questions else review["tier2_candidates"] >= 0
     metrics["primary_root_cause_distribution"] = {
-        cause: metric(root_counts[cause], len(ids) - len(unknown_questions), len(unknown_questions))
+        cause: metric(root_counts[cause], len(ids), 0)
         for cause in ("ADMISSION_POLICY", "ADMISSION_DATA_INTEGRITY", "RETRIEVAL_SELECTION",
                       "SEMANTIC_INSUFFICIENCY", "VERIFIER_FALSE_REJECTION",
                       "CLAIM_MAPPING_OR_SUPPORT", "GENERATION_OR_REVISION",
@@ -400,11 +547,12 @@ def main() -> None:
                               "admission_rate": admitted / len(ev) if ev else None,
                               "tier1_questions": len(qids & tier1_questions)}
     result = {
-        "schema_version": "g3-scoped-audit-execution-result-v1",
+        "schema_version": "g3-scoped-audit-completion-result-v1",
         "audit_id": cohort["audit_id"], "run_id": cohort["audit_id"],
         "frozen_cohort_commit": auth["frozen_cohort_commit"],
         "execution_authorization_commit": manifest["repository_identity"]["commit"],
         "prior_budget_stop_result": "evaluation/G3_SCOPED_AUDIT_RESULT.json",
+        "prior_execution_result": str(PRIOR.relative_to(ROOT)).replace("\\", "/"),
         "cohort_selection_changed": False, "product_behavior_lineage": cohort["product_behavior_lineage"],
         "run_manifest_ref": str((run / "manifest.json").relative_to(ROOT)).replace("\\", "/"),
         "run_identity": {k: manifest.get(k) for k in ("mode", "split", "official", "capture_stage_trace", "gold_dataset_hash", "source_manifest_hash", "index_identity", "prompt_hash", "prompt_version", "repository_identity", "generation_model_id", "runtime_generation_model_id", "embedding_model_id", "evaluation_judge_model_id", "max_model_calls", "max_token_usage")},
@@ -412,8 +560,26 @@ def main() -> None:
         "fresh_capture_required": len(ids), "fresh_capture_attempted": len({x["id"] for x in attempts}),
         "fresh_capture_completed": completed, "fresh_capture_incomplete": incomplete,
         "qa_execution_attempts": len(attempts), "qa_cases_completed": completed,
+        "prior_execution_accounting": {
+            "qa_case_attempts": prior["qa_execution_attempts"],
+            **prior["scientific_usage"]},
+        "new_qa_runner_invocations": review["additional_resume_invocations"],
+        "new_qa_case_attempts": len(attempts) - prior["qa_execution_attempts"],
+        "newly_completed_ids": [q["question_id"] for q in questions if q.get("qa_status") and
+                                q["question_id"] in {p["question_id"] for p in prior["question_summaries"]
+                                                      if not p.get("qa_status")}],
+        "still_incomplete_ids": [q["question_id"] for q in questions if not q.get("qa_status")],
         "scientific_usage": {**usage, "external_judge_calls": 0},
+        "incremental_scientific_usage": {
+            **{k: usage[k] - prior["scientific_usage"][k] for k in usage},
+            "external_judge_calls": 0},
         "trace_completeness": {k: trace_completeness[k] for k in ("COMPLETE", "PARTIAL", "NOT_OBSERVABLE")},
+        "admission_auditable_questions": len(qualified_questions),
+        "semantic_auditable_questions": len(semantic_auditable_questions),
+        "fully_semantic_auditable_questions": len(valid_final_questions),
+        "observability_limited_questions": [q["question_id"] for q in questions
+                                             if q.get("primary_root_cause") == "OBSERVABILITY_LIMITATION"],
+        "partial_replay_provenance": replay_provenance,
         "stage_status_counts": {k: dict(v) for k, v in stage_counts.items()},
         "question_summaries": questions, "evidence_opportunities": evidence_records,
         "relation_check_links": semantic_links,
@@ -435,7 +601,8 @@ def main() -> None:
         "next_task_execution_authorized": review["next_task_execution_authorized"],
         "materiality": {"source_change": False, "product_source_change": False,
                         "material_product_change": False, "product_behavior_change": False,
-                        "audit_execution_authorization_change": True, "audit_artifact_change": True,
+                        "audit_execution_authorization_change": False,
+                        "audit_analysis_script_change": True, "audit_artifact_change": True,
                         "status_doc_change": True, "prompt_change": False, "schema_change": False,
                         "trace_schema_change": False, "manifest_schema_change": False,
                         "retrieval_behavior_change": False, "admission_behavior_change": False,

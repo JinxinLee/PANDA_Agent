@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G3 scoped-audit execution result commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G3 scoped-audit completion result commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a0106bd5eff93646f34f5e50e161e8be8a49d680
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
@@ -52,11 +52,11 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G3_SCOPED_AUDIT_EXECUTION_INCONCLUSIVE
+PHASE_G = IN_PROGRESS / G3_SCOPED_AUDIT_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
-G3 = SCOPED AUDIT EXECUTED / INCONCLUSIVE (PERSISTENT_VERTEX_429_AND_PARTIAL_SEMANTIC_AUTHORITY) / PRODUCT CHANGE NOT_AUTHORIZED
-NEXT_TASK_RECOMMENDATION = RESUME THE SAME G3 FROZEN-COHORT QA RUN AFTER VERTEX 429 RECOVERY
+G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
+NEXT_TASK_RECOMMENDATION = G4 FALSE-INSUFFICIENCY / CONSERVATISM REGRESSION DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -1030,10 +1030,10 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 ## Phase G — Answer Semantics & Robustness
 
 ```text
-PHASE_G = IN_PROGRESS / G3_SCOPED_AUDIT_EXECUTION_INCONCLUSIVE
+PHASE_G = IN_PROGRESS / G3_SCOPED_AUDIT_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
-G3 = SCOPED AUDIT EXECUTED / INCONCLUSIVE (PERSISTENT_VERTEX_429_AND_PARTIAL_SEMANTIC_AUTHORITY) / PRODUCT CHANGE NOT_AUTHORIZED
+G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
 ```
 
 Phase G is a new ordinary product-development phase. Its goal is to improve how the QA system represents requested semantic relationships, validates partial structured reviews, and connects retrieved evidence to answer-authorized support, without optimizing directly for exposed benchmark cases. The guiding principles are relationship-aware semantics, local failure containment, evidence-to-answer continuity, false-refusal control, fresh development evidence, and lean validation.
@@ -1060,12 +1060,13 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 
 ### G3 — Evidence Admission / Answerability Gap Audit
 
-- **Status:** SCOPED AUDIT EXECUTED / INCONCLUSIVE (PERSISTENT_VERTEX_429_AND_PARTIAL_SEMANTIC_AUTHORITY) / PRODUCT CHANGE NOT_AUTHORIZED.
+- **Status:** SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED.
 - **Goal:** Measure where evidence is retrieved, visible, or selected but cannot become answer-authorized citable backing.
 - **Selected methodology and trace readiness:** [G3 audit design](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_AUDIT_DESIGN.md) retains the outcome-blind reviewed novel_dev cohort, selected-evidence denominator, S0–S8 funnel, source/reason stratification, G1/G2 relation linkage, and causal tiers. The [preflight](../evaluation/G3_TRACE_CAPABILITY_ARTIFACT_APPLICABILITY_PREFLIGHT.md) and [observability prerequisite](../evaluation/G3_NOVEL_DEV_QA_STAGE_TRACE_OBSERVABILITY_PREREQUISITE.md) established a supported non-formal novel_dev QA stage-trace path. The historical [budget-preflight result](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_SCOPED_AUDIT.md) froze the 28 reviewed IDs and stopped before case capture under the former task-local hard caps. Its record remains unchanged.
-- **Execution and observed evidence:** The separately authorized [scoped-audit execution](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_SCOPED_AUDIT_EXECUTION.md) removed only those caps. The initial supported QA run and two resumes attempted all 28 frozen IDs; 24 completed with full trace, while `n007`, `n010`, `n024`, and `n028` remain retryable Vertex 429 exceptions. Of 267 A0-auditable selected decisions, 250 were directly citation eligible and 17 were rejected for ambiguous exact backing. No valid visible-only semantic disposition links a rejected selected item to an answer-authorization failure. Three completed PARTIAL G2 reviews lack authoritative per-round semantic coverage. Fixed-cohort verdict: INCONCLUSIVE; no admission-policy change is justified or authorized. Actual usage: 344 model calls, 1,371,353 tokens, zero external judge calls, zero protected-data access.
+- **First execution checkpoint:** The separately authorized [scoped-audit execution](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_SCOPED_AUDIT_EXECUTION.md) removed only the former task-local caps. The initial supported QA run and two resumes attempted all 28 frozen IDs; 24 completed with full trace, while `n007`, `n010`, `n024`, and `n028` remained retryable Vertex 429 exceptions. Of 267 A0-auditable selected decisions, 250 were directly citation eligible and 17 were rejected for ambiguous exact backing. Three completed PARTIAL G2 reviews lacked authoritative per-round semantic coverage. That checkpoint's decision was INCONCLUSIVE. Usage then was 344 model calls, 1,371,353 tokens, zero external judge calls, and zero protected-data access. Its historical record remains unchanged.
+- **Completion and decision:** The [same-run completion](../evaluation/G3_EVIDENCE_ADMISSION_ANSWERABILITY_GAP_SCOPED_AUDIT_COMPLETION.md) used three additional supported resumes to finish all 28 frozen IDs. Exact production G2 replay of the three PARTIAL reviews recovered surviving valid children and retained local-invalid siblings as non-authoritative. Final A0 decisions are 293 direct admissions and 19 ambiguous-backing rejections over 312 selected-item decisions. No valid visible-only disposition links rejected selected evidence to an answer-authorization failure; Tier 1 and Tier 2 counts are zero. Decision: NO_CHANGE for the scoped admission-policy question, with no product change authorized. Cumulative usage: 390 model calls, 1,563,460 tokens, zero external judge calls, zero protected-data access. The general QA run quality-gate FAIL remains a separate result.
 - **Implementation gate:** Change admission policy only if the audit establishes a generic defect. Do not broaden citation eligibility merely to repair g013 or any other exposed case.
-- **Next evidence need:** Resume the same fixed-cohort QA run only after Vertex 429 recovery under separate authorization. Preserve run identity and product lineage. The three PARTIAL cases retain stage-specific unknown semantics unless exact-lineage deterministic replay is separately justified and possible. No admission defect or empirical benefit has been established.
+- **Boundary and next step:** The 19 ambiguous-backing decisions are Tier 0 frequency observations, not an admission-policy defect or a generalization score. The three locally invalid siblings and six ambiguously owned insufficient answers remain limitations. G4 false-insufficiency / conservatism regression design is the next recommended task under separate authorization.
 
 ### G4 — False-Insufficiency / Conservatism Regression
 
@@ -1095,7 +1096,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = RESUME THE SAME G3 FROZEN-COHORT QA RUN AFTER VERTEX 429 RECOVERY
+NEXT_TASK_RECOMMENDATION = G4 FALSE-INSUFFICIENCY / CONSERVATISM REGRESSION DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 

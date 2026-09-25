@@ -1,0 +1,18 @@
+{
+  "schema_version": "g3-scoped-audit-completion-review-overlay-v1",
+  "audit_id": "g3-evidence-admission-audit-novel-dev-v1",
+  "reviewer": "Codex host analyst",
+  "method": "Bounded inspection of newly valid semantic links, selected or basis evidence, admission decisions, and source provenance; no Gold answer used as an implementation target",
+  "tier1_reviewed": 0,
+  "targeted_ambiguous_classification_reviewed": 6,
+  "targeted_question_ids": ["n004", "n006", "n017", "n024", "n027", "n028"],
+  "targeted_finding": "The four previously reviewed ambiguous incomplete questions remain without a VALID visible-only basis citing rejected selected evidence after exact G2 replay. Newly completed n024 and n028 are answered with complete VALID point coverage and other admitted basis IDs; their rejected Sphinx overview page is not a basis for a valid disposition. No page relevance or rejected-item frequency was promoted to a causal admission defect.",
+  "tier2_candidates": 0,
+  "tier2_independent_review_completed": false,
+  "tier2_independent_review_pending": false,
+  "additional_resume_invocations": 3,
+  "primary_decision": "NO_CHANGE",
+  "decision_basis": "All 28 frozen QA cases completed. Exact production G2 replay consistently recovered the surviving VALID children in all three PARTIAL cases without promoting LOCAL_INVALID siblings. Across the fixed cohort, no VALID visible-only disposition links selected rejected evidence to an answer-authorization failure, so there is no Tier 1 link or Tier 2 admission-policy candidate. Nineteen AMBIGUOUS_BACKING rejections remain real Tier 0 observations; this bounded decision does not assert the absence of latent corpus gaps or establish a generalization score.",
+  "next_task_recommendation": "G4 FALSE-INSUFFICIENCY / CONSERVATISM REGRESSION DESIGN",
+  "next_task_execution_authorized": false
+}
