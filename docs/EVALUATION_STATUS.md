@@ -18,7 +18,7 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 exposed-development diagnostic completion commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G4 R2 evidence-retention repair design commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a0106bd5eff93646f34f5e50e161e8be8a49d680
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
@@ -45,12 +45,12 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_EXPOSED_DIAGNOSTIC_COMPLETE
+PHASE_G = IN_PROGRESS / G4_R2_REPAIR_DESIGN_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / PRODUCT REPAIR NOT_AUTHORIZED
-NEXT_TASK_RECOMMENDATION = G4 R2 FUSION EVIDENCE-RETENTION REPAIR DESIGN
+G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR DESIGN COMPLETE / IMPLEMENTATION NOT_AUTHORIZED
+NEXT_TASK_RECOMMENDATION = G4 R2 FUSION EVIDENCE-RETENTION DETERMINISTIC RED / IMPLEMENTATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -79,6 +79,8 @@ The [G4 deterministic baseline](../evaluation/G4_DETERMINISTIC_FALSE_INSUFFICIEN
 The [G4 focused-development diagnostic design](../evaluation/G4_FOCUSED_DEVELOPMENT_FALSE_INSUFFICIENCY_DIAGNOSTIC_DESIGN.md) selected an exposed, outcome-conditioned Lane A using the six unresolved G3 insufficient cases only after the answerability rubric was frozen. Independent Gold-plus-locked-corpus review preceded production-outcome attribution; existing complete G3 captures were the starting artifacts. At that design checkpoint no case content was opened, no empirical result was established, and no execution or product change was authorized. A separate Lane B would require additional human-reviewed, outcome-blind frozen `novel_dev`; the current 28 are already exposed.
 
 The separately authorized [G4 exposed-development diagnostic](../evaluation/G4_EXPOSED_DEVELOPMENT_FALSE_INSUFFICIENCY_DIAGNOSTIC.md) froze its six-ID [answerability rubric](../evaluation/G4_EXPOSED_DEVELOPMENT_ANSWERABILITY_RUBRIC.md) in a dedicated commit before case access. Direct locked-source review classified all six as independently `ANSWERABLE`, including a documented `n001` Gold/source shell-behavior conflict requiring later forward-only Gold review. All six known insufficient outcomes are screening candidates, not a population rate. Compatible same-run G3 traces support four attributed false-insufficiency cases (`Q1=1`, `R2=3`) and leave two earliest causes unresolved. Three independent families establish a generic R2 channel-to-fusion loss of obligation-bearing code evidence. No V1/finalization defect or admission reopening was established; G3 `NO_CHANGE` remains intact. Scientific calls/tokens, new QA/retrieval/judge runs, matched controls, fresh cases, and protected-data access were zero. Product behavior and identity did not change. The next recommendation is a separately authorized R2 repair **design**, not implementation; fresh Lane B confirmation still requires new reviewed `novel_dev` curation.
+
+The separately authorized [G4 R2 evidence-retention repair design](../evaluation/G4_R2_FUSION_EVIDENCE_RETENTION_REPAIR_DESIGN.md) selects a small frontier of valid, omitted direct-channel candidates within the existing 30-object global rerank budget, preserving structured-supplement priority and an ordinary RRF backbone. It specifies generic R2-A RED and R2-B–H safety controls, a minimal diagnostic-only pool-entry receipt, and offline exposed pool-retention replay without treating old reranker outputs as scores for unseen candidates. This is a design decision only: no implementation, rerun, fresh confirmation, or repaired QA benefit is claimed. New outcome-blind, reviewed Lane B `novel_dev` must be frozen after deterministic implementation and before any empirical comparison. The sole next recommendation is separately authorized deterministic RED / implementation; G3 `NO_CHANGE` and the 18/18 G4 T0 baseline retain their historical meaning.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 
