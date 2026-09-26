@@ -1614,6 +1614,7 @@ class Retriever:
     def _workflow(self, question: str, plan: RetrievalPlan, limit: int) -> list[dict[str, Any]]:
         terms = re.findall(r"[A-Za-z_][A-Za-z0-9_.-]{3,}", question)
         if not terms:
+            self._specialized_origins["workflow"] = []
             return []
         pattern = "|".join(re.escape(term) for term in terms[:10])
         with self.storage.connect() as connection:
@@ -1625,8 +1626,10 @@ class Retriever:
                 LIMIT %s""", (pattern, [*plan.target_repositories,*self.context_sources,"curated_panda_domain"], plan.target_repositories, [f"{repo}@{plan.resolved_versions[repo]}" for repo in plan.target_repositories], limit)).fetchall()
         results = [self._row(row) for row in rows]
         if "workflow" not in plan.required_source_types:
+            self._specialized_origins["workflow"] = ["normal"] * len(results)
             return results
         if any(item.get("object_type") == "workflow" for item in results):
+            self._specialized_origins["workflow"] = ["normal"] * len(results)
             return results
         # Some Chinese or identifier-heavy questions do not share literal
         # words with the normalized workflow payload.  A bounded fallback keeps
@@ -1637,6 +1640,7 @@ class Retriever:
                 WHERE source_id='curated_panda_domain' AND object_type='workflow'
                 ORDER BY object_id
                 LIMIT %s""", (limit,)).fetchall()
+        self._specialized_origins["workflow"] = ["generic_fallback"] * len(fallback)
         return [self._row(row) for row in fallback]
 
     def _graph(self, seeds: list[dict[str, Any]], plan: RetrievalPlan, limit: int) -> list[dict[str, Any]]:
@@ -1675,6 +1679,7 @@ class Retriever:
                 LIMIT %s""", (ids,ids,ids,ids,ids,self.policies.max_relation_hops,ids,allowed_sources,plan.target_repositories,resolved_versions,limit)).fetchall()
         results = [self._row(row) for row in rows]
         if results or "graph" not in plan.required_source_types:
+            self._specialized_origins["graph"] = ["normal"] * len(results)
             return results
         # Curated architecture objects are a bounded fallback when accepted
         # relation edges are sparse for a structural query.
@@ -1685,6 +1690,7 @@ class Retriever:
                   AND object_type IN ('document','repository','subsystem','concept')
                 ORDER BY object_id
                 LIMIT %s""", (limit,)).fetchall()
+        self._specialized_origins["graph"] = ["generic_fallback"] * len(fallback)
         return [self._row(row) for row in fallback]
 
     @staticmethod
@@ -1720,6 +1726,7 @@ class Retriever:
         plan: RetrievalPlan,
         limit: int,
     ) -> tuple[dict[str, list[dict[str, Any]]], SemanticQuery, list[float]]:
+        self._specialized_origins = {}
         rankings: dict[str, list[dict[str, Any]]] = {"exact": self._exact(plan, question, limit)}
         dense, sparse, query_vector, semantic_query = self._vector(question, plan, limit)
         rankings["dense"] = [hit.payload for hit in dense]
@@ -1898,6 +1905,9 @@ class Retriever:
                     "bridged_candidate_ids": [],
                     "deduplicated_overlap_count": 0,
                 }
+            # D3 changes the graph stream outside the query/fallback branches.
+            # Its merged items have no reliable aligned origin sidecar.
+            self._specialized_origins = {**getattr(self, "_specialized_origins", {}), "graph": []}
         scores: dict[str, float] = defaultdict(float)
         payloads: dict[str, dict[str, Any]] = {}
         channels: dict[str, list[str]] = defaultdict(list)
@@ -1970,6 +1980,7 @@ class Retriever:
             result["candidate_snapshot"] = {
                 "pass_origin": "initial",
                 "rankings": {key: [dict(item) for item in value] for key, value in rankings.items()},
+                "channel_origins": dict(getattr(self, "_specialized_origins", {})),
                 "supplemental_candidates": supplemental_candidates,
             }
         if structured_replacement_receipt is not None:
@@ -2102,8 +2113,107 @@ class Retriever:
         supplemental = [dict(payloads[oid]) for oid in eligible_supplemental_ids if oid in payloads]
         return {
             "rankings": rankings_copy,
+            "channel_origins": dict(getattr(self, "_specialized_origins", {})),
             "supplemental_candidates": supplemental,
         }
+
+    def _r2_rerank_pool(
+        self,
+        plan: RetrievalPlan,
+        payloads: dict[str, dict[str, Any]],
+        pass_occurrences: dict[str, list[dict[str, Any]]],
+        scores: dict[str, float],
+        base_fused_order: list[str],
+        eligible_supplemental_ids: list[str],
+    ) -> tuple[list[str], list[dict[str, str]]]:
+        supp_pool = list(dict.fromkeys(eligible_supplemental_ids))[:30]
+        supp_set = set(supp_pool)
+        base_slots = 30 - len(supp_pool)
+        ordinary = [oid for oid in base_fused_order if oid not in supp_set]
+        old_base_set = set(ordinary[:base_slots])
+        final_limit = getattr(getattr(self, "policies", None), "final_evidence_limit", 12)
+        active_roles = {
+            role for role, budget in plan.source_budgets.items() if budget > 0
+        } | set(plan.required_source_types)
+        role_order = sorted(
+            active_roles,
+            key=lambda role: (
+                role not in plan.required_source_types,
+                -plan.source_budgets.get(role, 0),
+                role,
+            ),
+        )
+        context_sources = set(getattr(self, "context_sources", None) or [])
+
+        def valid_challenger(oid: str) -> bool:
+            item = payloads[oid]
+            source = item.get("source_id")
+            version = item.get("source_version_id")
+            if not all((item.get("object_id") == oid, source, version, item.get("text"), item.get("locator"))):
+                return False
+            if source in plan.target_repositories:
+                resolved = plan.resolved_versions.get(source)
+                return bool(resolved and version == f"{source}@{resolved}")
+            return source in context_sources or source == "curated_panda_domain"
+
+        role_queues: dict[str, list[str]] = {}
+        role_limits: dict[str, int] = {}
+        for role in role_order:
+            challengers: list[tuple[int, float, str]] = []
+            for oid in ordinary:
+                if oid in old_base_set or not valid_challenger(oid):
+                    continue
+                source_role = self._source_type(payloads[oid])
+                qualifying_ranks = []
+                for occurrence in pass_occurrences[oid]:
+                    channel = occurrence["channel"]
+                    origin = occurrence.get("origin")
+                    normal = channel in {"exact", "dense", "sparse", "paper"} or (
+                        channel in {"workflow", "graph"} and origin == "normal"
+                    )
+                    if normal and (source_role == role or channel == role and role in {"workflow", "graph"}):
+                        qualifying_ranks.append(occurrence["rank"])
+                if qualifying_ranks:
+                    challengers.append((min(qualifying_ranks), -scores[oid], oid))
+            challengers.sort()
+            role_queues[role] = [oid for _, _, oid in challengers]
+            budget = plan.source_budgets.get(role, 0)
+            capacity = max(1, math.ceil(final_limit * budget)) if budget > 0 else 1
+            role_limits[role] = min(capacity, len(challengers))
+
+        frontier_capacity = min(sum(role_limits.values()), max(0, (base_slots - 1) // 2))
+        frontier: list[str] = []
+        frontier_set: set[str] = set()
+        positions = {role: 0 for role in role_order}
+        used = {role: 0 for role in role_order}
+        while len(frontier) < frontier_capacity:
+            added = False
+            for role in role_order:
+                if used[role] >= role_limits[role]:
+                    continue
+                queue = role_queues[role]
+                while positions[role] < len(queue) and queue[positions[role]] in frontier_set:
+                    positions[role] += 1
+                if positions[role] >= len(queue):
+                    continue
+                oid = queue[positions[role]]
+                positions[role] += 1
+                frontier.append(oid)
+                frontier_set.add(oid)
+                used[role] += 1
+                added = True
+                if len(frontier) == frontier_capacity:
+                    break
+            if not added:
+                break
+
+        backbone = [oid for oid in ordinary if oid not in frontier_set][:base_slots - len(frontier)]
+        entries = [
+            *({"object_id": oid, "reason": "ordinary_rrf"} for oid in backbone),
+            *({"object_id": oid, "reason": "policy_role_frontier"} for oid in frontier),
+            *({"object_id": oid, "reason": "structured_supplemental"} for oid in supp_pool),
+        ]
+        return [entry["object_id"] for entry in entries], entries
 
     def consolidate_and_select_candidates(
         self,
@@ -2147,6 +2257,7 @@ class Retriever:
         for p_idx, snapshot in enumerate(pass_snapshots):
             pass_origin = snapshot.get("pass_origin", f"pass_{p_idx}")
             pass_rankings = snapshot.get("rankings", {})
+            channel_origins = snapshot.get("channel_origins", {})
             for channel, items in pass_rankings.items():
                 for rank, item in enumerate(items, 1):
                     oid = item.get("object_id")
@@ -2176,11 +2287,15 @@ class Retriever:
 
                     if channel not in best_ranks[oid] or rank < best_ranks[oid][channel]:
                         best_ranks[oid][channel] = rank
-                    pass_occurrences[oid].append({
+                    occurrence = {
                         "pass_origin": pass_origin,
                         "channel": channel,
                         "rank": rank,
-                    })
+                    }
+                    origins = channel_origins.get(channel, [])
+                    if channel in {"workflow", "graph"} and len(origins) == len(items):
+                        occurrence["origin"] = origins[rank - 1]
+                    pass_occurrences[oid].append(occurrence)
 
             supplemental_items = snapshot.get("supplemental_candidates", [])
             for item in supplemental_items:
@@ -2275,12 +2390,10 @@ class Retriever:
             key=lambda oid: (-scores[oid], oid),
         )
 
-        # Combine per-pass bounded eligible union, reserve space for that union within 30 then fill base RRF, dedup by object.
-        supp_pool = list(dict.fromkeys(eligible_supplemental_ids))[:30]
-        supp_set = set(supp_pool)
-        base_slots = max(0, 30 - len(supp_pool))
-        base_candidates = [oid for oid in base_fused_order if oid not in supp_set][:base_slots]
-        rerank_pool = base_candidates + supp_pool
+        rerank_pool, rerank_pool_entries = self._r2_rerank_pool(
+            plan, payloads, pass_occurrences, scores,
+            base_fused_order, eligible_supplemental_ids,
+        )
 
         fused_order = list(dict.fromkeys([*base_fused_order, *eligible_supplemental_ids]))
 
@@ -2375,6 +2488,7 @@ class Retriever:
             "newly_admitted_object_ids": new_admissions,
             "displaced_evidence_ids": displaced_evidence_ids,
             "fused_candidate_ids": fused_order,
+            "rerank_pool_entries": rerank_pool_entries,
             "reranked_object_ids": reranked,
             "ranked_object_ids": ordered[:30],
             "best_channel_ranks": dict(best_ranks),

@@ -25,8 +25,8 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 exposed-development diagnostic completion commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a0106bd5eff93646f34f5e50e161e8be8a49d680
+CURRENT_REPOSITORY_HEAD = G4 R2 evidence-retention implementation commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = G4 R2 evidence-retention implementation commit (resolve from Git history; exact SHA reported on delivery).
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
 QUESTION_DECOMPOSITION_SCHEMA_VERSION = e1.question_decomposition.v3
@@ -52,12 +52,12 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_R2_REPAIR_DESIGN_CORRECTED
+PHASE_G = IN_PROGRESS / G4_R2_DETERMINISTIC_IMPLEMENTATION_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR DESIGN CORRECTED / IMPLEMENTATION READY / IMPLEMENTATION NOT_STARTED
-NEXT_TASK_RECOMMENDATION = G4 R2 FUSION EVIDENCE-RETENTION DETERMINISTIC RED / IMPLEMENTATION
+G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR IMPLEMENTED / DETERMINISTIC RED→GREEN PASS / EMPIRICAL REPAIR BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G4 FRESH NOVEL_DEV LANE B CURATION / FREEZE DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -1031,11 +1031,11 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 ## Phase G — Answer Semantics & Robustness
 
 ```text
-PHASE_G = IN_PROGRESS / G4_R2_REPAIR_DESIGN_CORRECTED
+PHASE_G = IN_PROGRESS / G4_R2_DETERMINISTIC_IMPLEMENTATION_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR DESIGN CORRECTED / IMPLEMENTATION READY / IMPLEMENTATION NOT_STARTED
+G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR IMPLEMENTED / DETERMINISTIC RED→GREEN PASS / EMPIRICAL REPAIR BENEFIT NOT_ESTABLISHED
 ```
 
 Phase G is a new ordinary product-development phase. Its goal is to improve how the QA system represents requested semantic relationships, validates partial structured reviews, and connects retrieved evidence to answer-authorized support, without optimizing directly for exposed benchmark cases. The guiding principles are relationship-aware semantics, local failure containment, evidence-to-answer continuity, false-refusal control, fresh development evidence, and lean validation.
@@ -1072,7 +1072,7 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 
 ### G4 — False-Insufficiency / Conservatism Regression
 
-- **Status:** DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR DESIGN CORRECTED / IMPLEMENTATION READY / IMPLEMENTATION NOT_STARTED
+- **Status:** DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR IMPLEMENTED / DETERMINISTIC RED→GREEN PASS / EMPIRICAL REPAIR BENEFIT NOT_ESTABLISHED
 - **Goal:** Measure and control false refusal / false insufficient_evidence regressions introduced by stricter completeness verification.
 - **Product constraint:** Higher completeness sensitivity must not produce uncontrolled false insufficiency. Correct abstention and unsupported-answer prevention remain required.
 - **Design:** [G4 false-insufficiency / conservatism regression design](../evaluation/G4_FALSE_INSUFFICIENCY_CONSERVATISM_REGRESSION_DESIGN.md) separates independently adjudicated answerability from pipeline outcome, correct abstention from false refusal, and false insufficiency from missed obligations. It records the actual finalization paths, causal ownership, answerability authority, paired deterministic controls, observability limits, and directional denominators. G3 `NO_CHANGE` and G1/G2 safety remain binding. No behavior repair or scientific evaluation is authorized.
@@ -1080,8 +1080,9 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 - **Deterministic baseline:** [G4 T0 baseline](../evaluation/G4_DETERMINISTIC_FALSE_INSUFFICIENCY_BASELINE.md) records 18/18 generic fake-provider controls passing, with five paired answer/refusal safety contrasts, a production finalization check, and one experimental-mode E3 check. Directly neighboring G1/G2/C1/E3 checks passed 179/179. No product behavior changed, and no real-model false-insufficiency claim follows from these controls.
 - **Focused diagnostic design:** [G4 exposed/fresh development diagnostic](../evaluation/G4_FOCUSED_DEVELOPMENT_FALSE_INSUFFICIENCY_DIAGNOSTIC_DESIGN.md) separates independent answerability review from production outcome and earliest-cause attribution. The six G3 unresolved insufficient cases form an outcome-conditioned exposed diagnostic lane, not a prevalence denominator. Existing compatible G3 artifacts suffice to begin; ambiguous finalization branches remain explicitly unresolved rather than forcing a tracing change first. Fresh independent confirmation needs additional reviewed, outcome-blind frozen `novel_dev`; no such cohort currently exists. No case review, new model run, data curation, or product repair is authorized by this design.
 - **Exposed diagnostic:** [G4 Lane A result](../evaluation/G4_EXPOSED_DEVELOPMENT_FALSE_INSUFFICIENCY_DIAGNOSTIC.md) froze the rubric before opening six known-insufficient development cases. Independent locked-source review found six answerable questions; four were causally attributed (`Q1=1`, `R2=3`), with two unresolved. Three independent information-need families establish a generic R2 loss of recalled obligation-bearing code chunks before fusion. This outcome-conditioned subset yields no prevalence or fresh-confirmation claim. G3 admission `NO_CHANGE` and the 18/18 G4 T0 safety baseline remain intact; no product repair is authorized. A Gold/source conflict in one case needs separate forward-only review.
-- **R2 repair design and correction:** [G4 R2 evidence-retention repair design](../evaluation/G4_R2_FUSION_EVIDENCE_RETENTION_REPAIR_DESIGN.md) first proposed a one-fifth direct-channel frontier; independent review found its budget and static eligibility unjustified. The corrected contract derives role opportunity ceilings from the current query's source budgets and final-evidence limit, gives structured supplements precedence, and retains a strict RRF majority of remaining slots within the unchanged 30-object rerank pool. Normal workflow/graph results can qualify under policy roles, while generic fallbacks cannot claim frontier preference; paper may qualify through dense/sparse even when not strictly required. Generic R2-A RED, R2-B–H safety, and non-code R2-I controls are specified but unimplemented. Offline exposed pool replay remains non-gating; old reranker outputs cannot score newly retained objects. This correction creates no product behavior or fresh empirical evidence. New reviewed, outcome-blind Lane B `novel_dev` should be frozen after deterministic implementation but before empirical comparison.
-- **Next recommended step:** G4 R2 fusion evidence-retention deterministic RED / implementation, separately authorized. First instantiate generic synthetic RED, then implement the R2 pool seam and the minimal internal workflow/graph fallback-origin bit, and run focused RED→GREEN safety checks. No live evaluation is authorized by this roadmap.
+- **R2 repair design and correction:** [G4 R2 evidence-retention repair design](../evaluation/G4_R2_FUSION_EVIDENCE_RETENTION_REPAIR_DESIGN.md) first proposed a one-fifth direct-channel frontier; independent review found its budget and static eligibility unjustified. The corrected contract derives role opportunity ceilings from the current query's source budgets and final-evidence limit, gives structured supplements precedence, and retains a strict RRF majority of remaining slots within the unchanged 30-object rerank pool. Normal workflow/graph results can qualify under policy roles, while generic fallbacks cannot claim frontier preference; paper may qualify through dense/sparse even when not strictly required. At that design checkpoint, generic R2-A RED, R2-B–H safety, and non-code R2-I controls were specified but unimplemented. Offline exposed pool replay remains non-gating; old reranker outputs cannot score newly retained objects. The design correction itself created no product behavior or fresh empirical evidence. New reviewed, outcome-blind Lane B `novel_dev` should be frozen after deterministic implementation but before empirical comparison.
+- **R2 implementation:** [G4 R2 deterministic result](../evaluation/G4_R2_EVIDENCE_RETENTION_IMPLEMENTATION_RESULT.md) records valid generic R2-A RED→GREEN, R2-B–I safety controls, 203 focused tests plus 27 subtests, and the unchanged G4 18/18 baseline. The global pool now gives bounded policy-role opportunities while preserving supplement precedence, a strict RRF majority, and the 30-object limit. The [exposed offline pool replay](../evaluation/G4_R2_EXPOSED_POOL_RETENTION_REPLAY.md) placed five previously lost objects from three exposed cases in the new offered pool; compatibility is partial and no final QA benefit follows. No live model/scientific calls were made.
+- **Next recommended step:** G4 fresh `novel_dev` Lane B curation / freeze design, under separate authorization. A reviewed, outcome-blind fresh cohort does not yet exist; no empirical comparison is authorized by this roadmap.
 
 ### G5 — Integrated Candidate
 
@@ -1104,7 +1105,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G4 R2 FUSION EVIDENCE-RETENTION DETERMINISTIC RED / IMPLEMENTATION
+NEXT_TASK_RECOMMENDATION = G4 FRESH NOVEL_DEV LANE B CURATION / FREEZE DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 

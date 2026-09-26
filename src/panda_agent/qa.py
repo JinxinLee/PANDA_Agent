@@ -2304,13 +2304,16 @@ class QAAgent:
             if isinstance(targeted_result, dict) and "rankings" in targeted_result:
                 targeted_rankings = targeted_result["rankings"]
                 targeted_supplemental = list(targeted_result.get("supplemental_candidates") or [])
+                targeted_origins = targeted_result.get("channel_origins") or {}
             else:
                 targeted_rankings = targeted_result or {}
                 targeted_supplemental = []
+                targeted_origins = {}
 
             targeted_snapshot = {
                 "pass_origin": "e3_targeted",
                 "rankings": targeted_rankings,
+                "channel_origins": targeted_origins,
                 "supplemental_candidates": targeted_supplemental,
             }
 
