@@ -1,0 +1,214 @@
+{
+  "schema_version": "g4-exposed-answerability-review-v1",
+  "rubric_freeze_commit": "476abd069cb54ded4779b8b4e6269bd314a4147c",
+  "selection": "EXPOSED / OUTCOME-CONDITIONED DEVELOPMENT DIAGNOSTIC",
+  "locked_source_manifest": "data/manifests/source_manifest.json",
+  "gold_dataset": "evaluation/novel/v1/novel_dev.yaml@novel-v1-dev-0.3.0",
+  "reviewer": "Codex; single independent locked-source review, no second reviewer",
+  "review_timestamp": "2026-09-26T11:52:03Z",
+  "outcome_exposure_known_from_selection": true,
+  "production_outcome_consulted_for_answerability": false,
+  "source_versions": {
+    "restgas_determination": "11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+    "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+    "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+  },
+  "cases": [
+    {
+      "question_id": "n001",
+      "reviewer": "Codex; single locked-source review",
+      "review_timestamp": "2026-09-26T11:52:03Z",
+      "curation_family_id": "nf001",
+      "answerability": "ANSWERABLE",
+      "reason": "The locked script supports a complete source-cited description of the encoded pairs, placeholder paths and exports, and actual as-written behavior. The reviewed Gold's claim that the first branch executes is contradicted by a syntax error at line 3; the independently correct answer must say parsing fails before an unmatched-input branch can execute.",
+      "scope_status": "IN_SCOPE_ENGLISH_SOURCE_BEHAVIOR",
+      "version_status": "COMPATIBLE_LOCKED_RESTGAS_COMMIT",
+      "mandatory_obligations": [
+        {
+          "id": "p1_independent",
+          "summary": "Identify the two nominal FairSoft/FairRoot pairs and their literal placeholder build/install paths; distinguish branch intention from executable behavior.",
+          "status": "SUPPORTED_WITH_GOLD_CORRECTION",
+          "authoritative_source_version": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "locator": "configSettings.sh:2-6",
+          "citation_admission_compatibility": "Exact locked repository source-file path and line locator; Gold n001.e1 source selector matches."
+        },
+        {
+          "id": "p2_independent",
+          "summary": "Identify SIMPATH and FAIRROOTPATH exports, nominal else text, and that the file as written fails Bash syntax analysis before any input-dependent branch executes.",
+          "status": "SUPPORTED_WITH_GOLD_CORRECTION",
+          "authoritative_source_version": "restgas_determination@11f1edc49dcbaeb61d707491a6d3bbec390fcd42",
+          "locator": "configSettings.sh:2-11; bash -n reports syntax error at line 3",
+          "citation_admission_compatibility": "Exact locked repository source-file path and line locator; Gold n001.e1/e2 include configSettings.sh."
+        }
+      ],
+      "gold_reference": "evaluation/novel/v1/novel_dev.yaml#n001; n001.e1/e2; Gold p1/p2 need forward-only factual review",
+      "uncertainties": [
+        "No second independent reviewer has adjudicated the Gold-source conflict; do not use historical Gold wording as the actual shell result."
+      ],
+      "production_outcome_consulted_for_answerability": false
+    },
+    {
+      "question_id": "n002",
+      "reviewer": "Codex; single locked-source review",
+      "review_timestamp": "2026-09-26T11:52:03Z",
+      "curation_family_id": "nf002",
+      "answerability": "ANSWERABLE",
+      "reason": "The locked requirements file directly lists the requested packages and establishes its repository location without asserting runtime roles.",
+      "scope_status": "IN_SCOPE_ENGLISH_REPOSITORY_QUESTION",
+      "version_status": "COMPATIBLE_LOCKED_LUMINOSITYFIT_COMMIT",
+      "mandatory_obligations": [
+        {
+          "id": "p1_independent",
+          "summary": "Locate the Python requirements/tooling list and enumerate its twelve declared entries without inferring package roles.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "locator": "requirements.txt:1-12",
+          "citation_admission_compatibility": "Exact locked source_file path and line locator; Gold n002.e1 and required code source type match."
+        }
+      ],
+      "gold_reference": "evaluation/novel/v1/novel_dev.yaml#n002; n002.e1/p1",
+      "uncertainties": [],
+      "production_outcome_consulted_for_answerability": false
+    },
+    {
+      "question_id": "n006",
+      "reviewer": "Codex; single locked-source review",
+      "review_timestamp": "2026-09-26T11:52:03Z",
+      "curation_family_id": "nf006",
+      "answerability": "ANSWERABLE",
+      "reason": "The locked helper declaration and implementation establish filename derivation, cut behavior, and all stage suffix literals.",
+      "scope_status": "IN_SCOPE_ENGLISH_API_QUESTION",
+      "version_status": "COMPATIBLE_LOCKED_PANDAROOT_COMMIT",
+      "mandatory_obligations": [
+        {
+          "id": "p1_independent",
+          "summary": "Identify the helper, simulation filename input, custom extension route, and cut behavior.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "locator": "tools/PndFileNameCreator.h:1-11,25-49; tools/PndFileNameCreator.cxx:136-157,214-249",
+          "citation_admission_compatibility": "Exact locked source_file paths and line locators; Gold n006.e1 allows the header."
+        },
+        {
+          "id": "p2_independent",
+          "summary": "Enumerate the eleven par/sim/digi/reco/pid/trackF/idealTrackF/riemann/combRiemann/kalman/vertex suffixes and getter routing.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "locator": "tools/PndFileNameCreator.cxx:6-14,19-71",
+          "citation_admission_compatibility": "Exact locked source_file path and line locator; Gold n006.e2 matches implementation."
+        }
+      ],
+      "gold_reference": "evaluation/novel/v1/novel_dev.yaml#n006; n006.e1/e2; p1/p2",
+      "uncertainties": [],
+      "production_outcome_consulted_for_answerability": false
+    },
+    {
+      "question_id": "n010",
+      "reviewer": "Codex; single locked-source review",
+      "review_timestamp": "2026-09-26T11:52:03Z",
+      "curation_family_id": "nf010",
+      "answerability": "ANSWERABLE",
+      "reason": "Locked fast-simulation implementation and interface files jointly support the response pipeline, detector factory, and response object; no complete subsystem inventory is needed.",
+      "scope_status": "IN_SCOPE_ENGLISH_ALGORITHM_QUESTION",
+      "version_status": "COMPATIBLE_LOCKED_PANDAROOT_COMMIT",
+      "mandatory_obligations": [
+        {
+          "id": "p1_independent",
+          "summary": "Explain candidate construction and per-detector parameterized responses, combination, detection cuts, and smearing rather than full transport.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "locator": "fastsim/PndFastSim.cxx:865-866,1022-1042,1100-1130,1367-1473",
+          "citation_admission_compatibility": "Exact locked source_file path and line locators; Gold n010.e1 matches."
+        },
+        {
+          "id": "p2_independent",
+          "summary": "Identify PndFsmAbsDet::respond and direct or named AddDetector configuration through PndFsmDetFactory.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "locator": "fastsim/PndFsmAbsDet.h:49-69; fastsim/PndFastSim.cxx:360-391; fastsim/PndFsmDetFactory.cxx:88-214",
+          "citation_admission_compatibility": "Exact locked source_file paths and line locators; Gold n010.e2/e3 match."
+        },
+        {
+          "id": "p3_independent",
+          "summary": "Describe the response object's detected flag, resolution and PID fields and distinguish detector efficiency from response storage.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "locator": "fastsim/PndFsmResponse.h:40-69,133-169; fastsim/PndFsmAbsDet.h:69-89; fastsim/PndFastSim.cxx:1022-1042",
+          "citation_admission_compatibility": "Exact locked source_file paths and line locators; Gold n010.e2/e4 match."
+        }
+      ],
+      "gold_reference": "evaluation/novel/v1/novel_dev.yaml#n010; n010.e1/e2/e3/e4; p1/p2/p3",
+      "uncertainties": [],
+      "production_outcome_consulted_for_answerability": false
+    },
+    {
+      "question_id": "n017",
+      "reviewer": "Codex; single locked-source review",
+      "review_timestamp": "2026-09-26T11:52:03Z",
+      "curation_family_id": "nf017",
+      "answerability": "ANSWERABLE",
+      "reason": "The locked persistent track header directly defines the class, fitted endpoint parameters, embedded candidate, optional reference, and reconstruction metadata.",
+      "scope_status": "IN_SCOPE_ENGLISH_API_QUESTION",
+      "version_status": "COMPATIBLE_LOCKED_PANDAROOT_COMMIT",
+      "mandatory_obligations": [
+        {
+          "id": "p1_independent",
+          "summary": "Locate the persistent reconstructed-track object and its FairTimeStamp base.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "locator": "pnddata/TrackData/PndTrack.h:23-27",
+          "citation_admission_compatibility": "Exact locked source_file path and line locator; Gold n017.e1 and required code source type match."
+        },
+        {
+          "id": "p2_independent",
+          "summary": "Describe first/last fitted parameters, embedded candidate and optional TRef/index, PID hypothesis, quality, chi2, NDF, and track type.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "locator": "pnddata/TrackData/PndTrack.h:30-57,110-122",
+          "citation_admission_compatibility": "Exact locked source_file path and line locators; Gold n017.e1 matches."
+        }
+      ],
+      "gold_reference": "evaluation/novel/v1/novel_dev.yaml#n017; n017.e1; p1/p2",
+      "uncertainties": [],
+      "production_outcome_consulted_for_answerability": false
+    },
+    {
+      "question_id": "n019",
+      "reviewer": "Codex; single locked-source review",
+      "review_timestamp": "2026-09-26T11:52:03Z",
+      "curation_family_id": "nf019",
+      "answerability": "ANSWERABLE",
+      "reason": "The locked task declaration and implementation give the fitter configuration, particle-hypothesis branches, fitting, and persisted output construction.",
+      "scope_status": "IN_SCOPE_ENGLISH_ALGORITHM_QUESTION",
+      "version_status": "COMPATIBLE_LOCKED_PANDAROOT_COMMIT",
+      "mandatory_obligations": [
+        {
+          "id": "p1_independent",
+          "summary": "Describe Kalman/DAF and track-representation/propagation setup, input resolution, and output branch registration.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "locator": "tracking/GenfitTools/recotasks/PndRecoKalmanTask.h:43-59; tracking/GenfitTools/recotasks/PndRecoKalmanTask.cxx:52-135",
+          "citation_admission_compatibility": "Exact locked source_file paths and line locators; Gold n019.e1/e2 match."
+        },
+        {
+          "id": "p2_independent",
+          "summary": "Describe output clearing/busy-event skip and configured or ideal MC-linked particle hypothesis with pion fallbacks.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "locator": "tracking/GenfitTools/recotasks/PndRecoKalmanTask.cxx:148-209",
+          "citation_admission_compatibility": "Exact locked source_file path and line locator; Gold n019.e2 matches."
+        },
+        {
+          "id": "p3_independent",
+          "summary": "Describe nonzero-hypothesis fitting and persisted PndTrack construction from fitted parameters, candidate, fit metadata, input index, and branch ID.",
+          "status": "SUPPORTED",
+          "authoritative_source_version": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "locator": "tracking/GenfitTools/recotasks/PndRecoKalmanTask.cxx:210-225",
+          "citation_admission_compatibility": "Exact locked source_file path and line locator; Gold n019.e2 matches."
+        }
+      ],
+      "gold_reference": "evaluation/novel/v1/novel_dev.yaml#n019; n019.e1/e2; p1/p2/p3",
+      "uncertainties": [],
+      "production_outcome_consulted_for_answerability": false
+    }
+  ]
+}

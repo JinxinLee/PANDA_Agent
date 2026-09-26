@@ -1,0 +1,261 @@
+{
+  "schema_version": "g4-exposed-false-insufficiency-result-v1",
+  "diagnostic_id": "g4-exposed-development-false-insufficiency-lane-a-v1",
+  "selection": "EXPOSED / OUTCOME-CONDITIONED DEVELOPMENT DIAGNOSTIC",
+  "rubric_freeze_commit": "476abd069cb54ded4779b8b4e6269bd314a4147c",
+  "answerability_review_ref": "evaluation/G4_EXPOSED_DEVELOPMENT_ANSWERABILITY_REVIEW.json",
+  "g3_result_ref": "evaluation/G3_SCOPED_AUDIT_COMPLETION_RESULT.json",
+  "g3_run_id": "g3-evidence-admission-audit-novel-dev-v1",
+  "g3_run_manifest_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/manifest.json",
+  "identity": {
+    "start_repository_head": "522d020561bcb381adfdd172c2f3cb52ee33d782",
+    "product_behavior_lineage": "a0106bd5eff93646f34f5e50e161e8be8a49d680",
+    "g3_repository_identity_commit": "16dad6f52e266de88f9a218938f236d3ef6cd936",
+    "product_mode": "production_answer_obligations_v1",
+    "gold_dataset": "novel-v1-dev-0.3.0",
+    "gold_dataset_hash_from_g3_manifest": "25ad18fcf76ab2796aa18ae961bdc4faf076f0c98a8a5226413ec95e58252223",
+    "source_manifest_hash_from_g3_manifest": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "index_identity_from_g3_manifest": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "prompt_fingerprint_from_g3_manifest": "5147f85c09a933609d91f4fa4e7bf3d8fbfa530684a3ecea4d3aaed72c3e04ce",
+    "prompt_version": "3.12.0",
+    "locked_source_manifest": "data/manifests/source_manifest.json"
+  },
+  "case_ids": ["n001", "n002", "n006", "n010", "n017", "n019"],
+  "cases": [
+    {
+      "question_id": "n001",
+      "curation_family_id": "nf001",
+      "answerability": "ANSWERABLE",
+      "answerability_ref": "evaluation/G4_EXPOSED_DEVELOPMENT_ANSWERABILITY_REVIEW.json#n001",
+      "production_status": "insufficient_evidence",
+      "artifact_qualification": "COMPATIBLE_COMPLETE_STAGE_CAPTURE; S0-S3 reached; S4-S8 not applicable",
+      "record_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/records/n001.json",
+      "retrieval_trace_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/traces/n001.json",
+      "false_insufficiency_candidate": true,
+      "attributed_false_insufficiency": true,
+      "earliest_causal_owner": "Q1",
+      "causal_confidence": "HIGH",
+      "causal_evidence_refs": [
+        "records/n001.json:diagnostics.plan and result.verification_errors",
+        "traces/n001.json:configSettings.sh candidate/fused/final object.50d52a0c234701fb6654a245",
+        "src/panda_agent/qa.py:_requested_bare_class_symbols and _answerability_guard"
+      ],
+      "causal_summary": "The exact locked script entered final selected evidence, but the pre-answer bare-class premise guard treated FairSoft, an external package name in the question, as an unsupported requested code symbol. Sufficiency failed before A0/V1/admission.",
+      "competing_explanations_considered": [
+        "D1 represents the three requested obligations; the source itself is selected in the same run.",
+        "A0, V1, G2 and final coverage were not entered; no downstream failure is inferred.",
+        "Gold's as-written shell-behavior claim conflicts with bash -n on the locked script; the independent correct response remains source-supported, and Gold wording is not used as the guard premise."
+      ],
+      "observability_gaps": [],
+      "generic_mechanism_candidate_id": "G4-Q1-BARE-CLASS-PREMISE",
+      "admission_reopening_candidate": false
+    },
+    {
+      "question_id": "n002",
+      "curation_family_id": "nf002",
+      "answerability": "ANSWERABLE",
+      "answerability_ref": "evaluation/G4_EXPOSED_DEVELOPMENT_ANSWERABILITY_REVIEW.json#n002",
+      "production_status": "insufficient_evidence",
+      "artifact_qualification": "COMPATIBLE_COMPLETE_STAGE_CAPTURE; V1 VALID; A1/V2 not executed",
+      "record_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/records/n002.json",
+      "retrieval_trace_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/traces/n002.json",
+      "false_insufficiency_candidate": true,
+      "attributed_false_insufficiency": true,
+      "earliest_causal_owner": "R2",
+      "causal_confidence": "HIGH",
+      "causal_evidence_refs": [
+        "traces/n002.json:requirements.txt dense ranks 7/8 objects object.a45779701b982aff3e7554da and object.03af96b1110e782792253a18; absent from fused/reranked/final",
+        "records/n002.json:diagnostics.selected_evidence, EA_ADMISSION.0, answer_point_audit"
+      ],
+      "causal_summary": "The complete locked requirements list was recalled by the dense channel but discarded before the authoritative fused top 30. Selected evidence therefore lacked the list and path needed by both obligations; V1 VALID marked both incomplete.",
+      "competing_explanations_considered": [
+        "Q1 selected the correct repository, version and code source type; D1 covers both question obligations.",
+        "The required file never reached selected/admitted evidence, so A1, V1 semantic rejection, and finalization are downstream consequences rather than earliest causes."
+      ],
+      "observability_gaps": [],
+      "generic_mechanism_candidate_id": "G4-R2-CHANNEL-EVIDENCE-LOSS",
+      "admission_reopening_candidate": false
+    },
+    {
+      "question_id": "n006",
+      "curation_family_id": "nf006",
+      "answerability": "ANSWERABLE",
+      "answerability_ref": "evaluation/G4_EXPOSED_DEVELOPMENT_ANSWERABILITY_REVIEW.json#n006",
+      "production_status": "insufficient_evidence",
+      "artifact_qualification": "COMPATIBLE_COMPLETE_STAGE_CAPTURE; V1 VALID; A1/V2 not executed",
+      "record_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/records/n006.json",
+      "retrieval_trace_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/traces/n006.json",
+      "false_insufficiency_candidate": true,
+      "attributed_false_insufficiency": true,
+      "earliest_causal_owner": "R2",
+      "causal_confidence": "HIGH",
+      "causal_evidence_refs": [
+        "traces/n006.json:tools/PndFileNameCreator.cxx lines 12-17 dense rank 9 object.2914485ff398f61e994c46d6; absent from fused/reranked/final",
+        "records/n006.json:diagnostics.selected_evidence, EA_ADMISSION.0, answer_point_audit"
+      ],
+      "causal_summary": "The constructor chunk containing stage suffix literals was recalled but lost before fusion. The selected documentation supported the helper relationship but not the full suffix list; V1 VALID left that obligation incomplete.",
+      "competing_explanations_considered": [
+        "Q1 retained the correct PandaRoot target/version and code source, and D1 represents both requested obligations.",
+        "A selected ambiguous-backing item is not treated as an admission defect; the needed constructor chunk was absent before admission."
+      ],
+      "observability_gaps": [],
+      "generic_mechanism_candidate_id": "G4-R2-CHANNEL-EVIDENCE-LOSS",
+      "admission_reopening_candidate": false
+    },
+    {
+      "question_id": "n010",
+      "curation_family_id": "nf010",
+      "answerability": "ANSWERABLE",
+      "answerability_ref": "evaluation/G4_EXPOSED_DEVELOPMENT_ANSWERABILITY_REVIEW.json#n010",
+      "production_status": "insufficient_evidence",
+      "artifact_qualification": "COMPATIBLE_COMPLETE_STAGE_CAPTURE; V1 VALID; A1/V2 not executed",
+      "record_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/records/n010.json",
+      "retrieval_trace_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/traces/n010.json",
+      "false_insufficiency_candidate": true,
+      "attributed_false_insufficiency": false,
+      "earliest_causal_owner": "UNRESOLVED",
+      "suspected_owners": ["Q1", "R1"],
+      "causal_confidence": "INSUFFICIENT_FOR_OWNER",
+      "causal_evidence_refs": [
+        "traces/n010.json:only an unrelated PndFastSim.cxx:274-343 graph chunk and a header chunk appear among target-file channel candidates; response interfaces and response pipeline chunks are absent",
+        "records/n010.json:diagnostics.plan, selected_evidence, answer_point_audit"
+      ],
+      "causal_summary": "Required response-pipeline and detector-interface chunks are absent from captured channel candidates. The analyzer also chose module_structure from only the building-block clause of a process-and-components question. The record cannot separate an earlier Q1 interpretation effect from R1 recall/index coverage.",
+      "competing_explanations_considered": [
+        "D1 captures process and building blocks, but Q1 intent may have narrowed query construction.",
+        "All selected items were directly citation eligible; V1's missing point and unsupported identifier are not evidence of a valid false rejection."
+      ],
+      "observability_gaps": ["No same-run counterfactual query or index-coverage proof identifies whether Q1 or R1 is necessary; new execution is not authorized."],
+      "generic_mechanism_candidate_id": null,
+      "admission_reopening_candidate": false
+    },
+    {
+      "question_id": "n017",
+      "curation_family_id": "nf017",
+      "answerability": "ANSWERABLE",
+      "answerability_ref": "evaluation/G4_EXPOSED_DEVELOPMENT_ANSWERABILITY_REVIEW.json#n017",
+      "production_status": "insufficient_evidence",
+      "artifact_qualification": "COMPATIBLE_COMPLETE_STAGE_CAPTURE; V1 VALID; A1/V2 not executed",
+      "record_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/records/n017.json",
+      "retrieval_trace_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/traces/n017.json",
+      "false_insufficiency_candidate": true,
+      "attributed_false_insufficiency": true,
+      "earliest_causal_owner": "R2",
+      "causal_confidence": "HIGH",
+      "causal_evidence_refs": [
+        "traces/n017.json:pnddata/TrackData/PndTrack.h dense ranks 7/8 objects object.015bff352e03a5f5ee88c307 and object.10bfbd3c5c5a222bcdf5904d; absent from fused/reranked/final",
+        "records/n017.json:diagnostics.selected_evidence, EA_ADMISSION.0, answer_point_audit"
+      ],
+      "causal_summary": "Locked header chunks covering all requested class fields were recalled in the dense channel but dropped before fusion. No selected item supplied that exact class definition and endpoint/candidate fields; V1 VALID left all three production points incomplete.",
+      "competing_explanations_considered": [
+        "Q1 target/version/source type and D1 point/relation inventory match the question.",
+        "One selected ambiguous-backing item and an incomplete-code-citation error cannot explain loss of the required header before admission."
+      ],
+      "observability_gaps": [],
+      "generic_mechanism_candidate_id": "G4-R2-CHANNEL-EVIDENCE-LOSS",
+      "admission_reopening_candidate": false
+    },
+    {
+      "question_id": "n019",
+      "curation_family_id": "nf019",
+      "answerability": "ANSWERABLE",
+      "answerability_ref": "evaluation/G4_EXPOSED_DEVELOPMENT_ANSWERABILITY_REVIEW.json#n019",
+      "production_status": "insufficient_evidence",
+      "artifact_qualification": "COMPATIBLE_COMPLETE_STAGE_CAPTURE; V1 VALID; A1/V2 not executed",
+      "record_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/records/n019.json",
+      "retrieval_trace_ref": "data/evaluation/runs/g3-evidence-admission-audit-novel-dev-v1/traces/n019.json",
+      "false_insufficiency_candidate": true,
+      "attributed_false_insufficiency": false,
+      "earliest_causal_owner": "UNRESOLVED",
+      "suspected_owners": ["Q2", "R2"],
+      "causal_confidence": "INSUFFICIENT_FOR_OWNER",
+      "causal_evidence_refs": [
+        "traces/n019.json:implementation body chunks PndRecoKalmanTask.cxx:52-139 and :165-262 appear in sparse ranks 19/18 but not fused/reranked/final; selected code covers only constructor or empty header tail",
+        "records/n019.json:diagnostics.plan and answer_point_audit"
+      ],
+      "causal_summary": "Required implementation body was retrieved by one channel and lost before fusion. However, the production plan broadened an explicitly PandaRoot question to three repositories. The available run cannot rule out that earlier entity-scope expansion as a necessary cause of the fusion competition.",
+      "competing_explanations_considered": [
+        "D1 covers transformation, fitter choice, hypothesis and persistence; correct PandaRoot version is among resolved versions.",
+        "V1 VALID found three points complete and the transformation relation missing; absent body evidence precludes calling it verifier conservatism."
+      ],
+      "observability_gaps": ["No authorized same-run counterfactual isolates broad repository scope from fusion loss."],
+      "generic_mechanism_candidate_id": null,
+      "admission_reopening_candidate": false
+    }
+  ],
+  "generic_mechanisms": [
+    {
+      "id": "G4-R2-CHANNEL-EVIDENCE-LOSS",
+      "state": "ESTABLISHED_GENERIC_MECHANISM",
+      "owner": "R2",
+      "description": "Fusion/ranking can discard source-version-compatible, obligation-bearing code chunks already recalled near the top of a channel, while less sufficient evidence survives to answer generation. The resulting missing support produces a safe but false insufficient response under the current completeness contract.",
+      "independent_families": ["nf002", "nf006", "nf017"],
+      "minimal_repair_seam_for_later_design": "Candidate retention and ranking at the R2 channel-to-fused boundary; preserve relevance and source/version/admission safety without case-specific rules.",
+      "opposing_safety_contract": "Existing G4 T0 should-answer and must-abstain paired controls guard against relaxing G1/G2 completeness, unsupported claims, admission/provenance, or version constraints; an R2-specific generic control would be specified in a separately authorized repair design."
+    },
+    {
+      "id": "G4-Q1-BARE-CLASS-PREMISE",
+      "state": "CASE_LEVEL_MECHANISM_CANDIDATE_ONLY",
+      "owner": "Q1",
+      "description": "A question-grounded bare-class premise guard can mistake an external component name for an unavailable code class and refuse despite relevant locked evidence.",
+      "independent_families": ["nf001"],
+      "minimal_repair_seam_for_later_design": "Premise classification in the existing sufficiency guard, if later generic replication justifies it."
+    }
+  ],
+  "aggregate_counts": {
+    "lane_a_cases": 6,
+    "answerable": 6,
+    "unanswerable": 0,
+    "unknown": 0,
+    "false_insufficiency_candidates": 6,
+    "attributed_false_insufficiency": 4,
+    "causally_unresolved_answerable_insufficient": 2,
+    "correct_abstention": 0,
+    "admission_reopening_candidates": 0,
+    "generic_mechanism_candidates": 2,
+    "established_generic_mechanisms": 1,
+    "matched_controls_used": 0,
+    "owner_counts": {
+      "Q1": 1,
+      "Q2": 0,
+      "R1": 0,
+      "R2": 3,
+      "R3": 0,
+      "D1": 0,
+      "A1": 0,
+      "V1": 0,
+      "FINALIZATION_CONSERVATISM": 0,
+      "OBSERVABILITY_LIMITATION": 0,
+      "UNRESOLVED": 2,
+      "NOT_APPLICABLE": 0
+    }
+  },
+  "review_limitations": [
+    "The six cases are exposed and selected on insufficient_evidence; counts are not a novel_dev population rate or independent confirmation.",
+    "n001 has a locked-source versus reviewed-Gold shell-behavior conflict; no Gold record was changed, and formal Gold-scored interpretation needs forward-only review.",
+    "n010 and n019 remain causally unresolved because earlier Q1/Q2 effects cannot be excluded from observed retrieval-stage loss.",
+    "Exact finalization branch identity is not persisted, but no case requires it to establish the reported upstream R2 mechanism.",
+    "No independent second human reviewer, matched controls, fresh Lane B cohort, new QA/retrieval run, or product repair is included."
+  ],
+  "primary_decision": "GENERIC_FALSE_INSUFFICIENCY_MECHANISM_ESTABLISHED",
+  "next_task_recommendation": "G4 R2 FUSION EVIDENCE-RETENTION REPAIR DESIGN",
+  "next_task_execution_authorized": false,
+  "scientific_accounting": {
+    "scientific_calls": 0,
+    "scientific_tokens": 0,
+    "qa_runs": 0,
+    "retrieval_runs": 0,
+    "external_judge_calls": 0
+  },
+  "data_access": {
+    "exposed_novel_dev_primary_case_content_access": 6,
+    "exposed_novel_dev_primary_gold_access": 6,
+    "exposed_matched_control_case_content_access": 0,
+    "new_novel_dev_case_content_access": 0,
+    "novel_validation_content_access": 0,
+    "novel_validation_outcome_access": 0,
+    "holdout_content_access": 0,
+    "holdout_outcome_access": 0,
+    "protected_leakage": 0
+  }
+}

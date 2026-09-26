@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 focused-development diagnostic design commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G4 exposed-development diagnostic completion commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a0106bd5eff93646f34f5e50e161e8be8a49d680
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
@@ -52,12 +52,12 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_FOCUSED_DIAGNOSTIC_DESIGN_COMPLETE
+PHASE_G = IN_PROGRESS / G4_EXPOSED_DIAGNOSTIC_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC HARNESS COMPLETE / CURRENT T0 CONTROLS PASS / FOCUSED DEVELOPMENT DIAGNOSTIC DESIGN COMPLETE / EMPIRICAL REGRESSION NOT_ESTABLISHED / PRODUCT CHANGE NOT_AUTHORIZED
-NEXT_TASK_RECOMMENDATION = G4 EXPOSED DEVELOPMENT ANSWERABILITY ADJUDICATION / CAUSAL DIAGNOSTIC
+G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / PRODUCT REPAIR NOT_AUTHORIZED
+NEXT_TASK_RECOMMENDATION = G4 R2 FUSION EVIDENCE-RETENTION REPAIR DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -1031,11 +1031,11 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 ## Phase G — Answer Semantics & Robustness
 
 ```text
-PHASE_G = IN_PROGRESS / G4_FOCUSED_DIAGNOSTIC_DESIGN_COMPLETE
+PHASE_G = IN_PROGRESS / G4_EXPOSED_DIAGNOSTIC_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC HARNESS COMPLETE / CURRENT T0 CONTROLS PASS / FOCUSED DEVELOPMENT DIAGNOSTIC DESIGN COMPLETE / EMPIRICAL REGRESSION NOT_ESTABLISHED / PRODUCT CHANGE NOT_AUTHORIZED
+G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / PRODUCT REPAIR NOT_AUTHORIZED
 ```
 
 Phase G is a new ordinary product-development phase. Its goal is to improve how the QA system represents requested semantic relationships, validates partial structured reviews, and connects retrieved evidence to answer-authorized support, without optimizing directly for exposed benchmark cases. The guiding principles are relationship-aware semantics, local failure containment, evidence-to-answer continuity, false-refusal control, fresh development evidence, and lean validation.
@@ -1072,14 +1072,15 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 
 ### G4 — False-Insufficiency / Conservatism Regression
 
-- **Status:** DETERMINISTIC HARNESS COMPLETE / CURRENT T0 CONTROLS PASS / FOCUSED DEVELOPMENT DIAGNOSTIC DESIGN COMPLETE / EMPIRICAL REGRESSION NOT_ESTABLISHED / PRODUCT CHANGE NOT_AUTHORIZED
+- **Status:** DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / PRODUCT REPAIR NOT_AUTHORIZED
 - **Goal:** Measure and control false refusal / false insufficient_evidence regressions introduced by stricter completeness verification.
 - **Product constraint:** Higher completeness sensitivity must not produce uncontrolled false insufficiency. Correct abstention and unsupported-answer prevention remain required.
 - **Design:** [G4 false-insufficiency / conservatism regression design](../evaluation/G4_FALSE_INSUFFICIENCY_CONSERVATISM_REGRESSION_DESIGN.md) separates independently adjudicated answerability from pipeline outcome, correct abstention from false refusal, and false insufficiency from missed obligations. It records the actual finalization paths, causal ownership, answerability authority, paired deterministic controls, observability limits, and directional denominators. G3 `NO_CHANGE` and G1/G2 safety remain binding. No behavior repair or scientific evaluation is authorized.
 - **Planned verification:** Generic answerable/unanswerable fake-provider controls first, followed by focused regressions and separately authorized fresh reviewed `novel_dev` development evidence. The G3 28-ID cohort is exposed diagnostic evidence only; historical g047 is a non-gating sentinel, not the design target. `novel_validation` remains reserved for later phase-level comparison.
 - **Deterministic baseline:** [G4 T0 baseline](../evaluation/G4_DETERMINISTIC_FALSE_INSUFFICIENCY_BASELINE.md) records 18/18 generic fake-provider controls passing, with five paired answer/refusal safety contrasts, a production finalization check, and one experimental-mode E3 check. Directly neighboring G1/G2/C1/E3 checks passed 179/179. No product behavior changed, and no real-model false-insufficiency claim follows from these controls.
 - **Focused diagnostic design:** [G4 exposed/fresh development diagnostic](../evaluation/G4_FOCUSED_DEVELOPMENT_FALSE_INSUFFICIENCY_DIAGNOSTIC_DESIGN.md) separates independent answerability review from production outcome and earliest-cause attribution. The six G3 unresolved insufficient cases form an outcome-conditioned exposed diagnostic lane, not a prevalence denominator. Existing compatible G3 artifacts suffice to begin; ambiguous finalization branches remain explicitly unresolved rather than forcing a tracing change first. Fresh independent confirmation needs additional reviewed, outcome-blind frozen `novel_dev`; no such cohort currently exists. No case review, new model run, data curation, or product repair is authorized by this design.
-- **Next recommended step:** G4 exposed development answerability adjudication / causal diagnostic under separate authorization; freeze the rubric before opening the six cases and reuse G3 artifacts first.
+- **Exposed diagnostic:** [G4 Lane A result](../evaluation/G4_EXPOSED_DEVELOPMENT_FALSE_INSUFFICIENCY_DIAGNOSTIC.md) froze the rubric before opening six known-insufficient development cases. Independent locked-source review found six answerable questions; four were causally attributed (`Q1=1`, `R2=3`), with two unresolved. Three independent information-need families establish a generic R2 loss of recalled obligation-bearing code chunks before fusion. This outcome-conditioned subset yields no prevalence or fresh-confirmation claim. G3 admission `NO_CHANGE` and the 18/18 G4 T0 safety baseline remain intact; no product repair is authorized. A Gold/source conflict in one case needs separate forward-only review.
+- **Next recommended step:** G4 R2 fusion evidence-retention repair design under separate authorization. Define the generic seam and opposing safety controls before any implementation; new reviewed `novel_dev` Lane B confirmation must be frozen before post-repair empirical comparison where practical.
 
 ### G5 — Integrated Candidate
 
@@ -1102,7 +1103,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G4 EXPOSED DEVELOPMENT ANSWERABILITY ADJUDICATION / CAUSAL DIAGNOSTIC
+NEXT_TASK_RECOMMENDATION = G4 R2 FUSION EVIDENCE-RETENTION REPAIR DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
