@@ -1,0 +1,4649 @@
+{
+  "abstention_cases": {
+    "n016": {
+      "expected": "insufficient_evidence",
+      "new_correct": false,
+      "new_status": "answered",
+      "old_correct": false,
+      "old_status": "answered"
+    }
+  },
+  "analysis_kind": "DIAGNOSTIC_COMPOSITE_WITH_EXPLICIT_TARGET_RERUN",
+  "analyst_review": {
+    "completion_limit": "28/28 selected QA results from two explicitly identified runs. The initial 26/28 runner remains INCOMPLETE / INCONCLUSIVE. The focused rerun is COMPLETE / FAIL (2/2 scored). A mixed-provenance composite cannot pass a full development/regression/release gate.",
+    "decision_basis": "n002 now recovers its requirements information via frontier and n017 retains its earlier repair-consistent recovery. n024 still establishes credible R2 collateral pool displacement; n006 still omits critical suffix literals. n018 returns an answer but omits null checking, composite typing and EvtGen PDG preparation despite a complete production receipt. Keep SAFETY REGRESSION / FAIL; do not close G4 or proceed to G5.",
+    "fresh_lane_b": "OPTIONAL / DEFERRED; not a mandatory G4 gate",
+    "n001": {
+      "answerability": "ANSWERABLE_WITH_KNOWN_GOLD_SOURCE_DISCREPANCY",
+      "confidence": "HIGH",
+      "earliest_plausible_owner": "Q1",
+      "finding": "The locked configSettings.sh is available, but the unchanged bare-class premise guard rejects FairSoft before A0/V1. Do not repair Gold or infer shell behavior from its historical wording.",
+      "refs": [
+        "records/n001.json:result.verification_errors",
+        "evaluation/G4_EXPOSED_DEVELOPMENT_FALSE_INSUFFICIENCY_RESULT.json#n001"
+      ]
+    },
+    "n002": {
+      "answerability": "ANSWERABLE_PER_PRIOR_G4_REVIEW",
+      "causal_interpretation": "Repair-consistent exposed observation combining prior R2 attribution and accepted deterministic controls; not an isolated paired causal estimate.",
+      "confidence": "HIGH_FOR_OBSERVED_INFORMATION_RECOVERY",
+      "earliest_plausible_owner": null,
+      "finding": "The one authorized rerun succeeds without a product change. Both historical lost objects enter via policy_role_frontier (dense ranks 7 and 8). requirements.txt:1-12 is final/cited and the answer lists all twelve declared packages and the file location without asserting runtime roles. Two canonical runtime points are VALID/complete with no missing point/relation; bounded review finds no critical Gold p1 omission. The initial D1 exception remains historical and is not proven fixed.",
+      "frontier_entries": 9,
+      "information_need_reaches_final": true,
+      "previous_r2_loss_no_longer_blocking": true,
+      "refs": [
+        "data/evaluation/runs/g4-r2-post-repair-n002-n018-rerun-v1/records/n002.json:result,answer_point_audit,rerank_pool_entries",
+        "evaluation/novel/v1/novel_dev.yaml#n002.p1"
+      ]
+    },
+    "n004": {
+      "finding": "Existing evaluator flags fairlogger/Logger.h as absent from the locked corpus object/path inventory, yielding one hallucinated identifier. The literal include is explicitly in both cited documentation objects and identifier_supported_by_claim_evidence includes it; this is not established as a new unsupported identifier assertion. Keep raw metric unchanged and distinguish corpus-path absence from citation support.",
+      "refs": [
+        "records/n004.json:metrics.hallucinated_identifiers,identifier_supported_by_claim_evidence",
+        "records/n004.json:result.evidence"
+      ]
+    },
+    "n006": {
+      "answerability": "ANSWERABLE_PER_PRIOR_G4_REVIEW",
+      "confidence": "HIGH_FOR_POOL_LOSS_AND_OBSERVED_CRITICAL_OMISSION",
+      "earliest_plausible_owner": "R2",
+      "finding": "The previously lost constructor chunk is again dense rank 9 but absent from the offered pool. The new cited header tools/PndFileNameCreator.h:25-72 provides fExt* attributes, not their constructor suffix values. The answer lists attributes/getters but does not give the required suffix literals. Production coverage 1.0/VALID is retained; regression category is conservatively ANSWERED_INCOMPLETE because critical Gold p2 is independently missing. Gold p1 custom/cut completeness is not separately scored.",
+      "information_need_reaches_final": false,
+      "manual_critical_missing_points": [
+        "p2"
+      ],
+      "previous_r2_loss_no_longer_blocking": false,
+      "refs": [
+        "records/n006.json:diagnostics.rankings.dense,rerank_pool_entries,result.answer",
+        "evaluation/novel/v1/novel_dev.yaml#n006.p2",
+        "evaluation/G4_EXPOSED_DEVELOPMENT_ANSWERABILITY_REVIEW.json#n006"
+      ],
+      "secondary_concern": "V1/G2 completeness false acceptance"
+    },
+    "n007": {
+      "answerability": "ANSWERABLE_FOR_MISSING_GETPATH_OBLIGATION_BY_SAVED_SOURCE",
+      "confidence": "HIGH_FOR_VISIBLE_DETERMINISTIC_FILTER",
+      "earliest_plausible_owner": "V1/G2",
+      "finding": "GetPath(Int_t shortID) and initialization are present in admitted Sphinx evidence. Both V1 and V2 deterministic inputs reject qualified PndGeoHandling::GetPath; the supported method claim is not rendered and point.1 remains missing. Do not assign this transition automatically to frontier.",
+      "refs": [
+        "records/n007.json:qa_stage_trace.V1_INPUT,V2_INPUT",
+        "records/n007.json:answer_point_audit"
+      ]
+    },
+    "n010": {
+      "current_owner": null,
+      "finding": "Production coverage improves from 0.5 to 1.0 with fast-simulation header, tutorial and configuration evidence. Historical causal ownership remains unresolved; no automatic R2 credit.",
+      "prior_owner": "UNRESOLVED Q1/R1",
+      "refs": [
+        "records/n010.json:result,answer_point_audit"
+      ]
+    },
+    "n014": {
+      "answerability": "UNRESOLVED_FOR_REPOSITORY_EXPLICIT_DESCRIPTION",
+      "earliest_plausible_owner": "UNRESOLVED",
+      "finding": "The current unsupported/irrelevant absence assertion about repository description is rejected; the factory role survives. The old model_framework description was supported by a thesis rather than explicit repository prose, so runtime-complete to insufficient is an observed sentinel transition, not independently established false insufficiency.",
+      "refs": [
+        "records/n014.json:qa_stage_trace.V1_OUTPUT",
+        "old records/n014.json:result.claims"
+      ],
+      "visible_stage": "A0 answer draft / V1-G2 rejection"
+    },
+    "n016": {
+      "finding": "Expected insufficient_evidence but answered in both runs; abstention accuracy remains 0/1. This is an unchanged expected-status failure, not a new R2 safety credit or new regression.",
+      "refs": [
+        "old/new records/n016.json:expected_status,result.status"
+      ]
+    },
+    "n017": {
+      "answerability": "ANSWERABLE_PER_PRIOR_G4_REVIEW",
+      "causal_interpretation": "Repair-consistent exposed observation combining prior attribution and deterministic controls; not an isolated causal effect estimate.",
+      "current_owner": null,
+      "finding": "Previously lost primary PndTrack header at dense rank 7 now enters via policy_role_frontier, is final and cited at pnddata/TrackData/PndTrack.h:23-126, and supports the object, fitted endpoints and candidate fields. Three production points are VALID/complete. The other historically lost chunk is still not in the offer, but the admitted full primary header supplies the requested need.",
+      "information_need_reaches_final": true,
+      "previous_r2_loss_no_longer_blocking": true,
+      "refs": [
+        "records/n017.json:rerank_pool_entries,result.evidence,answer_point_audit"
+      ]
+    },
+    "n018": {
+      "answerability": "ANSWERABLE_BY_CURRENT_CITED_LOCKED_MC_TRUTH_TUTORIAL",
+      "confidence": "HIGH_FOR_CRITICAL_CONTENT_OMISSION; EARLIEST_GENERIC_OWNER_UNRESOLVED",
+      "earliest_plausible_owner": "UNRESOLVED",
+      "finding": "The authorized rerun returns answered, with two VALID runtime points and coverage 1.0. It identifies GetMcTruth and PndAnalysis::McTruthMatch, but omits checking the returned pointer, the possible no-counterpart/noise case, composite type assignment and EvtGen PDG initialization. These conditions are in the cited saved tutorial and unchanged critical Gold p1/p2. Narrow the regression category to ANSWERED_INCOMPLETE while preserving raw production/evaluator metrics. This is not established as an R2 retrieval loss: relevant tutorial support is already final/cited. No repair is made and the initial D1 exception is not proven fixed.",
+      "frontier_entries": 10,
+      "historical_gold_limit": "Saved G3 answer already omits explicit EvtGen PDG initialization; do not claim all current omissions are newly introduced or independently certify the old Gold completeness.",
+      "manual_critical_missing_points": [
+        "p1",
+        "p2"
+      ],
+      "new_omissions_relative_to_saved_G3": [
+        "null counterpart/checking",
+        "composite particle-type assignment"
+      ],
+      "refs": [
+        "data/evaluation/runs/g4-r2-post-repair-n002-n018-rerun-v1/records/n018.json:result,answer_point_audit,qa_stage_trace.V1_OUTPUT",
+        "evaluation/novel/v1/novel_dev.yaml#n018.p1,p2",
+        "old G3 records/n018.json:result.answer"
+      ],
+      "visible_stage": "A0 omitted required operating conditions; V1/G2 accepts the narrower canonical runtime obligations"
+    },
+    "n019": {
+      "current_owner": null,
+      "finding": "Production coverage improves from 0.75 to 1.0; current answer cites task header/implementation and persisted track data. Historical mixed scope/fusion cause remains unresolved; no automatic R2 credit.",
+      "prior_owner": "UNRESOLVED R2/Q2",
+      "refs": [
+        "records/n019.json:result,answer_point_audit"
+      ]
+    },
+    "n024": {
+      "answerability": "ANSWERABLE_BY_SAVED_LOCKED_HEADER_SOURCE",
+      "confidence": "HIGH_FOR_POOL_DISPLACEMENT",
+      "earliest_plausible_owner": "R2",
+      "finding": "All old/new channel rankings are identical. The PndHelixPropagator header is RRF rank 18 with identical score in both authoritative traces, previously reranked 2 and cited. The new 16 ordinary / 14 frontier offer excludes it. Header source directly contains Radius, circle-center and destination-propagation support; current final evidence lacks that header and V1 marks the analytic-helix explanation missing. This is credible generic collateral completeness regression from displacing relevant cross-channel RRF evidence, not merely provider answer variability.",
+      "refs": [
+        "old/new traces/n024.json:fused_candidates",
+        "records/n024.json:rerank_pool_entries,answer_point_audit",
+        "old records/n024.json:selected_evidence.object.d6ef560b88c3926ecb32d3e1"
+      ]
+    },
+    "n028": {
+      "answerability": "ANSWERABLE_FOR_DOWNSTREAM_ACCESS_BY_SAVED_MACRO_AND_HEADER",
+      "confidence": "VISIBLE_REVIEW_FAILURE; UNDERLYING_FALSE_REJECTION_UNRESOLVED",
+      "earliest_plausible_owner": "V1/G2",
+      "finding": "Relevant softrig macro and OnlineFilterInfo header are selected and cited. Raw V1 says complete, but point.2.rel.1 receives LOCAL_INVALID / INVALID_SUPPORTER and G2 preserves only point.1. No A1 relation target is authorized. Saved artifacts identify the review-validation block, but do not prove that local containment itself is defective or that frontier caused it.",
+      "refs": [
+        "records/n028.json:qa_stage_trace.V1_OUTPUT",
+        "records/n028.json:answer_point_audit.coverage_validation"
+      ]
+    },
+    "n031": {
+      "answerability": "ANSWERABLE_BY_SAVED_EVENT_GENERATORS_DOCUMENTATION",
+      "confidence": "VISIBLE_REVIEW_FAILURE; MALFORMED_BASIS_NOT_A_PROVEN_PRODUCT_VALIDATOR_DEFECT",
+      "earliest_plausible_owner": "V1/G2",
+      "finding": "Both category differences and FTF current-standard background are explicit in selected/cited EventGenerators.rst and Sphinx objects. The raw review says complete, but required relation point.1.rel.1 is LOCAL_INVALID / BAD_QUOTE; G2 retains only point.2 and no relation revision target. This is a saved review-validation block, not missing retrieval support.",
+      "refs": [
+        "records/n031.json:qa_stage_trace.V1_OUTPUT",
+        "records/n031.json:answer_point_audit.coverage_validation",
+        "records/n031.json:selected_evidence.object.24a175084141bbf15914ba9c"
+      ]
+    },
+    "next_task_execution_authorized": false,
+    "next_task_recommendation": "G4 R2 COLLATERAL RETENTION / COMPLETENESS FAILURE REVIEW",
+    "outcome": "SAFETY REGRESSION",
+    "pool_mechanism_attribution_limit": "HIGH confidence for the observed n024 pool displacement. The old-to-new QA transition as a whole remains nondeterministic, not a paired effect estimate.",
+    "scope": "Exposed diagnostic composite: 26 original QA records plus the authorized n002/n018 rerun; not a full-cohort gate",
+    "verification_status": "FAIL"
+  },
+  "answered_manual_critical_miss_count_lower_bound": 3,
+  "cases": [
+    {
+      "id": "n001",
+      "new": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 20,
+          "policy_role_frontier": 10
+        },
+        "production_category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.0,
+        "runtime_coverage_validation": null,
+        "runtime_covered_point_ids": [],
+        "runtime_final_claims_flagged_unsupported": null,
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "unsupported requested symbol: FairSoft"
+        ]
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n001.json",
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 0.0,
+        "runtime_coverage_validation": null,
+        "runtime_covered_point_ids": [],
+        "runtime_final_claims_flagged_unsupported": null,
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "unsupported requested symbol: FairSoft"
+        ]
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n001.json"
+    },
+    {
+      "id": "n002",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "requirements.txt"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 21,
+          "policy_role_frontier": 9
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-n002-n018-rerun-v1\\records\\n002.json",
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 0.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "no user-visible claims",
+          "missing answer point point.1",
+          "missing answer point point.2"
+        ]
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n002.json"
+    },
+    {
+      "id": "n003",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndFixStepParticleGun"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 21,
+          "policy_role_frontier": 9
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n003.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndFixStepParticleGun"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n003.json"
+    },
+    {
+      "id": "n004",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [
+            "fairlogger/Logger.h"
+          ],
+          "identifier_mentions": [
+            "fair::Logger::DefineVerbosity",
+            "fair::Logger::SetConsoleColor",
+            "fair::Logger::SetVerbosity",
+            "fair::VerbositySpec::Info::file_line_function",
+            "fair::VerbositySpec::Info::process_name",
+            "fair::VerbositySpec::Info::severity",
+            "fair::VerbositySpec::Make",
+            "fairlogger/Logger.h"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 21,
+          "policy_role_frontier": 9
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n004.json",
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [
+            "fair::VerbositySpec::Info",
+            "fairlogger/Logger.h"
+          ],
+          "identifier_mentions": [
+            "fair::Logger::DefineVerbosity",
+            "fair::Logger::SetConsoleColor",
+            "fair::Logger::SetVerbosity",
+            "fair::VerbositySpec::Info",
+            "fair::VerbositySpec::Info::file_line_function",
+            "fair::VerbositySpec::Info::severity",
+            "fair::VerbositySpec::Make",
+            "fairlogger/Logger.h"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 0.5,
+        "runtime_coverage_validation": "PARTIAL",
+        "runtime_covered_point_ids": [
+          "point.1"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [
+          "point.2"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "invalid answer-point coverage review: BAD_QUOTE",
+          "missing answer point point.2"
+        ]
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n004.json"
+    },
+    {
+      "id": "n005",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "data/evtcomplete",
+            "macro/tools/eventDisplay.C"
+          ],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 18,
+          "policy_role_frontier": 12
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n005.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "data/evtcomplete",
+            "macro/tools/eventDisplay.C"
+          ],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n005.json"
+    },
+    {
+      "id": "n006",
+      "new": {
+        "category": "ANSWERED_INCOMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [
+          "p2"
+        ],
+        "manual_review_ref": "analyst_review.n006; novel_dev.yaml#n006.p2; prior G4 answerability review",
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndFileNameCreator",
+            "tools/PndFileNameCreator.h"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 17,
+          "policy_role_frontier": 13
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n006.json",
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndFileNameCreator"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 0.5,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [
+          "point.2"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "missing answer point point.2",
+          "unsupported claim claim.2",
+          "irrelevant claim claim.2"
+        ]
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n006.json"
+    },
+    {
+      "id": "n007",
+      "new": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndGeoHandling",
+            "PndGeoHandling::Instance"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 21,
+          "policy_role_frontier": 9
+        },
+        "production_category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.5,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [
+          {
+            "admission_state": "ADMITTED_BACKING_AVAILABLE",
+            "answer_point_id": "point.1",
+            "relation_id": "point.1.rel.1",
+            "validation_state": "VALID"
+          }
+        ],
+        "runtime_missing_required_point_ids": [
+          "point.1"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "unsupported identifier PndGeoHandling::GetPath",
+          "missing answer point point.1"
+        ]
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n007.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndGeoHandling",
+            "PndGeoHandling::Instance"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n007.json"
+    },
+    {
+      "id": "n008",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 17,
+          "policy_role_frontier": 13
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n008.json",
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 0.5,
+        "runtime_coverage_validation": "PARTIAL",
+        "runtime_covered_point_ids": [
+          "point.1"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [
+          {
+            "admission_state": null,
+            "answer_point_id": "point.2",
+            "relation_id": "point.2.rel.1",
+            "validation_state": "LOCAL_INVALID"
+          }
+        ],
+        "runtime_missing_required_point_ids": [
+          "point.2"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "invalid answer-point coverage review: INVALID_SUPPORTER",
+          "missing answer point point.2"
+        ]
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n008.json"
+    },
+    {
+      "id": "n009",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.6666666666666666,
+          "final_evidence_recall": 0.6666666666666666,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 21,
+          "policy_role_frontier": 9
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3",
+          "point.4"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n009.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3",
+          "point.4"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n009.json"
+    },
+    {
+      "id": "n010",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.25,
+          "final_evidence_recall": 0.25,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndFastSim",
+            "PndFsmAbsDet",
+            "PndFsmDetFactory"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 17,
+          "policy_role_frontier": 13
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n010.json",
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 0.5,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [
+          {
+            "admission_state": "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE",
+            "answer_point_id": "point.2",
+            "relation_id": "point.2.rel.1",
+            "validation_state": "VALID"
+          }
+        ],
+        "runtime_missing_required_point_ids": [
+          "point.2"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "unsupported identifier tracking/vertexing/dE/dx",
+          "missing answer point point.2"
+        ]
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n010.json"
+    },
+    {
+      "id": "n014",
+      "new": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndLmdModelFactory",
+            "model/PndLmdModelFactory.cxx",
+            "model/PndLmdModelFactory.h"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 16,
+          "policy_role_frontier": 14
+        },
+        "production_category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.5,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [
+          "point.1"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "missing answer point point.1",
+          "unsupported claim claim_1",
+          "irrelevant claim claim_1"
+        ]
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n014.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndLmdAngularData",
+            "PndLmdModelFactory",
+            "model/PndLmdModelFactory.h"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n014.json"
+    },
+    {
+      "id": "n015",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 19,
+          "policy_role_frontier": 11
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n015.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n015.json"
+    },
+    {
+      "id": "n016",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "insufficient_evidence",
+        "expected_status_correct": false,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": null,
+          "final_evidence_recall": null,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": null,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 24,
+          "policy_role_frontier": 6
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n016.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "insufficient_evidence",
+        "expected_status_correct": false,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": null,
+          "final_evidence_recall": null,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": null,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n016.json"
+    },
+    {
+      "id": "n017",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndTrack",
+            "PndTrackCand",
+            "pnddata/TrackData/PndTrack.h"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 17,
+          "policy_role_frontier": 13
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n017.json",
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 0.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [
+          {
+            "admission_state": "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE",
+            "answer_point_id": "point.2",
+            "relation_id": "point.2.rel.1",
+            "validation_state": "VALID"
+          },
+          {
+            "admission_state": "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE",
+            "answer_point_id": "point.3",
+            "relation_id": "point.3.rel.1",
+            "validation_state": "VALID"
+          }
+        ],
+        "runtime_missing_required_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "incomplete code citation evidence.e2e8bc78fee2f010bb8c13ec",
+          "missing answer point point.1",
+          "missing answer point point.2",
+          "missing answer point point.3",
+          "irrelevant claim claim.2",
+          "irrelevant claim claim.3"
+        ]
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n017.json"
+    },
+    {
+      "id": "n018",
+      "new": {
+        "category": "ANSWERED_INCOMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [
+          "p1",
+          "p2"
+        ],
+        "manual_review_ref": "analyst_review.n018; novel_dev.yaml#n018.p1,p2; rerun cited MC truth tutorial",
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndAnalysis",
+            "PndAnalysis::McTruthMatch"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 20,
+          "policy_role_frontier": 10
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-n002-n018-rerun-v1\\records\\n018.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndAnalysis::McTruthMatch",
+            "RhoCandList::SetType",
+            "RhoCandidate::SetType"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n018.json"
+    },
+    {
+      "id": "n019",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndRecoDafFit*",
+            "PndRecoKalmanFit*",
+            "PndRecoKalmanTask",
+            "PndTrack",
+            "PndTrackCand"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 25,
+          "policy_role_frontier": 5
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3",
+          "point.4"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n019.json",
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndRecoDafFit",
+            "PndRecoKalmanFit",
+            "PndRecoKalmanTask",
+            "PndTrack",
+            "PndTrackCand"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 0.75,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.2",
+          "point.3",
+          "point.4"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [
+          {
+            "admission_state": "INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE",
+            "answer_point_id": "point.1",
+            "relation_id": "point.1.rel.1",
+            "validation_state": "VALID"
+          }
+        ],
+        "runtime_missing_required_point_ids": [
+          "point.1"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "missing answer point point.1",
+          "irrelevant claim claim.kalman.transformation_limitation"
+        ]
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n019.json"
+    },
+    {
+      "id": "n020",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.3333333333333333,
+          "final_evidence_recall": 0.3333333333333333,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndApolloniusTripletTrackFinderTask",
+            "PndSttSkewStrawPzFinderTask",
+            "PndTrkTracking2",
+            "PndUnassignedHitsTask",
+            "macro/target/reco_complete.C"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 20,
+          "policy_role_frontier": 10
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n020.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.3333333333333333,
+          "final_evidence_recall": 0.3333333333333333,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndApolloniusTripletTrackFinderTask",
+            "PndSttSkewStrawPzFinderTask",
+            "PndTrkTracking2",
+            "PndUnassignedHitsTask"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n020.json"
+    },
+    {
+      "id": "n021",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndLmdDetector",
+            "determineLuminosity.py",
+            "doMultipleLuminosityFits.py",
+            "doReconstruction.py",
+            "doSimulationReconstruction.py",
+            "macro/detectors/lmd/sim_LMD.C",
+            "runSimulationReconstruction.py"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 16,
+          "policy_role_frontier": 14
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n021.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "determineLuminosity.py",
+            "doReconstruction.py",
+            "doSimulationReconstruction.py",
+            "runReconstruction.py",
+            "runSimulationReconstruction.py"
+          ],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n021.json"
+    },
+    {
+      "id": "n022",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.3333333333333333,
+          "final_evidence_recall": 0.3333333333333333,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndPidCorrelator",
+            "PndPidTrackInfo.cxx",
+            "_boost.root",
+            "_vtx_fit.json",
+            "ana_dpm.C",
+            "prod_aod_complete.C"
+          ],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 21,
+          "policy_role_frontier": 9
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n022.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.3333333333333333,
+          "final_evidence_recall": 0.3333333333333333,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndPidCorrelator",
+            "_boost.root",
+            "_vtx_fit.json",
+            "ana_dpm.C",
+            "prod_aod_complete.C",
+            "runall_prod_hvmaps.py"
+          ],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n022.json"
+    },
+    {
+      "id": "n023",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndFtsTrackFinderTask",
+            "tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.h"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 16,
+          "policy_role_frontier": 14
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n023.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndFtsTrackFinderTask",
+            "tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.h"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n023.json"
+    },
+    {
+      "id": "n024",
+      "new": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndGeanePro",
+            "PndHelixPropagator"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 16,
+          "policy_role_frontier": 14
+        },
+        "production_category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.6666666666666666,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [
+          "point.3"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "missing answer point point.3",
+          "unsupported claim claim_3",
+          "irrelevant claim claim_3"
+        ]
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n024.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndGeanePro",
+            "PndHelixPropagator",
+            "PndPropagator"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n024.json"
+    },
+    {
+      "id": "n025",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 18,
+          "policy_role_frontier": 12
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n025.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": false,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n025.json"
+    },
+    {
+      "id": "n026",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndTutAnaTask",
+            "docs/Tutorials/tut_outline.rst",
+            "qana.C",
+            "qfsana.C"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 21,
+          "policy_role_frontier": 9
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n026.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n026.json"
+    },
+    {
+      "id": "n027",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 21,
+          "policy_role_frontier": 9
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n027.json",
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.5,
+          "final_evidence_recall": 0.5,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "docs/Jupyter/Jupyter.rst"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 0.5,
+        "runtime_coverage_validation": "PARTIAL",
+        "runtime_covered_point_ids": [
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [
+          "point.1"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "invalid answer-point coverage review: INVALID_SUPPORTER",
+          "missing answer point point.1"
+        ]
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n027.json"
+    },
+    {
+      "id": "n028",
+      "new": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.3333333333333333,
+          "final_evidence_recall": 0.3333333333333333,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndAnaWithTrigger",
+            "PndOnlineFilterInfo",
+            "PndSoftTriggerTask",
+            "softrig/PndOnlineFilterInfo.cxx",
+            "softrig/PndOnlineFilterInfo.h"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 23,
+          "policy_role_frontier": 7
+        },
+        "production_category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.5,
+        "runtime_coverage_validation": "PARTIAL",
+        "runtime_covered_point_ids": [
+          "point.1"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [
+          {
+            "admission_state": null,
+            "answer_point_id": "point.2",
+            "relation_id": "point.2.rel.1",
+            "validation_state": "LOCAL_INVALID"
+          }
+        ],
+        "runtime_missing_required_point_ids": [
+          "point.2"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "invalid answer-point coverage review: INVALID_SUPPORTER",
+          "missing answer point point.2"
+        ]
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n028.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.3333333333333333,
+          "final_evidence_recall": 0.3333333333333333,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndAnaWithTrigger",
+            "PndOnlineFilterInfo",
+            "PndSimpleCombinerTask",
+            "PndSoftTriggerTask",
+            "analysis/AnalysisTools/PndSimpleCombinerTask.h",
+            "macro/softrig/ana_jpsi_task_ST.C",
+            "softrig/PndOnlineFilterInfo.cxx",
+            "softrig/PndOnlineFilterInfo.h"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n028.json"
+    },
+    {
+      "id": "n029",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "FairRootManager::Instance"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 16,
+          "policy_role_frontier": 14
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "unsupported identifier FairRootManager::RegisterWriteoutBuffer",
+          "irrelevant claim claim.3"
+        ]
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n029.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "FairRootManager::Instance",
+            "FairRunAna::Instance",
+            "PndSdsDigiPixelWriteoutBuffer"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n029.json"
+    },
+    {
+      "id": "n030",
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 16,
+          "policy_role_frontier": 14
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n030.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n030.json"
+    },
+    {
+      "id": "n031",
+      "new": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": false,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 26,
+          "policy_role_frontier": 4
+        },
+        "production_category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.5,
+        "runtime_coverage_validation": "PARTIAL",
+        "runtime_covered_point_ids": [
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [
+          {
+            "admission_state": null,
+            "answer_point_id": "point.1",
+            "relation_id": "point.1.rel.1",
+            "validation_state": "LOCAL_INVALID"
+          }
+        ],
+        "runtime_missing_required_point_ids": [
+          "point.1"
+        ],
+        "status": "insufficient_evidence",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": [
+          "invalid answer-point coverage review: BAD_QUOTE",
+          "missing answer point point.1"
+        ]
+      },
+      "new_record_ref": "data\\evaluation\\runs\\g4-r2-post-repair-novel-dev-regression-v1\\records\\n031.json",
+      "old": {
+        "category": "ANSWERED_COMPLETE",
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 0.0,
+          "final_evidence_recall": 0.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      },
+      "old_record_ref": "data\\evaluation\\runs\\g3-evidence-admission-audit-novel-dev-v1\\records\\n031.json"
+    }
+  ],
+  "changes": {
+    "calibration_change": false,
+    "config_change": false,
+    "dataset_change": false,
+    "gold_change": false,
+    "product_source_change": false,
+    "prompt_change": false,
+    "schema_change": false
+  },
+  "collateral_pool_loss_n024": {
+    "all_channel_rankings_identical": true,
+    "cause": "R2: relevant ordinary RRF rank 18 is displaced by the bounded frontier offer; final analytic-helix explanation is missing",
+    "locator": {
+      "end_line": 124,
+      "path": "tracking/PndHelixPropagator/PndHelixPropagator.h",
+      "pdf_page": null,
+      "printed_page": null,
+      "section_path": [],
+      "snapshot_date": null,
+      "start_line": 24,
+      "symbol": "PndHelixPropagator",
+      "url": null
+    },
+    "new_fused_trace_entry": {
+      "channels": [
+        "dense",
+        "sparse"
+      ],
+      "locator": {
+        "end_line": 124,
+        "path": "tracking/PndHelixPropagator/PndHelixPropagator.h",
+        "pdf_page": null,
+        "printed_page": null,
+        "section_path": [],
+        "snapshot_date": null,
+        "start_line": 24,
+        "symbol": "PndHelixPropagator",
+        "url": null
+      },
+      "object_id": "object.d6ef560b88c3926ecb32d3e1",
+      "object_type": "class_chunk",
+      "rank": 18,
+      "score": 0.027364110201042444,
+      "source_id": "pandaroot",
+      "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+    },
+    "new_in_final_evidence": false,
+    "new_in_pool": false,
+    "new_pool_counts": {
+      "ordinary_rrf": 16,
+      "policy_role_frontier": 14
+    },
+    "object_id": "object.d6ef560b88c3926ecb32d3e1",
+    "old_fused_trace_entry": {
+      "channels": [
+        "dense",
+        "sparse"
+      ],
+      "locator": {
+        "end_line": 124,
+        "path": "tracking/PndHelixPropagator/PndHelixPropagator.h",
+        "pdf_page": null,
+        "printed_page": null,
+        "section_path": [],
+        "snapshot_date": null,
+        "start_line": 24,
+        "symbol": "PndHelixPropagator",
+        "url": null
+      },
+      "object_id": "object.d6ef560b88c3926ecb32d3e1",
+      "object_type": "class_chunk",
+      "rank": 18,
+      "score": 0.027364110201042444,
+      "source_id": "pandaroot",
+      "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+    },
+    "old_in_final_evidence": true,
+    "old_reranked_rank_1based": 2,
+    "pool_displacement_confidence": "HIGH: identical channel rankings and identical authoritative RRF trace entry; actual new pool excludes it",
+    "qa_causal_limit": "Observed QA transition is not a deterministic paired causal effect estimate; no new reranker/answer counterfactual was run"
+  },
+  "completion": {
+    "attempts_per_case": {
+      "n001": 1,
+      "n002": 2,
+      "n003": 1,
+      "n004": 1,
+      "n005": 1,
+      "n006": 1,
+      "n007": 1,
+      "n008": 1,
+      "n009": 1,
+      "n010": 1,
+      "n014": 1,
+      "n015": 1,
+      "n016": 1,
+      "n017": 1,
+      "n018": 2,
+      "n019": 1,
+      "n020": 1,
+      "n021": 1,
+      "n022": 1,
+      "n023": 1,
+      "n024": 1,
+      "n025": 1,
+      "n026": 1,
+      "n027": 1,
+      "n028": 1,
+      "n029": 1,
+      "n030": 1,
+      "n031": 1
+    },
+    "case_attempts": 30,
+    "completed": 28,
+    "expected": 28,
+    "incomplete_ids": [],
+    "invocations": [
+      {
+        "action": "run",
+        "run_id": "g4-r2-post-repair-novel-dev-regression-v1",
+        "started_at": "2026-09-29T13:43:46.478986+00:00"
+      },
+      {
+        "action": "explicit_target_rerun",
+        "case_ids": [
+          "n002",
+          "n018"
+        ],
+        "identity_match_against_initial_run": {
+          "embedding_model_id": true,
+          "generation_model_id": true,
+          "gold_benchmark_version": true,
+          "gold_dataset_hash": true,
+          "index_identity": true,
+          "index_identity_payload": true,
+          "normalized_manifest_hash": true,
+          "normalized_output_hashes": true,
+          "package_versions": true,
+          "prompt_hash": true,
+          "query_expansion_hash": true,
+          "retrieval_policy_hash": true,
+          "source_manifest_hash": true
+        },
+        "product_behavior_lineage": "a22c8f70eeebe4a53490e11a4b6852561ca8afa6",
+        "repository_identity": {
+          "commit": "3b26d8d622d11c3438c98ee63938ebe062477998",
+          "dirty": false
+        },
+        "run_id": "g4-r2-post-repair-n002-n018-rerun-v1",
+        "started_at": "2026-09-29T14:51:42.336502+00:00"
+      }
+    ],
+    "nonretryable_exception_attempts": 2,
+    "nonretryable_exception_case_ids": [],
+    "retryable_infrastructure_attempts": 0,
+    "runner_invocations": 2,
+    "terminal_records": 28
+  },
+  "component_run_ids": [
+    "g4-r2-post-repair-novel-dev-regression-v1",
+    "g4-r2-post-repair-n002-n018-rerun-v1"
+  ],
+  "coverage_definition": "Ratio of existing validated production covered canonical point IDs to all canonical points; VALID complete receipt required for ANSWERED_COMPLETE. Gold-weighted judge coverage is not measured. Bounded human review narrows n006 to ANSWERED_INCOMPLETE because independently adjudicated critical Gold p2 suffix literals are absent; no raw metric is overwritten. Authorized n018 rerun is also narrowed to ANSWERED_INCOMPLETE: critical Gold p1 null checking and p2 composite typing/EvtGen PDG initialization are absent, although its production receipt is complete.",
+  "deterministic_controls": {
+    "accepted_g4_control_count": 18,
+    "accepted_normal_r2_control_count": 17,
+    "ref": "evaluation/G4_R2_NORMAL_PRODUCT_POOL_INTEGRATION_CORRECTION.md",
+    "rerun_in_this_task": false
+  },
+  "evaluated_product_behavior_lineage": "a22c8f70eeebe4a53490e11a4b6852561ca8afa6",
+  "evidence_boundary": {
+    "exposed_cohort": true,
+    "fresh_confirmation": false,
+    "fresh_generalization_evidence": false,
+    "novel_validation_evidence": false,
+    "release_evidence": false
+  },
+  "expected_answered_category_counts": {
+    "ANSWERED_COMPLETE": 19,
+    "ANSWERED_INCOMPLETE": 2,
+    "INSUFFICIENT_EVIDENCE": 6,
+    "OTHER_ERROR": 0,
+    "VERSION_CONFLICT": 0
+  },
+  "frontier": {
+    "cases_ordinary_rrf_only": 0,
+    "cases_with_policy_role_frontier": 28,
+    "cases_with_structured_supplemental": 0,
+    "frontier_entries_per_case": {
+      "n001": 10,
+      "n002": 9,
+      "n003": 9,
+      "n004": 9,
+      "n005": 12,
+      "n006": 13,
+      "n007": 9,
+      "n008": 13,
+      "n009": 9,
+      "n010": 13,
+      "n014": 14,
+      "n015": 11,
+      "n016": 6,
+      "n017": 13,
+      "n018": 10,
+      "n019": 5,
+      "n020": 10,
+      "n021": 14,
+      "n022": 9,
+      "n023": 14,
+      "n024": 14,
+      "n025": 12,
+      "n026": 9,
+      "n027": 9,
+      "n028": 7,
+      "n029": 14,
+      "n030": 14,
+      "n031": 4
+    },
+    "frontier_entry_count_definition": "Sum of case-level entries; repeated objects across cases are counted per case",
+    "outcome_cross_tab": {
+      "frontier_not_used": {
+        "ANSWERED_COMPLETE": 0,
+        "ANSWERED_INCOMPLETE": 0,
+        "INSUFFICIENT_EVIDENCE": 0,
+        "OTHER_ERROR": 0,
+        "VERSION_CONFLICT": 0
+      },
+      "frontier_used": {
+        "ANSWERED_COMPLETE": 20,
+        "ANSWERED_INCOMPLETE": 2,
+        "INSUFFICIENT_EVIDENCE": 6,
+        "OTHER_ERROR": 0,
+        "VERSION_CONFLICT": 0
+      },
+      "receipt_unobserved": {
+        "ANSWERED_COMPLETE": 0,
+        "ANSWERED_INCOMPLETE": 0,
+        "INSUFFICIENT_EVIDENCE": 0,
+        "OTHER_ERROR": 0,
+        "VERSION_CONFLICT": 0
+      }
+    },
+    "receipt_missing_case_ids": [],
+    "total_policy_role_frontier_entries": 295
+  },
+  "full_cohort_gate_passed": false,
+  "historical_crosschecks": {
+    "g3_completion_product_lineage": "a0106bd5eff93646f34f5e50e161e8be8a49d680",
+    "g3_completion_result_completed": 28,
+    "g3_review_overlay_decision": "NO_CHANGE"
+  },
+  "identity_match": {
+    "embedding_model_id": true,
+    "generation_model_id": true,
+    "gold_benchmark_version": true,
+    "gold_dataset_hash": true,
+    "index_identity": true,
+    "normalized_manifest_hash": true,
+    "normalized_output_hashes": true,
+    "prompt_hash": true,
+    "query_expansion_hash": true,
+    "retrieval_policy_hash": true,
+    "source_manifest_hash": true
+  },
+  "initial_completion": {
+    "case_attempts": 28,
+    "completed": 26,
+    "nonretryable_exception_case_ids": [
+      "n002",
+      "n018"
+    ]
+  },
+  "initial_usage": {
+    "embedding_calls": 27,
+    "external_judge_calls": 0,
+    "generation_calls": 126,
+    "model_calls": 153,
+    "token_usage": 1107119
+  },
+  "lifecycle": {
+    "fresh_lane_b": "OPTIONAL / DEFERRED; not a mandatory G4 gate",
+    "g4": "DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR IMPLEMENTED IN NORMAL PRODUCT PATH / NORMAL-PRODUCTION DETERMINISTIC RED\u2192GREEN PASS / EXPOSED POST-REPAIR TARGET RERUN COMPLETE / 28 OF 28 SELECTED QA RESULTS / DIAGNOSTIC COMPOSITE; ORIGINAL COHORT INCOMPLETE / SAFETY REGRESSION / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED",
+    "next_task_execution_authorized": false,
+    "next_task_recommendation": "G4 R2 COLLATERAL RETENTION / COMPLETENESS FAILURE REVIEW",
+    "phase_g": "IN_PROGRESS / G4_EXPOSED_POST_REPAIR_SAFETY_REGRESSION_REVIEW_REQUIRED"
+  },
+  "model_config_identity_match": true,
+  "new_answered_manually_verified_critical_point_miss_cases": [
+    "n006",
+    "n018"
+  ],
+  "new_category_counts": {
+    "ANSWERED_COMPLETE": 20,
+    "ANSWERED_INCOMPLETE": 2,
+    "INSUFFICIENT_EVIDENCE": 6,
+    "OTHER_ERROR": 0,
+    "VERSION_CONFLICT": 0
+  },
+  "new_evaluator_aggregate": {
+    "answer_point_coverage": null,
+    "answer_point_coverage_denominator": 0,
+    "cases_completed": 28,
+    "citation_integrity": 1.0,
+    "citation_integrity_denominator": 28,
+    "combined_candidate_recall": 0.8117283950617284,
+    "combined_candidate_recall_denominator": 27,
+    "contradiction_count": null,
+    "contradiction_count_denominator": 0,
+    "critical_answer_point_miss_count": null,
+    "critical_answer_point_miss_count_denominator": 0,
+    "critical_final_evidence_recall": 0.5895061728395061,
+    "critical_final_evidence_recall_denominator": 27,
+    "expected_status_accuracy": 0.75,
+    "expected_status_accuracy_denominator": 28,
+    "final_evidence_recall": 0.5895061728395061,
+    "final_evidence_recall_denominator": 27,
+    "forbidden_evidence_count": 0,
+    "gold_recall_at_10": 0.6944444444444444,
+    "gold_recall_at_10_denominator": 27,
+    "gold_recall_at_20": 0.6944444444444444,
+    "gold_recall_at_20_denominator": 27,
+    "gold_recall_at_5": 0.6512345679012346,
+    "gold_recall_at_5_denominator": 27,
+    "identifier_hallucination_count": 1,
+    "identifier_hallucination_denominator": 64,
+    "identifier_hallucination_rate": 0.015625,
+    "identifier_mentions": 64,
+    "identifier_miss_count": 0,
+    "identifier_miss_denominator": 27,
+    "intent_accuracy": 0.6428571428571429,
+    "major_unsupported_claim_count": null,
+    "major_unsupported_claim_count_denominator": 0,
+    "metric_applicability": {
+      "answer_point_coverage": false,
+      "citation_integrity": true,
+      "contradictions": false,
+      "critical_answer_points_missing": false,
+      "identifier_hallucination_rate": true,
+      "major_unsupported_claim_ids": false,
+      "minor_unsupported_claim_ids": false,
+      "required_identifiers": true,
+      "unsupported_claim_ids": false
+    },
+    "minor_unsupported_claim_count": null,
+    "minor_unsupported_claim_count_denominator": 0,
+    "model_calls": 163,
+    "model_usage_by_role": {
+      "evaluation_judge": {
+        "model_calls": 0,
+        "token_usage": 0
+      },
+      "runtime": {
+        "model_calls": 163,
+        "token_usage": 1183406
+      }
+    },
+    "mrr": 0.6234567901234568,
+    "mrr_denominator": 27,
+    "paper_code_dual_source_denominator": 1,
+    "paper_code_dual_source_rate": 0.0,
+    "refusal_evidence_recall": null,
+    "refusal_evidence_recall_denominator": 0,
+    "required_source_coverage": 0.8148148148148148,
+    "required_source_coverage_answered": 0.8148148148148148,
+    "required_source_coverage_answered_denominator": 27,
+    "required_source_coverage_denominator": 27,
+    "scored_cases": 28,
+    "token_usage": 1183406,
+    "unhandled_exception_count": 0,
+    "unsupported_claim_count": null,
+    "unsupported_claim_count_denominator": 0,
+    "wrong_version_evidence_count": 0
+  },
+  "new_manifest": {
+    "audit_resolution_hash": "e7c15d7a6eb9fa290a57dbbefbd5cb0f701b2d01265ac74cf8a01883ebcabf87",
+    "capture_stage_trace": true,
+    "case_ids": null,
+    "deadline_minutes": null,
+    "embedding_dimensions": 3072,
+    "embedding_model_id": "gemini-embedding-2",
+    "evaluation_judge_model_id": "gemini-3.8-flash",
+    "evaluator_catalog": null,
+    "evaluator_catalog_path": null,
+    "generation_model_id": "gemini-3.8-flash",
+    "gold_acceptance_exposed": true,
+    "gold_benchmark_version": "novel-v1-dev-0.3.0",
+    "gold_dataset_hash": "25ad18fcf76ab2796aa18ae961bdc4faf076f0c98a8a5226413ec95e58252223",
+    "gold_dataset_path": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\PANDA_Agent\\evaluation\\novel\\v1\\novel_dev.yaml",
+    "gold_expected_split_counts": {
+      "novel_dev": 28
+    },
+    "gold_release_eligible": false,
+    "index_identity": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "index_identity_payload": {
+      "distance": "cosine",
+      "embedding_dimensions": 3072,
+      "embedding_model": "gemini-embedding-2",
+      "index_schema_version": "4",
+      "sparse": {
+        "avg_len": 256.0,
+        "b": 0.75,
+        "disable_stemmer": false,
+        "fastembed_version": "0.7.4",
+        "hash_function": "mmh3.hash",
+        "k": 1.2,
+        "language": "english",
+        "mmh3_version": "5.2.1",
+        "model_name": "Qdrant/bm25",
+        "modifier": "idf",
+        "py_rust_stemmers_version": "0.1.8",
+        "stemmer": "SnowballStemmer",
+        "stopwords_sha256": "019f104ba2ed07436d05f9cdd3383034ad66014edc27fc651f837e1a038b6451",
+        "token_max_length": 40,
+        "tokenizer": "SimpleTokenizer",
+        "vector_name": "sparse"
+      }
+    },
+    "limit": null,
+    "max_model_calls": null,
+    "max_token_usage": null,
+    "mode": "qa",
+    "normalized_manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "normalized_output_hashes": {
+      "aliases": "2e59201f5bcb7f5c515ec6c573af1f15f18e8a8bd97dbd34ceb54aa0fc1fe7da",
+      "errors": "ea0b09cc07dc78ae83851fb247a31514350cd6ae1abd7fcdd03c61e4a20e1d7d",
+      "objects": "bf0168747f1c9b424048cef57fc6c0873f21a50844a2a45557c514239cc75316",
+      "relation_candidates": "b45264ff7451573c63c7d1e0b9fc169f79a97c5e256f3f70fd996517dfb80048",
+      "relations": "f6ef2298162bd99354a44395357ab8f3524413dea87426f2db7dd8bbfb70b395",
+      "workflows": "cee7d4406cab5490ed0002710d4ae9013e35ea0a515cac2c0785386a825e9026"
+    },
+    "official": false,
+    "package_versions": {
+      "google-genai": "2.13.0",
+      "langgraph": "1.2.10",
+      "panda-research-qa-agent": "0.1.0",
+      "psycopg": "3.3.4",
+      "python": "3.12.14",
+      "qdrant-client": "1.15.1"
+    },
+    "pipeline_boundaries": {
+      "answer_generation": true,
+      "external_judge": false,
+      "runtime_verification": true
+    },
+    "prompt_hash": "5147f85c09a933609d91f4fa4e7bf3d8fbfa530684a3ecea4d3aaed72c3e04ce",
+    "prompt_version": "3.12.0",
+    "query_expansion_hash": "84c93c94e70e8e7819a2cd8ecdd18f8fce41996d616d5ebc34fe2deb823e039a",
+    "repository_identity": {
+      "commit": "a22c8f70eeebe4a53490e11a4b6852561ca8afa6",
+      "dirty": false
+    },
+    "retrieval_policy_hash": "fb2cd99bf500d5924931cf0fa6d5ea801efc7939b4c469fad8fbc0b5b082ced9",
+    "run_started_at": "2026-09-29T13:43:46.726050+00:00",
+    "runtime_generation_model_id": "gemini-3.8-flash",
+    "schema_version": "1.0",
+    "source_manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "split": "novel_dev"
+  },
+  "new_production_category_counts": {
+    "ANSWERED_COMPLETE": 22,
+    "ANSWERED_INCOMPLETE": 0,
+    "INSUFFICIENT_EVIDENCE": 6,
+    "OTHER_ERROR": 0,
+    "VERSION_CONFLICT": 0
+  },
+  "new_runtime_point_miss_cases": [
+    "n007",
+    "n014",
+    "n024",
+    "n028",
+    "n031"
+  ],
+  "new_safety": {
+    "citation_failure": {
+      "case_count": 0,
+      "case_ids": []
+    },
+    "forbidden_evidence": {
+      "case_count": 0,
+      "case_ids": []
+    },
+    "gold_semantic_metrics": {
+      "answer_point_coverage": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      },
+      "contradictions": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      },
+      "critical_answer_points_missing": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      },
+      "major_unsupported_claim_ids": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      },
+      "minor_unsupported_claim_ids": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      },
+      "unsupported_claim_ids": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      }
+    },
+    "identifier_hallucination": {
+      "case_count": 1,
+      "case_ids": [
+        "n004"
+      ]
+    },
+    "identifier_hallucination_rate": {
+      "hallucinated_mentions": 1,
+      "rate": 0.015625,
+      "total_mentions": 64
+    },
+    "required_source_failure": {
+      "case_count": 5,
+      "case_ids": [
+        "n001",
+        "n005",
+        "n009",
+        "n022",
+        "n025"
+      ]
+    },
+    "runtime_final_claims_flagged_unsupported": {},
+    "runtime_missing_required_points": {
+      "case_ids": [
+        "n001",
+        "n007",
+        "n014",
+        "n024",
+        "n028",
+        "n031"
+      ],
+      "total": 8
+    },
+    "wrong_version": {
+      "case_count": 0,
+      "case_ids": []
+    }
+  },
+  "new_safety_failure_ids": {
+    "citation_failure": [],
+    "forbidden_evidence": [],
+    "identifier_hallucination": [],
+    "required_source_failure": [],
+    "wrong_version": []
+  },
+  "new_status_counts": {
+    "answered": 22,
+    "insufficient_evidence": 6
+  },
+  "observed_semantic_verification_model_ids": [
+    "gemini-3.8-flash"
+  ],
+  "old_category_counts": {
+    "ANSWERED_COMPLETE": 19,
+    "ANSWERED_INCOMPLETE": 0,
+    "INSUFFICIENT_EVIDENCE": 9,
+    "OTHER_ERROR": 0,
+    "VERSION_CONFLICT": 0
+  },
+  "old_evaluator_aggregate": {
+    "answer_point_coverage": null,
+    "answer_point_coverage_denominator": 0,
+    "cases_completed": 28,
+    "citation_integrity": 1.0,
+    "citation_integrity_denominator": 28,
+    "combined_candidate_recall": 0.8117283950617284,
+    "combined_candidate_recall_denominator": 27,
+    "contradiction_count": null,
+    "contradiction_count_denominator": 0,
+    "critical_answer_point_miss_count": null,
+    "critical_answer_point_miss_count_denominator": 0,
+    "critical_final_evidence_recall": 0.42592592592592593,
+    "critical_final_evidence_recall_denominator": 27,
+    "expected_status_accuracy": 0.6428571428571429,
+    "expected_status_accuracy_denominator": 28,
+    "final_evidence_recall": 0.42592592592592593,
+    "final_evidence_recall_denominator": 27,
+    "forbidden_evidence_count": 0,
+    "gold_recall_at_10": 0.6265432098765432,
+    "gold_recall_at_10_denominator": 27,
+    "gold_recall_at_20": 0.6265432098765432,
+    "gold_recall_at_20_denominator": 27,
+    "gold_recall_at_5": 0.5648148148148148,
+    "gold_recall_at_5_denominator": 27,
+    "identifier_hallucination_count": 2,
+    "identifier_hallucination_denominator": 57,
+    "identifier_hallucination_rate": 0.03508771929824561,
+    "identifier_mentions": 57,
+    "identifier_miss_count": 1,
+    "identifier_miss_denominator": 27,
+    "intent_accuracy": 0.6785714285714286,
+    "major_unsupported_claim_count": null,
+    "major_unsupported_claim_count_denominator": 0,
+    "metric_applicability": {
+      "answer_point_coverage": false,
+      "citation_integrity": true,
+      "contradictions": false,
+      "critical_answer_points_missing": false,
+      "identifier_hallucination_rate": true,
+      "major_unsupported_claim_ids": false,
+      "minor_unsupported_claim_ids": false,
+      "required_identifiers": true,
+      "unsupported_claim_ids": false
+    },
+    "minor_unsupported_claim_count": null,
+    "minor_unsupported_claim_count_denominator": 0,
+    "model_calls": 226,
+    "model_usage_by_role": {
+      "evaluation_judge": {
+        "model_calls": 0,
+        "token_usage": 0
+      },
+      "runtime": {
+        "model_calls": 226,
+        "token_usage": 1104846
+      }
+    },
+    "mrr": 0.5262786596119929,
+    "mrr_denominator": 27,
+    "paper_code_dual_source_denominator": 1,
+    "paper_code_dual_source_rate": 0.0,
+    "refusal_evidence_recall": null,
+    "refusal_evidence_recall_denominator": 0,
+    "required_source_coverage": 0.6666666666666666,
+    "required_source_coverage_answered": 0.6666666666666666,
+    "required_source_coverage_answered_denominator": 27,
+    "required_source_coverage_denominator": 27,
+    "scored_cases": 28,
+    "token_usage": 1104846,
+    "unhandled_exception_count": 0,
+    "unsupported_claim_count": null,
+    "unsupported_claim_count_denominator": 0,
+    "wrong_version_evidence_count": 0
+  },
+  "old_manifest": {
+    "audit_resolution_hash": "e7c15d7a6eb9fa290a57dbbefbd5cb0f701b2d01265ac74cf8a01883ebcabf87",
+    "capture_stage_trace": true,
+    "case_ids": [
+      "n001",
+      "n002",
+      "n003",
+      "n004",
+      "n005",
+      "n006",
+      "n007",
+      "n008",
+      "n009",
+      "n010",
+      "n014",
+      "n015",
+      "n016",
+      "n017",
+      "n018",
+      "n019",
+      "n020",
+      "n021",
+      "n022",
+      "n023",
+      "n024",
+      "n025",
+      "n026",
+      "n027",
+      "n028",
+      "n029",
+      "n030",
+      "n031"
+    ],
+    "deadline_minutes": null,
+    "embedding_dimensions": 3072,
+    "embedding_model_id": "gemini-embedding-2",
+    "evaluation_judge_model_id": "gemini-3.8-flash",
+    "evaluator_catalog": null,
+    "evaluator_catalog_path": null,
+    "generation_model_id": "gemini-3.8-flash",
+    "gold_acceptance_exposed": true,
+    "gold_benchmark_version": "novel-v1-dev-0.3.0",
+    "gold_dataset_hash": "25ad18fcf76ab2796aa18ae961bdc4faf076f0c98a8a5226413ec95e58252223",
+    "gold_dataset_path": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\PANDA_Agent\\evaluation\\novel\\v1\\novel_dev.yaml",
+    "gold_expected_split_counts": {
+      "novel_dev": 28
+    },
+    "gold_release_eligible": false,
+    "index_identity": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "index_identity_payload": {
+      "distance": "cosine",
+      "embedding_dimensions": 3072,
+      "embedding_model": "gemini-embedding-2",
+      "index_schema_version": "4",
+      "sparse": {
+        "avg_len": 256.0,
+        "b": 0.75,
+        "disable_stemmer": false,
+        "fastembed_version": "0.7.4",
+        "hash_function": "mmh3.hash",
+        "k": 1.2,
+        "language": "english",
+        "mmh3_version": "5.2.1",
+        "model_name": "Qdrant/bm25",
+        "modifier": "idf",
+        "py_rust_stemmers_version": "0.1.8",
+        "stemmer": "SnowballStemmer",
+        "stopwords_sha256": "019f104ba2ed07436d05f9cdd3383034ad66014edc27fc651f837e1a038b6451",
+        "token_max_length": 40,
+        "tokenizer": "SimpleTokenizer",
+        "vector_name": "sparse"
+      }
+    },
+    "limit": null,
+    "max_model_calls": null,
+    "max_token_usage": null,
+    "mode": "qa",
+    "normalized_manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "normalized_output_hashes": {
+      "aliases": "2e59201f5bcb7f5c515ec6c573af1f15f18e8a8bd97dbd34ceb54aa0fc1fe7da",
+      "errors": "ea0b09cc07dc78ae83851fb247a31514350cd6ae1abd7fcdd03c61e4a20e1d7d",
+      "objects": "bf0168747f1c9b424048cef57fc6c0873f21a50844a2a45557c514239cc75316",
+      "relation_candidates": "b45264ff7451573c63c7d1e0b9fc169f79a97c5e256f3f70fd996517dfb80048",
+      "relations": "f6ef2298162bd99354a44395357ab8f3524413dea87426f2db7dd8bbfb70b395",
+      "workflows": "cee7d4406cab5490ed0002710d4ae9013e35ea0a515cac2c0785386a825e9026"
+    },
+    "official": false,
+    "package_versions": {
+      "google-genai": "2.13.0",
+      "langgraph": "1.2.11",
+      "panda-research-qa-agent": "0.1.0",
+      "psycopg": "3.3.4",
+      "python": "3.13.14",
+      "qdrant-client": "1.19.0"
+    },
+    "pipeline_boundaries": {
+      "answer_generation": true,
+      "external_judge": false,
+      "runtime_verification": true
+    },
+    "prompt_hash": "5147f85c09a933609d91f4fa4e7bf3d8fbfa530684a3ecea4d3aaed72c3e04ce",
+    "prompt_version": "3.12.0",
+    "query_expansion_hash": "84c93c94e70e8e7819a2cd8ecdd18f8fce41996d616d5ebc34fe2deb823e039a",
+    "repository_identity": {
+      "commit": "16dad6f52e266de88f9a218938f236d3ef6cd936",
+      "dirty": false
+    },
+    "retrieval_policy_hash": "fb2cd99bf500d5924931cf0fa6d5ea801efc7939b4c469fad8fbc0b5b082ced9",
+    "run_started_at": "2026-09-24T22:42:47.832674+00:00",
+    "runtime_generation_model_id": "gemini-3.8-flash",
+    "schema_version": "1.0",
+    "source_manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "split": "novel_dev"
+  },
+  "old_product_behavior_lineage": "a0106bd5eff93646f34f5e50e161e8be8a49d680",
+  "old_run_id": "g3-evidence-admission-audit-novel-dev-v1",
+  "old_safety": {
+    "citation_failure": {
+      "case_count": 0,
+      "case_ids": []
+    },
+    "forbidden_evidence": {
+      "case_count": 0,
+      "case_ids": []
+    },
+    "gold_semantic_metrics": {
+      "answer_point_coverage": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      },
+      "contradictions": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      },
+      "critical_answer_points_missing": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      },
+      "major_unsupported_claim_ids": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      },
+      "minor_unsupported_claim_ids": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      },
+      "unsupported_claim_ids": {
+        "reason": "Not measured by qa mode without external judge",
+        "value": null
+      }
+    },
+    "identifier_hallucination": {
+      "case_count": 1,
+      "case_ids": [
+        "n004"
+      ]
+    },
+    "identifier_hallucination_rate": {
+      "hallucinated_mentions": 2,
+      "rate": 0.03508771929824561,
+      "total_mentions": 57
+    },
+    "required_source_failure": {
+      "case_count": 9,
+      "case_ids": [
+        "n001",
+        "n002",
+        "n005",
+        "n009",
+        "n010",
+        "n017",
+        "n021",
+        "n022",
+        "n025"
+      ]
+    },
+    "runtime_final_claims_flagged_unsupported": {},
+    "runtime_missing_required_points": {
+      "case_ids": [
+        "n001",
+        "n002",
+        "n004",
+        "n006",
+        "n008",
+        "n010",
+        "n017",
+        "n019",
+        "n027"
+      ],
+      "total": 14
+    },
+    "wrong_version": {
+      "case_count": 0,
+      "case_ids": []
+    }
+  },
+  "old_status_counts": {
+    "answered": 19,
+    "insufficient_evidence": 9
+  },
+  "other_historical_insufficient": {
+    "n001": {
+      "new": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.0,
+        "status": "insufficient_evidence",
+        "verification_errors": [
+          "unsupported requested symbol: FairSoft"
+        ]
+      },
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.0,
+        "status": "insufficient_evidence"
+      },
+      "prior_owner": "Q1"
+    },
+    "n010": {
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "status": "answered",
+        "verification_errors": []
+      },
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.5,
+        "status": "insufficient_evidence"
+      },
+      "prior_owner": "UNRESOLVED Q1/R1"
+    },
+    "n019": {
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "status": "answered",
+        "verification_errors": []
+      },
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.75,
+        "status": "insufficient_evidence"
+      },
+      "prior_owner": "UNRESOLVED R2/Q2"
+    }
+  },
+  "outcome": "SAFETY REGRESSION",
+  "package_version_differences": {
+    "langgraph": {
+      "new": "1.2.10",
+      "old": "1.2.11"
+    },
+    "python": {
+      "new": "3.12.14",
+      "old": "3.13.14"
+    },
+    "qdrant-client": {
+      "new": "1.15.1",
+      "old": "1.19.0"
+    }
+  },
+  "pairwise_causal_interpretation": "NONDETERMINISTIC_EXPOSED_REGRESSION",
+  "preflight_ref": "data/evaluation/g4-post-repair-preflight.json",
+  "previously_complete_cases": [
+    "n003",
+    "n005",
+    "n007",
+    "n009",
+    "n014",
+    "n015",
+    "n018",
+    "n020",
+    "n021",
+    "n022",
+    "n023",
+    "n024",
+    "n025",
+    "n026",
+    "n028",
+    "n029",
+    "n030",
+    "n031"
+  ],
+  "previously_complete_cases_worsened": [
+    "n007",
+    "n014",
+    "n018",
+    "n024",
+    "n028",
+    "n031"
+  ],
+  "previously_complete_definition": "Expected answered; complete VALID production coverage; citation integrity; no identifier, version, forbidden-evidence failure. Independent Gold semantic validity not scored.",
+  "product_identity": {
+    "active_calibration": "phase_b_t3_product_language_scope_v8",
+    "active_gold": "m6-benchmark-v2.11",
+    "coverage_schema": "coverage-satisfaction-v2",
+    "decomposition_prompt": "3.0.0",
+    "decomposition_schema": "e1.question_decomposition.v3",
+    "normal_mode": "production_answer_obligations_v1",
+    "prompt_set": "3.12.0"
+  },
+  "protected_boundary": {
+    "holdout_content_access": 0,
+    "holdout_outcome_access": 0,
+    "novel_validation_content_access": 0,
+    "novel_validation_outcome_access": 0,
+    "protected_leakage": 0
+  },
+  "provider_run_nondeterminism": "present as a methodological limitation",
+  "r2_target_details": {
+    "n002": {
+      "historically_lost_objects": [
+        {
+          "channel_ranks_1based": {
+            "dense": 7,
+            "exact": null,
+            "graph": null,
+            "sparse": null,
+            "workflow": null
+          },
+          "cited": true,
+          "in_final_evidence": true,
+          "object_id": "object.a45779701b982aff3e7554da",
+          "pool_entry": {
+            "object_id": "object.a45779701b982aff3e7554da",
+            "reason": "policy_role_frontier"
+          },
+          "reranked_rank_1based": 1
+        },
+        {
+          "channel_ranks_1based": {
+            "dense": 8,
+            "exact": null,
+            "graph": null,
+            "sparse": null,
+            "workflow": null
+          },
+          "cited": false,
+          "in_final_evidence": false,
+          "object_id": "object.03af96b1110e782792253a18",
+          "pool_entry": {
+            "object_id": "object.03af96b1110e782792253a18",
+            "reason": "policy_role_frontier"
+          },
+          "reranked_rank_1based": 2
+        }
+      ],
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "evidence": [
+          {
+            "cited": true,
+            "evidence_id": "evidence.7971affdc89fc0f9b4272aeb",
+            "locator": {
+              "end_line": 12,
+              "path": "requirements.txt",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [],
+              "snapshot_date": null,
+              "start_line": 1,
+              "symbol": null,
+              "url": null
+            },
+            "object_id": "object.a45779701b982aff3e7554da",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          }
+        ],
+        "manual_critical_answer_points_missing": [],
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered"
+      },
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.0,
+        "status": "insufficient_evidence"
+      },
+      "rerank_pool_entries": [
+        {
+          "object_id": "object.b6a67ff560b4a16e35f016ad",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.cce8388dd59c41f444377e50",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.feb0451634209784bcfa3a2a",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0a0b9ac30d5b09d5d976e6d4",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.1014c57a44922bd987049935",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.1fa2a3e7933f95f360bc3d4b",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.28114175f77c843dc520267d",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.2e234c35cea896e0130d8c7c",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.3095c58c81e43833437866d5",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.329bcf33eb27efe9be483493",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.33713a2b6a3b8889de889222",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.33edd53b78108d2be7933053",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.4bf90085b7b8bf352ebe8525",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.5b10996c00f625bf97fd9ec2",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.6822f818b17ec082bc332962",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.015d183a412eb1fab6948b24",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.7228fb2f1e2eac80a4296c9c",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.71334d2937f3f1bb5bfb9d4b",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.e4c7e48c82e9f93f74443f62",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.01a3a37a5b2a114c5f088ed4",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.49eca40be326362c5e4cc998",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "concept.luminosityfit.luminosity_fit_model",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.572a275ce1cce5dd3c71f64a",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.a45779701b982aff3e7554da",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.8bba0d73a7a1dec21bcc7a69",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.03af96b1110e782792253a18",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.80e0733ac3aa4bc894a246de",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.17892b873a26113e2dcb805a",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.e6efab8a1169dc5eecac8059",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.9806b00ca611032fbeca7346",
+          "reason": "policy_role_frontier"
+        }
+      ]
+    },
+    "n006": {
+      "historically_lost_objects": [
+        {
+          "channel_ranks_1based": {
+            "dense": 9,
+            "exact": null,
+            "graph": null,
+            "sparse": null,
+            "workflow": null
+          },
+          "cited": false,
+          "in_final_evidence": false,
+          "object_id": "object.2914485ff398f61e994c46d6",
+          "pool_entry": null,
+          "reranked_rank_1based": null
+        }
+      ],
+      "new": {
+        "category": "ANSWERED_INCOMPLETE",
+        "evidence": [
+          {
+            "cited": true,
+            "evidence_id": "evidence.383c5ab73e4f76fb485bb330",
+            "locator": {
+              "end_line": 72,
+              "path": "tools/PndFileNameCreator.h",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [],
+              "snapshot_date": null,
+              "start_line": 25,
+              "symbol": "PndFileNameCreator",
+              "url": null
+            },
+            "object_id": "object.448ae767c7b20b7320ebbcbe",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "cited": true,
+            "evidence_id": "evidence.732617ed15eaaadb88d8d0ba",
+            "locator": {
+              "end_line": 175,
+              "path": "macro/outdated/data/sim.C",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [],
+              "snapshot_date": null,
+              "start_line": 8,
+              "symbol": "sim",
+              "url": null
+            },
+            "object_id": "object.03507e1f40a9404ade63494d",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          }
+        ],
+        "manual_critical_answer_points_missing": [
+          "p2"
+        ],
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered"
+      },
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.5,
+        "status": "insufficient_evidence"
+      },
+      "rerank_pool_entries": [
+        {
+          "object_id": "workflow.pandaroot.generic",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.026ae99879402e1bd1aa4f26",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.04fe4694a863fd3e97e351f4",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0766bbb4b4741206c6ae60b9",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.4ec94a978be86cc66711c551",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.6912bae57b9b64e1aaf98ef5",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.041cd5104713038a07fb6dc8",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.6b0c9215ab982da22a88e619",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.bc8333ad0e15ee02eab751a9",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.03507e1f40a9404ade63494d",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.262d4647ef2dc9eb9bb47ffa",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.1d8692e9a52aca25d5ab7a6f",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.5c2eebcf6431f51f8bf35847",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.50aef7b01495cf339c410e94",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.a16f67bf21d7d10138238dbd",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.04687c9e491702b520d05629",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.09cb0abdec86e358f47a96ca",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.60f9c54539553531c699f8e1",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.1d54263832ee883809e84070",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.23407c5ae26f7ab01ffa80ae",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.26089ee7264b6d69da587e66",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.8bb9efc3890e07a994c7c1de",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.70e80d1734face1646964a11",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.271880c2ec1ebcac7383aab8",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.45cd31cd0eca0d0e6193ea42",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.609d5d6230bfcd319b3d0d6d",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.2ccdd3a30202b42bf636dea8",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.4b2fa6fc6b50c3c338e0d217",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.d35d0c0040b4fb58dc9d07e1",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.448ae767c7b20b7320ebbcbe",
+          "reason": "policy_role_frontier"
+        }
+      ]
+    },
+    "n017": {
+      "historically_lost_objects": [
+        {
+          "channel_ranks_1based": {
+            "dense": 7,
+            "exact": null,
+            "graph": null,
+            "sparse": null,
+            "workflow": null
+          },
+          "cited": true,
+          "in_final_evidence": true,
+          "object_id": "object.015bff352e03a5f5ee88c307",
+          "pool_entry": {
+            "object_id": "object.015bff352e03a5f5ee88c307",
+            "reason": "policy_role_frontier"
+          },
+          "reranked_rank_1based": 1
+        },
+        {
+          "channel_ranks_1based": {
+            "dense": 8,
+            "exact": null,
+            "graph": null,
+            "sparse": null,
+            "workflow": null
+          },
+          "cited": false,
+          "in_final_evidence": false,
+          "object_id": "object.10bfbd3c5c5a222bcdf5904d",
+          "pool_entry": null,
+          "reranked_rank_1based": null
+        }
+      ],
+      "new": {
+        "category": "ANSWERED_COMPLETE",
+        "evidence": [
+          {
+            "cited": true,
+            "evidence_id": "evidence.963bc9e530a7e4193d9df29f",
+            "locator": {
+              "end_line": 126,
+              "path": "pnddata/TrackData/PndTrack.h",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [],
+              "snapshot_date": null,
+              "start_line": 23,
+              "symbol": "PndTrack",
+              "url": null
+            },
+            "object_id": "object.015bff352e03a5f5ee88c307",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          }
+        ],
+        "manual_critical_answer_points_missing": [],
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "status": "answered"
+      },
+      "old": {
+        "category": "INSUFFICIENT_EVIDENCE",
+        "runtime_answer_point_coverage": 0.0,
+        "status": "insufficient_evidence"
+      },
+      "rerank_pool_entries": [
+        {
+          "object_id": "object.4148db1e1efa940ddee0ee82",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.051a3e49d589400336c446db",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.07758324d812b3ee09797e10",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0945ee1a59cd012067a29c88",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0a2a46456436d7a564d1219d",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0bfb2a14640a28f220577941",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0c53bf9fc3e19be732859262",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0e122426ede560dcc43d4330",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0e4dd77fc14f3323392bce66",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.112af2438e48baee96dfdda0",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.11c2c6d44d143f72a07fb320",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.15636e4b9258a15ec93fc224",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.16e33b184b58c277135b1223",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.19dc3eba1eaaaeb7948e4db9",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.47f09fc5ef218cee6e0192e5",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.bacddb9853036550fbb53c55",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.1cc3ba3f3d1592620e4653e7",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "data_product.pandaroot.lumi_trks_qa",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.3d346ba6e80667c721cd6920",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.035b464a44fa998aea8037c8",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.bf65582281a2d82f1436c15d",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.040f1a368d71b0e9c1c1944c",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.79b75480980719256f8b7937",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.06a765002f130fb5481e64fa",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.079456deec968e0ee3f75e55",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.462718f2b1ef7f92d71bc5f5",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.3792be0ca87112491a999725",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.0a27612c8b1d2100a2d6839d",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.015bff352e03a5f5ee88c307",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.1534aa75f1f8ee88ad8e1883",
+          "reason": "policy_role_frontier"
+        }
+      ]
+    }
+  },
+  "remaining_false_insufficiency_candidates": [
+    {
+      "answerability": "ANSWERABLE_WITH_KNOWN_GOLD_SOURCE_DISCREPANCY",
+      "earliest_plausible_owner": "Q1",
+      "finding": "The locked configSettings.sh is available, but the unchanged bare-class premise guard rejects FairSoft before A0/V1. Do not repair Gold or infer shell behavior from its historical wording.",
+      "id": "n001"
+    },
+    {
+      "answerability": "ANSWERABLE_FOR_MISSING_GETPATH_OBLIGATION_BY_SAVED_SOURCE",
+      "earliest_plausible_owner": "V1/G2",
+      "finding": "GetPath(Int_t shortID) and initialization are present in admitted Sphinx evidence. Both V1 and V2 deterministic inputs reject qualified PndGeoHandling::GetPath; the supported method claim is not rendered and point.1 remains missing. Do not assign this transition automatically to frontier.",
+      "id": "n007"
+    },
+    {
+      "answerability": "UNRESOLVED_FOR_REPOSITORY_EXPLICIT_DESCRIPTION",
+      "earliest_plausible_owner": "UNRESOLVED",
+      "finding": "The current unsupported/irrelevant absence assertion about repository description is rejected; the factory role survives. The old model_framework description was supported by a thesis rather than explicit repository prose, so runtime-complete to insufficient is an observed sentinel transition, not independently established false insufficiency.",
+      "id": "n014"
+    },
+    {
+      "answerability": "ANSWERABLE_BY_SAVED_LOCKED_HEADER_SOURCE",
+      "earliest_plausible_owner": "R2",
+      "finding": "All old/new channel rankings are identical. The PndHelixPropagator header is RRF rank 18 with identical score in both authoritative traces, previously reranked 2 and cited. The new 16 ordinary / 14 frontier offer excludes it. Header source directly contains Radius, circle-center and destination-propagation support; current final evidence lacks that header and V1 marks the analytic-helix explanation missing. This is credible generic collateral completeness regression from displacing relevant cross-channel RRF evidence, not merely provider answer variability.",
+      "id": "n024"
+    },
+    {
+      "answerability": "ANSWERABLE_FOR_DOWNSTREAM_ACCESS_BY_SAVED_MACRO_AND_HEADER",
+      "earliest_plausible_owner": "V1/G2",
+      "finding": "Relevant softrig macro and OnlineFilterInfo header are selected and cited. Raw V1 says complete, but point.2.rel.1 receives LOCAL_INVALID / INVALID_SUPPORTER and G2 preserves only point.1. No A1 relation target is authorized. Saved artifacts identify the review-validation block, but do not prove that local containment itself is defective or that frontier caused it.",
+      "id": "n028"
+    },
+    {
+      "answerability": "ANSWERABLE_BY_SAVED_EVENT_GENERATORS_DOCUMENTATION",
+      "earliest_plausible_owner": "V1/G2",
+      "finding": "Both category differences and FTF current-standard background are explicit in selected/cited EventGenerators.rst and Sphinx objects. The raw review says complete, but required relation point.1.rel.1 is LOCAL_INVALID / BAD_QUOTE; G2 retains only point.2 and no relation revision target. This is a saved review-validation block, not missing retrieval support.",
+      "id": "n031"
+    }
+  ],
+  "rerun_identity_match": {
+    "embedding_model_id": true,
+    "generation_model_id": true,
+    "gold_benchmark_version": true,
+    "gold_dataset_hash": true,
+    "index_identity": true,
+    "index_identity_payload": true,
+    "normalized_manifest_hash": true,
+    "normalized_output_hashes": true,
+    "package_versions": true,
+    "prompt_hash": true,
+    "query_expansion_hash": true,
+    "retrieval_policy_hash": true,
+    "source_manifest_hash": true
+  },
+  "rerun_manifest": {
+    "audit_resolution_hash": "e7c15d7a6eb9fa290a57dbbefbd5cb0f701b2d01265ac74cf8a01883ebcabf87",
+    "capture_stage_trace": true,
+    "case_ids": [
+      "n002",
+      "n018"
+    ],
+    "deadline_minutes": null,
+    "embedding_dimensions": 3072,
+    "embedding_model_id": "gemini-embedding-2",
+    "evaluation_judge_model_id": "gemini-3.8-flash",
+    "evaluator_catalog": null,
+    "evaluator_catalog_path": null,
+    "generation_model_id": "gemini-3.8-flash",
+    "gold_acceptance_exposed": true,
+    "gold_benchmark_version": "novel-v1-dev-0.3.0",
+    "gold_dataset_hash": "25ad18fcf76ab2796aa18ae961bdc4faf076f0c98a8a5226413ec95e58252223",
+    "gold_dataset_path": "C:\\Users\\Jinxin.DESKTOP-H6SSTQH\\Desktop\\Agent_learn\\PANDA_Agent\\evaluation\\novel\\v1\\novel_dev.yaml",
+    "gold_expected_split_counts": {
+      "novel_dev": 28
+    },
+    "gold_release_eligible": false,
+    "index_identity": "8172f9a640e62977be6e911bfb4848ce3aecd0994f1f3ba51a0985bffec62cb9",
+    "index_identity_payload": {
+      "distance": "cosine",
+      "embedding_dimensions": 3072,
+      "embedding_model": "gemini-embedding-2",
+      "index_schema_version": "4",
+      "sparse": {
+        "avg_len": 256.0,
+        "b": 0.75,
+        "disable_stemmer": false,
+        "fastembed_version": "0.7.4",
+        "hash_function": "mmh3.hash",
+        "k": 1.2,
+        "language": "english",
+        "mmh3_version": "5.2.1",
+        "model_name": "Qdrant/bm25",
+        "modifier": "idf",
+        "py_rust_stemmers_version": "0.1.8",
+        "stemmer": "SnowballStemmer",
+        "stopwords_sha256": "019f104ba2ed07436d05f9cdd3383034ad66014edc27fc651f837e1a038b6451",
+        "token_max_length": 40,
+        "tokenizer": "SimpleTokenizer",
+        "vector_name": "sparse"
+      }
+    },
+    "limit": null,
+    "max_model_calls": null,
+    "max_token_usage": null,
+    "mode": "qa",
+    "normalized_manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "normalized_output_hashes": {
+      "aliases": "2e59201f5bcb7f5c515ec6c573af1f15f18e8a8bd97dbd34ceb54aa0fc1fe7da",
+      "errors": "ea0b09cc07dc78ae83851fb247a31514350cd6ae1abd7fcdd03c61e4a20e1d7d",
+      "objects": "bf0168747f1c9b424048cef57fc6c0873f21a50844a2a45557c514239cc75316",
+      "relation_candidates": "b45264ff7451573c63c7d1e0b9fc169f79a97c5e256f3f70fd996517dfb80048",
+      "relations": "f6ef2298162bd99354a44395357ab8f3524413dea87426f2db7dd8bbfb70b395",
+      "workflows": "cee7d4406cab5490ed0002710d4ae9013e35ea0a515cac2c0785386a825e9026"
+    },
+    "official": false,
+    "package_versions": {
+      "google-genai": "2.13.0",
+      "langgraph": "1.2.10",
+      "panda-research-qa-agent": "0.1.0",
+      "psycopg": "3.3.4",
+      "python": "3.12.14",
+      "qdrant-client": "1.15.1"
+    },
+    "pipeline_boundaries": {
+      "answer_generation": true,
+      "external_judge": false,
+      "runtime_verification": true
+    },
+    "prompt_hash": "5147f85c09a933609d91f4fa4e7bf3d8fbfa530684a3ecea4d3aaed72c3e04ce",
+    "prompt_version": "3.12.0",
+    "query_expansion_hash": "84c93c94e70e8e7819a2cd8ecdd18f8fce41996d616d5ebc34fe2deb823e039a",
+    "repository_identity": {
+      "commit": "3b26d8d622d11c3438c98ee63938ebe062477998",
+      "dirty": false
+    },
+    "retrieval_policy_hash": "fb2cd99bf500d5924931cf0fa6d5ea801efc7939b4c469fad8fbc0b5b082ced9",
+    "run_started_at": "2026-09-29T14:51:42.595997+00:00",
+    "runtime_generation_model_id": "gemini-3.8-flash",
+    "schema_version": "1.0",
+    "source_manifest_hash": "9925ec31a6122e05388806990f79aae036f3b0989c4584d24f2092bc4edb3d94",
+    "split": "novel_dev"
+  },
+  "rerun_run_id": "g4-r2-post-repair-n002-n018-rerun-v1",
+  "rerun_runner_final_state": {
+    "attempt_completed_at": "2026-09-29T14:54:30.321577+00:00",
+    "attempt_model_calls": 12,
+    "attempt_started_at": "2026-09-29T14:51:45.258337+00:00",
+    "attempt_token_usage": 80517,
+    "cohort_decision": {
+      "expected_case_count": 2,
+      "extra_case_ids": [],
+      "missing_case_ids": [],
+      "passed": false,
+      "reason": "complete cohort (2/2 scored); quality gates failed",
+      "retryable_case_ids": [],
+      "scored_case_count": 2,
+      "status": "COMPLETE",
+      "terminal_exception_case_ids": [],
+      "verdict": "FAIL"
+    },
+    "cohort_status": "COMPLETE",
+    "completed_ids": [
+      "n002",
+      "n018"
+    ],
+    "cumulative_model_calls": 12,
+    "cumulative_token_usage": 80517,
+    "model_calls": 12,
+    "official_decision": "FAIL",
+    "status": "complete",
+    "stop_reason": null,
+    "token_usage": 80517
+  },
+  "rerun_start_head": "3b26d8d622d11c3438c98ee63938ebe062477998",
+  "rerun_usage": {
+    "embedding_calls": 2,
+    "external_judge_calls": 0,
+    "generation_calls": 10,
+    "model_calls": 12,
+    "token_usage": 80517
+  },
+  "run_id": "g4-r2-post-repair-novel-dev-regression-v1",
+  "runner_final_state": {
+    "attempt_completed_at": "2026-09-29T14:26:27.280260+00:00",
+    "attempt_model_calls": 153,
+    "attempt_started_at": "2026-09-29T13:43:49.179722+00:00",
+    "attempt_token_usage": 1107119,
+    "cohort_decision": {
+      "decision_reason": "PRE_RELEASE_EXECUTION_INCOMPLETE",
+      "expected_case_count": 28,
+      "extra_case_ids": [],
+      "missing_case_ids": [],
+      "passed": null,
+      "reason": "incomplete cohort (26/28 scored) cannot be recovered under verified frozen candidate identity",
+      "retryable_case_ids": [],
+      "scored_case_count": 26,
+      "status": "INCOMPLETE",
+      "terminal_exception_case_ids": [
+        "n002",
+        "n018"
+      ],
+      "verdict": "INCONCLUSIVE"
+    },
+    "cohort_status": "INCOMPLETE",
+    "completed_ids": [
+      "n001",
+      "n002",
+      "n003",
+      "n004",
+      "n005",
+      "n006",
+      "n007",
+      "n008",
+      "n009",
+      "n010",
+      "n014",
+      "n015",
+      "n016",
+      "n017",
+      "n018",
+      "n019",
+      "n020",
+      "n021",
+      "n022",
+      "n023",
+      "n024",
+      "n025",
+      "n026",
+      "n027",
+      "n028",
+      "n029",
+      "n030",
+      "n031"
+    ],
+    "cumulative_model_calls": 153,
+    "cumulative_token_usage": 1107119,
+    "model_calls": 153,
+    "official_decision": "INCONCLUSIVE",
+    "status": "inconclusive",
+    "stop_reason": null,
+    "token_usage": 1107119
+  },
+  "runtime_coverage_distribution": {
+    "0.0": 1,
+    "0.5": 4,
+    "0.6666666666666666": 1,
+    "1.0": 22
+  },
+  "schema_version": "g4-exposed-post-repair-regression-v2",
+  "selection_policy": "Keep 26 original QA records; replace n002/n018 with the one explicitly authorized rerun, regardless of outcome. No best-of selection.",
+  "start_head": "a22c8f70eeebe4a53490e11a4b6852561ca8afa6",
+  "target_rerun_transitions": {
+    "n002": {
+      "initial": {
+        "category": "OTHER_ERROR",
+        "evidence": [],
+        "exception": {
+          "category": null,
+          "message": "1 validation error for _Ambiguity\nstatus\n  Input should be 'clear' or 'ambiguous' [type=literal_error, input_value='none', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/literal_error",
+          "retryable": false,
+          "type": "ValidationError"
+        },
+        "expected_status": "answered",
+        "expected_status_correct": null,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": null,
+          "critical_final_evidence_recall": null,
+          "final_evidence_recall": null,
+          "forbidden_evidence": null,
+          "hallucinated_identifiers": null,
+          "identifier_mentions": null,
+          "required_source_coverage": null,
+          "wrong_version_evidence": null
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": null,
+        "runtime_coverage_validation": null,
+        "runtime_covered_point_ids": [],
+        "runtime_final_claims_flagged_unsupported": null,
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "selected_evidence_ids": [],
+        "status": "error",
+        "trace_capture_status": null,
+        "verification_errors": []
+      },
+      "rerun": {
+        "category": "ANSWERED_COMPLETE",
+        "evidence": [
+          {
+            "cited": true,
+            "evidence_id": "evidence.7971affdc89fc0f9b4272aeb",
+            "locator": {
+              "end_line": 12,
+              "path": "requirements.txt",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [],
+              "snapshot_date": null,
+              "start_line": 1,
+              "symbol": null,
+              "url": null
+            },
+            "object_id": "object.a45779701b982aff3e7554da",
+            "source_id": "luminosityfit",
+            "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+          }
+        ],
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [],
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "requirements.txt"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 21,
+          "policy_role_frontier": 9
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "selected_evidence_ids": [
+          "evidence.7971affdc89fc0f9b4272aeb",
+          "evidence.7e68b750e40a397c900ffc3f",
+          "evidence.8462e9e3a958e7971739c9a5",
+          "evidence.17e398256dd6f0b20e2010ce",
+          "evidence.e89887abc2de635cf6e09d20",
+          "evidence.4e55702160c72036376c55e5",
+          "evidence.36c39b4683b7142e0f2839d5",
+          "evidence.5ecb794b9751a985852b6e8a",
+          "evidence.23ec4edf89d423636b813e3d"
+        ],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      }
+    },
+    "n018": {
+      "initial": {
+        "category": "OTHER_ERROR",
+        "evidence": [],
+        "exception": {
+          "category": null,
+          "message": "1 validation error for _Ambiguity\nstatus\n  Input should be 'clear' or 'ambiguous' [type=literal_error, input_value='none', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/literal_error",
+          "retryable": false,
+          "type": "ValidationError"
+        },
+        "expected_status": "answered",
+        "expected_status_correct": null,
+        "frontier_used": null,
+        "metrics": {
+          "citation_integrity": null,
+          "critical_final_evidence_recall": null,
+          "final_evidence_recall": null,
+          "forbidden_evidence": null,
+          "hallucinated_identifiers": null,
+          "identifier_mentions": null,
+          "required_source_coverage": null,
+          "wrong_version_evidence": null
+        },
+        "pool_observed": false,
+        "pool_reason_counts": {},
+        "runtime_answer_point_coverage": null,
+        "runtime_coverage_validation": null,
+        "runtime_covered_point_ids": [],
+        "runtime_final_claims_flagged_unsupported": null,
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "selected_evidence_ids": [],
+        "status": "error",
+        "trace_capture_status": null,
+        "verification_errors": []
+      },
+      "rerun": {
+        "category": "ANSWERED_INCOMPLETE",
+        "evidence": [
+          {
+            "cited": true,
+            "evidence_id": "evidence.aef1029b460a3b22035622ff",
+            "locator": {
+              "end_line": null,
+              "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [
+                "2.4. Monte Carlo Truth Match \u00b6",
+                "2.4. Monte Carlo Truth Match \u00b6",
+                "2.4.2. Full MC truth tree match \u00b6"
+              ],
+              "snapshot_date": "2026-07-30",
+              "start_line": null,
+              "symbol": null,
+              "url": "https://webdocs.gsi.de/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html#full-mc-truth-tree-match"
+            },
+            "object_id": "object.9177635263b46e8bee8b775a",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+          },
+          {
+            "cited": true,
+            "evidence_id": "evidence.00c987d640013db2875fefe3",
+            "locator": {
+              "end_line": null,
+              "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [
+                "2.4. Monte Carlo Truth Match \u00b6",
+                "2.4. Monte Carlo Truth Match \u00b6",
+                "2.4.1. Accessing the MC truth \u00b6"
+              ],
+              "snapshot_date": "2026-07-30",
+              "start_line": null,
+              "symbol": null,
+              "url": "https://webdocs.gsi.de/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html#accessing-the-mc-truth"
+            },
+            "object_id": "object.b01af63fa4bb2846dd4904d3",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+          },
+          {
+            "cited": true,
+            "evidence_id": "evidence.d52108d61ba7fd98e185dd49",
+            "locator": {
+              "end_line": null,
+              "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [
+                "2.4. Monte Carlo Truth Match \u00b6",
+                "2.4. Monte Carlo Truth Match \u00b6"
+              ],
+              "snapshot_date": "2026-07-30",
+              "start_line": null,
+              "symbol": null,
+              "url": "https://webdocs.gsi.de/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html#monte-carlo-truth-match"
+            },
+            "object_id": "object.d0e0bbf7c1eeae3b4a7548b7",
+            "source_id": "pandaroot_sphinx_2023_08_25_dev",
+            "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+          },
+          {
+            "cited": true,
+            "evidence_id": "evidence.0e87ee452eca4d3f8a836620",
+            "locator": {
+              "end_line": 56,
+              "path": "docs/Tutorials/tut_02_04_analysis_mctruth.rst",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [],
+              "snapshot_date": null,
+              "start_line": 56,
+              "symbol": null,
+              "url": null
+            },
+            "object_id": "object.0fb73a440793e2a648c533a0",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "cited": true,
+            "evidence_id": "evidence.66beb6fd9691050770b7879f",
+            "locator": {
+              "end_line": 24,
+              "path": "docs/Tutorials/tut_02_04_analysis_mctruth.rst",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [],
+              "snapshot_date": null,
+              "start_line": 23,
+              "symbol": null,
+              "url": null
+            },
+            "object_id": "object.a4c33ca41b8d18a846d7c367",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          },
+          {
+            "cited": true,
+            "evidence_id": "evidence.cc414dd6df811c7deb8e0cad",
+            "locator": {
+              "end_line": 5,
+              "path": "docs/Tutorials/tut_02_04_analysis_mctruth.rst",
+              "pdf_page": null,
+              "printed_page": null,
+              "section_path": [],
+              "snapshot_date": null,
+              "start_line": 1,
+              "symbol": null,
+              "url": null
+            },
+            "object_id": "object.d945491cbd97a8df823565fb",
+            "source_id": "pandaroot",
+            "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+          }
+        ],
+        "exception": null,
+        "expected_status": "answered",
+        "expected_status_correct": true,
+        "frontier_used": true,
+        "manual_critical_answer_points_missing": [
+          "p1",
+          "p2"
+        ],
+        "manual_review_ref": "analyst_review.n018; novel_dev.yaml#n018.p1,p2; rerun cited MC truth tutorial",
+        "metrics": {
+          "citation_integrity": true,
+          "critical_final_evidence_recall": 1.0,
+          "final_evidence_recall": 1.0,
+          "forbidden_evidence": [],
+          "hallucinated_identifiers": [],
+          "identifier_mentions": [
+            "PndAnalysis",
+            "PndAnalysis::McTruthMatch"
+          ],
+          "required_source_coverage": true,
+          "wrong_version_evidence": []
+        },
+        "pool_observed": true,
+        "pool_reason_counts": {
+          "ordinary_rrf": 20,
+          "policy_role_frontier": 10
+        },
+        "production_category": "ANSWERED_COMPLETE",
+        "runtime_answer_point_coverage": 1.0,
+        "runtime_coverage_validation": "VALID",
+        "runtime_covered_point_ids": [
+          "point.1",
+          "point.2"
+        ],
+        "runtime_final_claims_flagged_unsupported": [],
+        "runtime_missing_relations": [],
+        "runtime_missing_required_point_ids": [],
+        "selected_evidence_ids": [
+          "evidence.aef1029b460a3b22035622ff",
+          "evidence.112ac2e9050acb08eed4ef79",
+          "evidence.00c987d640013db2875fefe3",
+          "evidence.d52108d61ba7fd98e185dd49",
+          "evidence.e750328a26f87c3d4ed25593",
+          "evidence.36f5724fb5306d7484de97e0",
+          "evidence.8886d5072bb72d81813370e7",
+          "evidence.c2a0b6ec30250754c28796ff",
+          "evidence.f704437e333af4b4d02037d8",
+          "evidence.0e87ee452eca4d3f8a836620",
+          "evidence.66beb6fd9691050770b7879f",
+          "evidence.cc414dd6df811c7deb8e0cad"
+        ],
+        "status": "answered",
+        "trace_capture_status": "COMPLETE",
+        "verification_errors": []
+      }
+    }
+  },
+  "trace_capture_counts": {
+    "COMPLETE": 28
+  },
+  "transition_matrix": {
+    "ANSWERED_COMPLETE": {
+      "ANSWERED_COMPLETE": 13,
+      "ANSWERED_INCOMPLETE": 1,
+      "INSUFFICIENT_EVIDENCE": 5,
+      "OTHER_ERROR": 0,
+      "VERSION_CONFLICT": 0
+    },
+    "ANSWERED_INCOMPLETE": {
+      "ANSWERED_COMPLETE": 0,
+      "ANSWERED_INCOMPLETE": 0,
+      "INSUFFICIENT_EVIDENCE": 0,
+      "OTHER_ERROR": 0,
+      "VERSION_CONFLICT": 0
+    },
+    "INSUFFICIENT_EVIDENCE": {
+      "ANSWERED_COMPLETE": 7,
+      "ANSWERED_INCOMPLETE": 1,
+      "INSUFFICIENT_EVIDENCE": 1,
+      "OTHER_ERROR": 0,
+      "VERSION_CONFLICT": 0
+    },
+    "OTHER_ERROR": {
+      "ANSWERED_COMPLETE": 0,
+      "ANSWERED_INCOMPLETE": 0,
+      "INSUFFICIENT_EVIDENCE": 0,
+      "OTHER_ERROR": 0,
+      "VERSION_CONFLICT": 0
+    },
+    "VERSION_CONFLICT": {
+      "ANSWERED_COMPLETE": 0,
+      "ANSWERED_INCOMPLETE": 0,
+      "INSUFFICIENT_EVIDENCE": 0,
+      "OTHER_ERROR": 0,
+      "VERSION_CONFLICT": 0
+    }
+  },
+  "usage": {
+    "embedding_calls": 29,
+    "external_judge_calls": 0,
+    "generation_calls": 136,
+    "model_calls": 165,
+    "token_usage": 1187636
+  },
+  "verification_status": "FAIL"
+}

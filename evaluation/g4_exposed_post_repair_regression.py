@@ -1,4 +1,4 @@
-"""Read-only comparison of the single exposed G4 regression and saved G3 QA run."""
+"""Read-only exposed G4 comparison, optionally selecting an authorized target rerun."""
 from __future__ import annotations
 import argparse
 import json
@@ -8,6 +8,7 @@ from pathlib import Path
 
 OLD_RUN = 'g3-evidence-admission-audit-novel-dev-v1'
 NEW_RUN = 'g4-r2-post-repair-novel-dev-regression-v1'
+TARGET_RERUN = 'g4-r2-post-repair-n002-n018-rerun-v1'
 LINEAGE = 'a22c8f70eeebe4a53490e11a4b6852561ca8afa6'
 OLD_LINEAGE = 'a0106bd5eff93646f34f5e50e161e8be8a49d680'
 TARGET_OBJECTS = {
@@ -112,11 +113,27 @@ def collateral_pool_loss(root):
         'pool_displacement_confidence':'HIGH: identical channel rankings and identical authoritative RRF trace entry; actual new pool excludes it',
         'qa_causal_limit':'Observed QA transition is not a deterministic paired causal effect estimate; no new reranker/answer counterfactual was run'}
 
-def analyze(root):
+def analyze(root, rerun_run_id=None):
     runs = root/'data/evaluation/runs'
     old_manifest, new_manifest = read(runs/OLD_RUN/'manifest.json'), read(runs/NEW_RUN/'manifest.json')
     old = {p.stem: snapshot(read(p)) for p in (runs/OLD_RUN/'records').glob('*.json')}
-    new = {p.stem: snapshot(read(p)) for p in (runs/NEW_RUN/'records').glob('*.json')}
+    selected_paths = {p.stem:p for p in (runs/NEW_RUN/'records').glob('*.json')}
+    initial_rows = {id:snapshot(read(path)) for id,path in selected_paths.items()}
+    rerun_manifest = None
+    if rerun_run_id:
+        assert rerun_run_id == TARGET_RERUN, 'Only the reviewed, explicitly authorized target rerun is supported'
+        rerun_manifest = read(runs/rerun_run_id/'manifest.json')
+        assert set(rerun_manifest['case_ids']) == {'n002', 'n018'}
+        assert rerun_manifest['mode'] == 'qa' and rerun_manifest['split'] == 'novel_dev'
+        assert rerun_manifest['capture_stage_trace'] and not rerun_manifest['official'] and not rerun_manifest.get('candidate_id')
+        for key in ['source_manifest_hash','normalized_manifest_hash','normalized_output_hashes','index_identity',
+                    'index_identity_payload','gold_dataset_hash','gold_benchmark_version','prompt_hash',
+                    'generation_model_id','embedding_model_id','retrieval_policy_hash','query_expansion_hash','package_versions']:
+            assert rerun_manifest[key] == new_manifest[key], key
+        replacement_paths = {p.stem:p for p in (runs/rerun_run_id/'records').glob('*.json')}
+        assert set(replacement_paths) == {'n002', 'n018'}
+        selected_paths.update(replacement_paths)
+    new = {id:snapshot(read(path)) for id,path in selected_paths.items()}
     expected_ids = old_manifest['case_ids']
     for row in new.values():
         row['production_category'] = row['category']
@@ -127,6 +144,12 @@ def analyze(root):
         new['n006']['manual_critical_answer_points_missing'] = ['p2']
         new['n006']['category'] = 'ANSWERED_INCOMPLETE'
         new['n006']['manual_review_ref'] = 'analyst_review.n006; novel_dev.yaml#n006.p2; prior G4 answerability review'
+    if rerun_run_id and new['n018']['status'] == 'answered':
+        # Bounded rerun review: the saved answer omits null checking and full-tree
+        # preparation required by the unchanged Gold and its cited tutorial.
+        new['n018']['manual_critical_answer_points_missing'] = ['p1', 'p2']
+        new['n018']['category'] = 'ANSWERED_INCOMPLETE'
+        new['n018']['manual_review_ref'] = 'analyst_review.n018; novel_dev.yaml#n018.p1,p2; rerun cited MC truth tutorial'
 
     assert set(new) <= set(expected_ids) and len(expected_ids) == 28
     assert new_manifest['repository_identity'] == {'commit':LINEAGE, 'dirty':False}
@@ -140,13 +163,21 @@ def analyze(root):
     for id in sorted(new):
         a,b=old[id],new[id];matrix[a['category']][b['category']]+=1
         cases.append({'id':id,'old':{k:v for k,v in a.items() if k not in ['evidence','selected_evidence_ids']},'new':{k:v for k,v in b.items() if k not in ['evidence','selected_evidence_ids']},'old_record_ref':str((runs/OLD_RUN/'records'/f'{id}.json').relative_to(root)),
-            'new_record_ref':str((runs/NEW_RUN/'records'/f'{id}.json').relative_to(root))})
+            'new_record_ref':str(selected_paths[id].relative_to(root))})
     attempts=[json.loads(line) for line in (runs/NEW_RUN/'attempts.jsonl').read_text(encoding='utf-8').splitlines() if line]
+    initial_attempts = list(attempts)
+    rerun_attempts = []
+    if rerun_run_id:
+        rerun_attempts = [json.loads(line) for line in (runs/rerun_run_id/'attempts.jsonl').read_text(encoding='utf-8').splitlines() if line]
+        attempts.extend(rerun_attempts)
     usage={k:sum(a.get('model_call_breakdown',{}).get('runtime',{}).get(k,0) for a in attempts) for k in ['generation_calls','embedding_calls']}
     usage.update(model_calls=sum(a.get('model_calls',0) for a in attempts),token_usage=sum(a.get('token_usage',0) for a in attempts),
         external_judge_calls=sum(a.get('model_call_breakdown',{}).get('judge',{}).get('model_calls',0) for a in attempts))
     invocation_path=root/'data/evaluation/g4-post-repair-invocations.jsonl'
     invocations=[json.loads(line) for line in invocation_path.read_text(encoding='utf-8').splitlines() if line]
+    if rerun_run_id:
+        invocations.extend(json.loads(line) for line in (root/'data/evaluation/g4-target-rerun-invocations.jsonl').read_text(encoding='utf-8').splitlines() if line)
+        assert any(item['run_id'] == rerun_run_id for item in invocations)
     completed = [id for id,r in new.items() if not r['exception']]
     previously_complete=[id for id,r in old.items() if r['expected_status']=='answered' and r['category']=='ANSWERED_COMPLETE'
         and r['metrics']['citation_integrity'] is True and not any(r['metrics'][k] for k in ['hallucinated_identifiers','wrong_version_evidence','forbidden_evidence'])]
@@ -160,23 +191,23 @@ def analyze(root):
     detail={}
     for id,objects in TARGET_OBJECTS.items():
         if id not in new:continue
-        record=read(runs/NEW_RUN/'records'/f'{id}.json');s=new[id]
+        record=read(selected_paths[id]);s=new[id]
         pool=record.get('diagnostics',{}).get('rerank_pool_entries',[])
         final={e['object_id'] for e in s['evidence']};cited={e['object_id'] for e in s['evidence'] if e['cited']}
         detail[id]={'old':{k:old[id][k] for k in ['status','category','runtime_answer_point_coverage']},'new':{k:s[k] for k in ['status','category','production_category','runtime_answer_point_coverage','runtime_missing_required_point_ids','runtime_missing_relations','manual_critical_answer_points_missing','evidence']},'rerank_pool_entries':pool,'historically_lost_objects':[{'object_id':obj,
             'pool_entry':next((p for p in pool if p['object_id']==obj),None),'in_final_evidence':obj in final,'cited':obj in cited,'channel_ranks_1based':{k:(v.index(obj)+1 if obj in v else None) for k,v in record.get('diagnostics',{}).get('rankings',{}).items()},'reranked_rank_1based':(record.get('diagnostics',{}).get('reranked_object_ids',[]).index(obj)+1 if obj in record.get('diagnostics',{}).get('reranked_object_ids',[]) else None)} for obj in objects]}
-    return {
+    output = {
         'schema_version':'g4-exposed-post-repair-regression-v1','run_id':NEW_RUN,'old_run_id':OLD_RUN,
         'start_head':LINEAGE,'evaluated_product_behavior_lineage':LINEAGE,'old_product_behavior_lineage':OLD_LINEAGE,
         'old_manifest':old_manifest,'new_manifest':new_manifest,'preflight_ref':'data/evaluation/g4-post-repair-preflight.json',
-        'identity_match':matches,'model_config_identity_match':matches['generation_model_id'] and matches['embedding_model_id'],'product_identity':read(root/'data/evaluation/g4-post-repair-preflight.json')['product'] | {'active_gold':'m6-benchmark-v2.11','active_calibration':read(root/'data/evaluation/g4-post-repair-preflight.json')['active_calibration_id']},'observed_semantic_verification_model_ids':sorted({read(p).get('diagnostics',{}).get('model_roles',{}).get('semantic_verification_model') for p in (runs/NEW_RUN/'records').glob('*.json')} - {None}),'package_version_differences':{k:{'old':old_manifest['package_versions'].get(k),'new':v} for k,v in new_manifest['package_versions'].items() if v!=old_manifest['package_versions'].get(k)},
+        'identity_match':matches,'model_config_identity_match':matches['generation_model_id'] and matches['embedding_model_id'],'product_identity':read(root/'data/evaluation/g4-post-repair-preflight.json')['product'] | {'active_gold':'m6-benchmark-v2.11','active_calibration':read(root/'data/evaluation/g4-post-repair-preflight.json')['active_calibration_id']},'observed_semantic_verification_model_ids':sorted({read(p).get('diagnostics',{}).get('model_roles',{}).get('semantic_verification_model') for p in selected_paths.values()} - {None}),'package_version_differences':{k:{'old':old_manifest['package_versions'].get(k),'new':v} for k,v in new_manifest['package_versions'].items() if v!=old_manifest['package_versions'].get(k)},
         'pairwise_causal_interpretation':'NONDETERMINISTIC_EXPOSED_REGRESSION','provider_run_nondeterminism':'present as a methodological limitation',
         'runner_final_state':read(runs/NEW_RUN/'run_status.json'),'completion':{'expected':28,'completed':len(completed),'terminal_records':sum(not r['exception'] or not r['exception'].get('retryable') for r in new.values()),'incomplete_ids':sorted(id for id in expected_ids if id not in new or (new[id]['exception'] and new[id]['exception'].get('retryable'))),'nonretryable_exception_case_ids':sorted(id for id,r in new.items() if r['exception'] and not r['exception'].get('retryable')),
             'runner_invocations':len(invocations),'invocations':invocations,'case_attempts':len(attempts),
             'retryable_infrastructure_attempts':sum(bool(a.get('exception',{}).get('retryable')) for a in attempts),
             'nonretryable_exception_attempts':sum(bool(a.get('exception')) and not a['exception'].get('retryable') for a in attempts),
             'attempts_per_case':dict(sorted(Counter(a['id'] for a in attempts).items()))},
-        'usage':usage,'old_evaluator_aggregate':{k:v for k,v in aggregate_metrics([read(p) for p in (runs/OLD_RUN/'records').glob('*.json')]).items() if k not in ['per_intent','latency_ms']},'new_evaluator_aggregate':{k:v for k,v in aggregate_metrics([read(p) for p in (runs/NEW_RUN/'records').glob('*.json')]).items() if k not in ['per_intent','latency_ms']},'old_status_counts':dict(Counter(r['status'] for r in old.values())),
+        'usage':usage,'old_evaluator_aggregate':{k:v for k,v in aggregate_metrics([read(p) for p in (runs/OLD_RUN/'records').glob('*.json')]).items() if k not in ['per_intent','latency_ms']},'new_evaluator_aggregate':{k:v for k,v in aggregate_metrics([read(p) for p in selected_paths.values()]).items() if k not in ['per_intent','latency_ms']},'old_status_counts':dict(Counter(r['status'] for r in old.values())),
         'new_status_counts':dict(Counter(r['status'] for r in new.values())),
         'old_category_counts':{c:sum(r['category']==c for r in old.values()) for c in CATEGORIES},
         'new_production_category_counts':{c:sum(r['production_category']==c for r in new.values()) for c in CATEGORIES},'new_category_counts':{c:sum(r['category']==c for r in new.values()) for c in CATEGORIES},
@@ -199,13 +230,38 @@ def analyze(root):
         'evidence_boundary':{'exposed_cohort':True,'fresh_confirmation':False,'fresh_generalization_evidence':False,'novel_validation_evidence':False,'release_evidence':False},
         'deterministic_controls':{'accepted_normal_r2_control_count':17,'accepted_g4_control_count':18,'rerun_in_this_task':False,'ref':'evaluation/G4_R2_NORMAL_PRODUCT_POOL_INTEGRATION_CORRECTION.md'},'changes':dict.fromkeys(['product_source_change','prompt_change','config_change','schema_change','dataset_change','gold_change','calibration_change'],False),
     }
+    if rerun_run_id:
+        def attempt_usage(rows):
+            return {'model_calls':sum(a.get('model_calls',0) for a in rows),
+                'token_usage':sum(a.get('token_usage',0) for a in rows),
+                'generation_calls':sum(a.get('model_call_breakdown',{}).get('runtime',{}).get('generation_calls',0) for a in rows),
+                'embedding_calls':sum(a.get('model_call_breakdown',{}).get('runtime',{}).get('embedding_calls',0) for a in rows),
+                'external_judge_calls':sum(a.get('model_call_breakdown',{}).get('judge',{}).get('model_calls',0) for a in rows)}
+        output.update(schema_version='g4-exposed-post-repair-regression-v2',
+            analysis_kind='DIAGNOSTIC_COMPOSITE_WITH_EXPLICIT_TARGET_RERUN',
+            component_run_ids=[NEW_RUN,rerun_run_id],rerun_run_id=rerun_run_id,rerun_manifest=rerun_manifest,
+            rerun_start_head=rerun_manifest['repository_identity']['commit'],
+            rerun_runner_final_state=read(runs/rerun_run_id/'run_status.json'),
+            full_cohort_gate_passed=False,
+            selection_policy='Keep 26 original QA records; replace n002/n018 with the one explicitly authorized rerun, regardless of outcome. No best-of selection.',
+            rerun_identity_match={key:rerun_manifest[key] == new_manifest[key] for key in [
+                'source_manifest_hash','normalized_manifest_hash','normalized_output_hashes','index_identity',
+                'index_identity_payload','gold_dataset_hash','gold_benchmark_version','prompt_hash',
+                'generation_model_id','embedding_model_id','retrieval_policy_hash','query_expansion_hash','package_versions']},
+            initial_completion={'completed':sum(not r['exception'] for r in initial_rows.values()),'case_attempts':len(initial_attempts),
+                'nonretryable_exception_case_ids':sorted(id for id,r in initial_rows.items() if r['exception'] and not r['exception'].get('retryable'))},
+            initial_usage=attempt_usage(initial_attempts),rerun_usage=attempt_usage(rerun_attempts),
+            target_rerun_transitions={id:{'initial':initial_rows[id],'rerun':new[id]} for id in ['n002','n018']})
+        output['coverage_definition'] += ' Authorized n018 rerun is also narrowed to ANSWERED_INCOMPLETE: critical Gold p1 null checking and p2 composite typing/EvtGen PDG initialization are absent, although its production receipt is complete.'
+    return output
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--project-root',type=Path,default=Path.cwd());parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--review',type=Path,help='Bounded human-review JSON, or the committed result containing analyst_review')
+    parser.add_argument('--rerun-run-id',help='Read-only n002/n018 replacement run; never overwrites the initial run')
     args=parser.parse_args();root=args.project_root.resolve()
     assert not args.output.resolve().is_relative_to(root/'data/evaluation/runs'), 'analysis output must not overwrite a raw run store'
-    result=analyze(root)
+    result=analyze(root,args.rerun_run_id)
     if args.review:
         review=json.loads(args.review.read_text(encoding='utf-8-sig'));review=review.get('analyst_review',review)
         result['analyst_review']=review;result['outcome']=review['outcome'];result['verification_status']=review['verification_status']
@@ -213,5 +269,8 @@ if __name__=='__main__':
             'earliest_plausible_owner':review.get(c['id'],{}).get('earliest_plausible_owner','UNRESOLVED'),'finding':review.get(c['id'],{}).get('finding','Requires bounded review')}
             for c in result['cases'] if c['new']['status']=='insufficient_evidence']
         result['lifecycle']={'phase_g':'IN_PROGRESS / G4_EXPOSED_POST_REPAIR_SAFETY_REGRESSION_REVIEW_REQUIRED','g4':'DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR IMPLEMENTED IN NORMAL PRODUCT PATH / NORMAL-PRODUCTION DETERMINISTIC RED→GREEN PASS / EXPOSED POST-REPAIR REGRESSION ATTEMPT TERMINATED / 26 OF 28 QA RESULTS / SAFETY REGRESSION / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED','next_task_recommendation':review['next_task_recommendation'],'next_task_execution_authorized':False,'fresh_lane_b':review['fresh_lane_b']}
+        if args.rerun_run_id:
+            result['lifecycle']['g4']=result['lifecycle']['g4'].replace('EXPOSED POST-REPAIR REGRESSION ATTEMPT TERMINATED / 26 OF 28 QA RESULTS',
+                f"EXPOSED POST-REPAIR TARGET RERUN COMPLETE / {result['completion']['completed']} OF 28 SELECTED QA RESULTS / DIAGNOSTIC COMPOSITE; ORIGINAL COHORT INCOMPLETE")
     args.output.write_text(json.dumps(result,indent=2,sort_keys=True)+'\n',encoding='utf-8')
     print(json.dumps({'qa_results':result['completion']['completed'],'terminal_records':result['completion']['terminal_records'],'case_attempts':result['completion']['case_attempts'],'outcome':result.get('outcome'),'categories':result['new_category_counts'],'usage':result['usage']},indent=2))
