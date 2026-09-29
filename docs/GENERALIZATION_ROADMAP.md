@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 post-correction exposed verification design commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G4 post-correction replay reproducibility result commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -53,12 +53,12 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_POST_CORRECTION_EXPOSED_VERIFICATION_DESIGN_COMPLETE
+PHASE_G = IN_PROGRESS / G4_POST_CORRECTION_VERIFICATION_INCONCLUSIVE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = HISTORICAL R2 COLLATERAL REGRESSION ESTABLISHED / COLLATERAL RETENTION CORRECTION IMPLEMENTED / DETERMINISTIC CORRECTION VERIFIED / POST-CORRECTION EXPOSED VERIFICATION DESIGNED / POST-CORRECTION EXPOSED RESULT NOT_YET_ESTABLISHED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION EXPOSED VERIFICATION EXECUTION
+G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / POST-CORRECTION EXPOSED VERIFICATION INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE / LAYER B NOT_RUN / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -1073,7 +1073,7 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 
 ### G4 — False-Insufficiency / Conservatism Regression
 
-- **Status:** HISTORICAL R2 COLLATERAL REGRESSION ESTABLISHED / COLLATERAL RETENTION CORRECTION IMPLEMENTED / DETERMINISTIC CORRECTION VERIFIED / POST-CORRECTION EXPOSED VERIFICATION DESIGNED / POST-CORRECTION EXPOSED RESULT NOT_YET_ESTABLISHED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+- **Status:** DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / POST-CORRECTION EXPOSED VERIFICATION INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE / LAYER B NOT_RUN / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
 - **Goal:** Measure and control false refusal / false insufficient_evidence regressions introduced by stricter completeness verification.
 - **Product constraint:** Higher completeness sensitivity must not produce uncontrolled false insufficiency. Correct abstention and unsupported-answer prevention remain required.
 - **Design:** [G4 false-insufficiency / conservatism regression design](../evaluation/G4_FALSE_INSUFFICIENCY_CONSERVATISM_REGRESSION_DESIGN.md) separates independently adjudicated answerability from pipeline outcome, correct abstention from false refusal, and false insufficiency from missed obligations. It records the actual finalization paths, causal ownership, answerability authority, paired deterministic controls, observability limits, and directional denominators. G3 `NO_CHANGE` and G1/G2 safety remain binding. No behavior repair or scientific evaluation is authorized.
@@ -1090,7 +1090,8 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 - **Collateral review and selected correction:** The [G4 R2 collateral retention review](../evaluation/G4_R2_COLLATERAL_RETENTION_COMPLETENESS_FAILURE_REVIEW.md) establishes that the current frontier is formally compliant but its replacement contract is incomplete. Saved-artifact analysis finds 28/28 active cases, 295 frontier entries, 4/10/14 min/median/max, and six 14-frontier/16-RRF pools. n024 is confirmed collateral displacement; n006 remains a role-queue-capacity residual with a separate completeness false-acceptance concern. n002/n017 remain repair-consistent exposed recoveries. The selected `BOUNDED_POLICY_ROLE_CHALLENGER_EXCHANGE_WITH_RANK_WITNESS_RETENTION` uses existing plan ceilings as bounded role/channel witness breadth: every specific exchange must preserve all witness ranks and improve one for its charged role. Capacity is only an upper bound, with strict majority, supplement precedence and pool <=30 retained. There is no new threshold, LLM, R3/admission/verifier/finalization change, product implementation, test execution or scientific/protected access. Design PASS does not change product verification FAIL or establish fresh generalization; exact n006 recovery remains unpromised.
 - **Deterministic collateral correction:** The separately authorized [implementation result](../evaluation/G4_R2_COLLATERAL_RETENTION_IMPLEMENTATION_RESULT.md) records CR-1 RED on unchanged product source, then GREEN under the single shared role/channel rank-witness exchange policy. Componentwise incumbent retention, charged-role improvement and capacity as an upper bound are implemented without a new threshold. CR-1–CR-10 and existing R2-A–I pass in the 31-test focused module; G4 dual-sided safety remains 18/18, with 173 neighboring tests and 27 subtests passing. Structured supplements, strict RRF majority and pool <=30 remain. The implementation commit becomes the new product-behavior lineage. No prompt/schema/config, R3/admission/verifier/finalization, data, Gold, protected access or scientific call changed. Historical exposed regression remains a historical FAIL; post-correction exposed QA and fresh benefit remain unmeasured. Exact n006 recovery is not guaranteed.
 - **Post-correction exposed verification design:** The [two-layer targeted design](../evaluation/G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION_DESIGN.md) selects zero-call exact saved-state replay for n002/n006/n017/n024 as a hard prerequisite, then one three-case draft `qa` run for n002/n017/n024 only if replay passes. It retains n006 as a non-gating quota residual and rejects a full 28-case rerun for this correction. Historical traces have metadata-only candidate rows and no aligned specialized-origin sidecars, so the execution must establish exact replay input reproducibility or stop before live QA; conditional reconstruction is not acceptance evidence. No replay, QA, product change, or fresh generalization result is claimed by the design. Successful scoped correction verification could close G4 at the exposed-development level and permit separately authorized G5 integration, not release validation.
-- **Next recommended step:** Exactly **G4 POST-CORRECTION EXPOSED VERIFICATION EXECUTION**, under separate authorization. The first execution gate is exact saved-input reproducibility, followed by Layer A replay; Layer B remains conditional. No empirical rerun, G5 action or protected evaluation is authorized by this roadmap.
+- **Post-correction execution boundary:** The [execution result](../evaluation/G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION.md) establishes that saved channel rows omit text for many candidates, including the n024 critical incumbent and n006 residual target, and that aligned workflow/graph normal/fallback origins are absent. Four selected successful records/traces exist, but none supplies a lossless corrected-constructor input. Layer A is `INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE`; the corrected pool constructor and Layer B live QA were not invoked. No new empirical correction verdict, fresh generalization, product change, scientific call or protected access follows. Historical exposed FAIL and G3 `NO_CHANGE` remain; G5 stays blocked.
+- **Next recommended step:** Exactly **G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW**, under separate authorization. Decide whether authorized immutable evidence can establish the missing input fields or whether the exact-replay prerequisite needs forward revision. Do not start live QA or G5 from this inconclusive result.
 
 ### G5 — Integrated Candidate
 
@@ -1113,7 +1114,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION EXPOSED VERIFICATION EXECUTION
+NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 

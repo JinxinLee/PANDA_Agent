@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0",
+  "verification_id": "g4-r2-post-correction-exposed-verification-v1",
+  "design_ref": "evaluation/G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION_DESIGN.md",
+  "start_head": "a076e66938e41ffb7d33498af2d248841cbe5cee",
+  "evaluated_product_behavior_lineage": "047201166057edd9859292a1760bc2e9bbf173a2",
+  "product_lineage_check": {
+    "design_descendant_only": true,
+    "changed_paths_since_product_lineage": [
+      "docs/EVALUATION_STATUS.md",
+      "docs/GENERALIZATION_ROADMAP.md",
+      "evaluation/G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION_DESIGN.md"
+    ],
+    "product_source_changed_since_lineage": false
+  },
+  "historical_inputs": {
+    "n002_run_id": "g4-r2-post-repair-n002-n018-rerun-v1",
+    "n006_n017_n024_run_id": "g4-r2-post-repair-novel-dev-regression-v1",
+    "selected_successful_records_present": true,
+    "selected_retrieval_traces_present": true,
+    "results_and_attempts_match_case_records": true,
+    "retrieval_trace_jsonl_matches_case_traces": true,
+    "historical_manifest_identity_match": true,
+    "historical_manifest_identity_fields_compared": [
+      "source_manifest_hash",
+      "normalized_manifest_hash",
+      "normalized_output_hashes",
+      "index_identity",
+      "gold_dataset_hash",
+      "gold_benchmark_version",
+      "prompt_hash",
+      "prompt_version",
+      "generation_model_id",
+      "embedding_model_id",
+      "embedding_dimensions",
+      "retrieval_policy_hash",
+      "query_expansion_hash"
+    ]
+  },
+  "layer_a": {
+    "selected_cases": ["n002", "n006", "n017", "n024"],
+    "input_reproducibility": "NOT_REPRODUCIBLE",
+    "verdict": "INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE",
+    "constructor_invocations": 0,
+    "replay_executed": false,
+    "historical_old_pool_reproduction_attempted": false,
+    "conditional_reconstruction_used_as_acceptance": false,
+    "cases": {
+      "n002": {
+        "role": "R2_BENEFIT_PRESERVATION_SENTINEL",
+        "run_id": "g4-r2-post-repair-n002-n018-rerun-v1",
+        "case_replay_status": "NOT_REPRODUCIBLE",
+        "channel_union_object_count": 58,
+        "channel_row_count": 61,
+        "channel_rows_with_text": 0,
+        "union_objects_with_text_in_record_or_trace": 9,
+        "union_objects_without_recorded_text": 49,
+        "regular_channel_outside_legacy_objects_without_recorded_text": 23,
+        "workflow_row_count": 20,
+        "graph_row_count": 1,
+        "aligned_specialized_origin_fields_found": false,
+        "relevant_target_text_missing_from_record_or_trace": ["object.03af96b1110e782792253a18"],
+        "missing_fields": ["historical_selected_payload_text_validity_for_all_relevant_objects", "aligned_workflow_graph_normal_or_fallback_origins"],
+        "replay_opportunity_preserved": null
+      },
+      "n006": {
+        "role": "RESIDUAL_QUOTA_BOUND_DIAGNOSTIC",
+        "run_id": "g4-r2-post-repair-novel-dev-regression-v1",
+        "case_replay_status": "NOT_REPRODUCIBLE",
+        "channel_union_object_count": 79,
+        "channel_row_count": 83,
+        "channel_rows_with_text": 0,
+        "union_objects_with_text_in_record_or_trace": 12,
+        "union_objects_without_recorded_text": 67,
+        "regular_channel_outside_legacy_objects_without_recorded_text": 31,
+        "workflow_row_count": 6,
+        "graph_row_count": 17,
+        "aligned_specialized_origin_fields_found": false,
+        "relevant_target_text_missing_from_record_or_trace": ["object.2914485ff398f61e994c46d6"],
+        "missing_fields": ["historical_selected_payload_text_validity_for_all_relevant_objects", "aligned_workflow_graph_normal_or_fallback_origins"],
+        "residual_classification": "NOT_REPRODUCIBLE"
+      },
+      "n017": {
+        "role": "R2_BENEFIT_PRESERVATION_SENTINEL",
+        "run_id": "g4-r2-post-repair-novel-dev-regression-v1",
+        "case_replay_status": "NOT_REPRODUCIBLE",
+        "channel_union_object_count": 79,
+        "channel_row_count": 80,
+        "channel_rows_with_text": 0,
+        "union_objects_with_text_in_record_or_trace": 12,
+        "union_objects_without_recorded_text": 67,
+        "regular_channel_outside_legacy_objects_without_recorded_text": 22,
+        "workflow_row_count": 20,
+        "graph_row_count": 20,
+        "aligned_specialized_origin_fields_found": false,
+        "relevant_target_text_missing_from_record_or_trace": [],
+        "missing_fields": ["historical_selected_payload_text_validity_for_all_relevant_objects", "aligned_workflow_graph_normal_or_fallback_origins"],
+        "replay_opportunity_preserved": null
+      },
+      "n024": {
+        "role": "PRIMARY_COLLATERAL_CORRECTION_TARGET",
+        "run_id": "g4-r2-post-repair-novel-dev-regression-v1",
+        "case_replay_status": "NOT_REPRODUCIBLE",
+        "channel_union_object_count": 85,
+        "channel_row_count": 91,
+        "channel_rows_with_text": 0,
+        "union_objects_with_text_in_record_or_trace": 10,
+        "union_objects_without_recorded_text": 75,
+        "regular_channel_outside_legacy_objects_without_recorded_text": 25,
+        "workflow_row_count": 20,
+        "graph_row_count": 15,
+        "aligned_specialized_origin_fields_found": false,
+        "relevant_target_text_missing_from_record_or_trace": ["object.d6ef560b88c3926ecb32d3e1"],
+        "missing_fields": ["historical_selected_payload_text_validity_for_all_relevant_objects", "aligned_workflow_graph_normal_or_fallback_origins"],
+        "illegal_collateral_displacement_reproduced": null
+      }
+    },
+    "availability_limit": "Saved channel candidate rows omit text; selected-output text covers only a subset. No aligned workflow/graph origin sidecars are present in selected records, traces, or manifests. Historical machine summaries and the collateral analysis do not contain the missing input fields. Old offered receipts establish only observed membership, not every omitted candidate's historical payload validity or specialized provenance.",
+    "why_fields_are_required": "Retriever._r2_rerank_pool.valid_challenger requires truthy payload text and locator, and qualifying rank witnesses require explicit normal specialized origin. Unknown validity or origin can change role queues, witness vectors, legal victims, and corrected offered membership."
+  },
+  "layer_b": {
+    "authorized": false,
+    "executed": false,
+    "blocking_layer_a_result": "INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE",
+    "planned_run_id": "g4-r2-post-correction-exposed-target-v1",
+    "selected_cases": ["n002", "n017", "n024"],
+    "run_created": false,
+    "identity_preflight_executed": false,
+    "current_live_case_results": null
+  },
+  "scientific_accounting": {
+    "qa_runs": 0,
+    "retrieval_runs": 0,
+    "qa_runner_invocations": 0,
+    "qa_case_attempts": 0,
+    "supported_resumes": 0,
+    "scientific_calls": 0,
+    "scientific_tokens": 0,
+    "generation_calls": 0,
+    "embedding_calls": 0,
+    "external_judge_calls": 0
+  },
+  "protected_boundary": {
+    "novel_validation_content_access": 0,
+    "novel_validation_outcome_access": 0,
+    "holdout_content_access": 0,
+    "holdout_outcome_access": 0,
+    "protected_leakage": 0
+  },
+  "product_materiality": {
+    "product_source_change": false,
+    "product_behavior_change": false,
+    "test_change": false,
+    "prompt_change": false,
+    "config_change": false,
+    "schema_change": false,
+    "dataset_change": false,
+    "gold_change": false,
+    "calibration_change": false
+  },
+  "evidence_boundary": {
+    "full_28_case_post_correction_regression": false,
+    "fresh_generalization_evidence": false,
+    "novel_validation_evidence": false,
+    "release_evidence": false
+  },
+  "g4_verdict": "INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE",
+  "lifecycle": {
+    "phase_g": "IN_PROGRESS / G4_POST_CORRECTION_VERIFICATION_INCONCLUSIVE",
+    "g4": "DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / POST-CORRECTION EXPOSED VERIFICATION INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE / LAYER B NOT_RUN / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED",
+    "g5_entry_authorized": false,
+    "next_task_recommendation": "G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW",
+    "next_task_execution_authorized": false
+  }
+}

@@ -18,7 +18,7 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 post-correction exposed verification design commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G4 post-correction replay reproducibility result commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -46,12 +46,12 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_POST_CORRECTION_EXPOSED_VERIFICATION_DESIGN_COMPLETE
+PHASE_G = IN_PROGRESS / G4_POST_CORRECTION_VERIFICATION_INCONCLUSIVE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = HISTORICAL R2 COLLATERAL REGRESSION ESTABLISHED / COLLATERAL RETENTION CORRECTION IMPLEMENTED / DETERMINISTIC CORRECTION VERIFIED / POST-CORRECTION EXPOSED VERIFICATION DESIGNED / POST-CORRECTION EXPOSED RESULT NOT_YET_ESTABLISHED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION EXPOSED VERIFICATION EXECUTION
+G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / POST-CORRECTION EXPOSED VERIFICATION INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE / LAYER B NOT_RUN / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -96,6 +96,8 @@ The separately authorized [G4 R2 collateral retention review](../evaluation/G4_R
 The separately authorized [G4 R2 collateral rank-witness implementation](../evaluation/G4_R2_COLLATERAL_RETENTION_IMPLEMENTATION_RESULT.md) established CR-1 RED while product source was still unchanged, then GREEN after the shared `_r2_rerank_pool` exchange correction. The approved componentwise rank-witness guard, charged-role strict improvement, and capacity-as-upper-bound semantics are implemented for both normal and global callers. All CR-1–CR-10 synthetic controls and existing R2-A–I checks pass: 31/31 focused tests; G4 dual-sided baseline 18/18; retrieval/C8/E3/trace/fusion neighbors 173 tests plus 27 subtests passed locally. The correction uses existing ceilings and provenance; structured supplements, strict RRF majority, and pool <=30 remain. It introduces no magic threshold, prompt/schema/config change, model call, protected access, or R3/admission/verifier/finalization change. The implementation commit is the new product-behavior lineage. **Historical exposed safety regression remains a historical FAIL**; post-correction exposed QA outcome and fresh generalization benefit are not established, and n006 recovery is not guaranteed.
 
 The [G4 post-correction exposed verification design](../evaluation/G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION_DESIGN.md) freezes a two-layer targeted check: zero-call saved-state replay for n002/n006/n017/n024, followed only on exact replay PASS by one supported draft `qa` run for n002/n017/n024. n024 is the collateral target, n002/n017 preserve R2 benefit, and n006 remains a non-gating quota residual. Full 28-case rerun is not selected. Available historical traces lack full candidate text and aligned specialized-origin sidecars, so exact replay input reproducibility is an explicit fail-closed execution prerequisite; a conditional reconstruction cannot authorize live QA. No replay or live QA was run in this design task. Product lineage remains `047201166057edd9859292a1760bc2e9bbf173a2`; historical FAIL, fresh-benefit uncertainty, G3 `NO_CHANGE`, and optional/deferred fresh Lane B remain unchanged. The next task is separately authorized **G4 POST-CORRECTION EXPOSED VERIFICATION EXECUTION**.
+
+The separately authorized [G4 post-correction verification execution result](../evaluation/G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION.md) stops at the frozen Layer A reproducibility prerequisite. All four selected historical records/traces are present, but channel rows contain no candidate text, selected-output text covers only a subset, and aligned workflow/graph origin sidecars are absent. These fields affect current `valid_challenger` and rank-witness decisions; historical offered receipts and conditional provenance reconstruction cannot replace exact constructor inputs. All four cases are `NOT_REPRODUCIBLE`; no old-pool reconstruction or corrected constructor replay was attempted. Consequently Layer A is `INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE`, Layer B was not authorized or run, and the proposed live run ID was not created. QA/retrieval/model/judge calls and protected access are zero. Product lineage and historical exposed FAIL remain unchanged; neither post-correction empirical benefit nor G4 closeout/G5 entry is established. The next recommendation is the bounded **G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW**, under separate authorization.
 
 The current project decision supersedes the historical mandatory Lane B proposal: **fresh Lane B is OPTIONAL / DEFERRED, not a mandatory G4 gate**. G3 admission `NO_CHANGE` remains unchanged; novel_validation and release evidence remain false. The implementation grants no next-task execution, exposed rerun, G5, or protected-data authorization.
 
