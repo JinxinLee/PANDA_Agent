@@ -1,0 +1,5118 @@
+{
+  "schema_version": "g5-exposed-regression-result-v1",
+  "evaluated_repository_head": "52c9fc6b2fc2c8e021973aefe8a6d92ceb616e1b",
+  "start_head": "52c9fc6b2fc2c8e021973aefe8a6d92ceb616e1b",
+  "product_behavior_lineage": "047201166057edd9859292a1760bc2e9bbf173a2",
+  "normal_product_mode": "production_answer_obligations_v1",
+  "run_id": "g5-integrated-candidate-novel-dev-v1",
+  "raw_run_store": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1",
+  "dataset_identity": {
+    "path": "evaluation/novel/v1/novel_dev.yaml",
+    "benchmark_version": "novel-v1-dev-0.3.0",
+    "sha256": "25ad18fcf76ab2796aa18ae961bdc4faf076f0c98a8a5226413ec95e58252223",
+    "split": "novel_dev",
+    "approved_case_count": 28,
+    "approved_case_ids": [
+      "n001",
+      "n002",
+      "n003",
+      "n004",
+      "n005",
+      "n006",
+      "n007",
+      "n008",
+      "n009",
+      "n010",
+      "n014",
+      "n015",
+      "n016",
+      "n017",
+      "n018",
+      "n019",
+      "n020",
+      "n021",
+      "n022",
+      "n023",
+      "n024",
+      "n025",
+      "n026",
+      "n027",
+      "n028",
+      "n029",
+      "n030",
+      "n031"
+    ],
+    "gold_expected_status_counts": {
+      "answered": 27,
+      "insufficient_evidence": 1
+    }
+  },
+  "identity_preflight": {
+    "result": "PASS",
+    "product_lineage_match": true,
+    "source_manifest_match": true,
+    "corpus_identity_match": true,
+    "index_identity_match": true,
+    "dataset_identity_match": true,
+    "approved_id_set_match": true,
+    "prompt_identity_match": true,
+    "model_identity_match": true,
+    "retrieval_policy_match": true,
+    "query_expansion_match": true,
+    "run_id_unused_at_start": true,
+    "evaluated_head_clean_at_launch": true,
+    "manifest_keys_compared": "source_manifest_hash, normalized_manifest_hash, normalized_output_hashes, index_identity, index_identity_payload, generation_model_id, embedding_model_id, embedding_dimensions, prompt_hash, prompt_version, retrieval_policy_hash, query_expansion_hash, gold dataset and split",
+    "runtime_package_differences_from_g4": {
+      "python": {
+        "g4": "3.13.14",
+        "g5": "3.12.14"
+      },
+      "langgraph": {
+        "g4": "1.2.11",
+        "g5": "1.2.10"
+      },
+      "qdrant-client": {
+        "g4": "1.19.0",
+        "g5": "1.15.1"
+      }
+    },
+    "runtime_difference_implication": "Material manifest/input identities match, but package changes are comparison confounds; do not treat G5 as exact runtime replication of G4. Current Qdrant server read-only version was 1.15.5."
+  },
+  "execution": {
+    "mode": "qa",
+    "split": "novel_dev",
+    "case_ids_argument": null,
+    "limit": null,
+    "allow_draft": true,
+    "capture_stage_trace": true,
+    "external_judge": false,
+    "candidate_id": null,
+    "max_model_calls": 450,
+    "max_token_usage": 2500000
+  },
+  "runner_verbatim": {
+    "run_status": {
+      "status": "inconclusive",
+      "cohort_status": "INCOMPLETE",
+      "official_decision": "INCONCLUSIVE",
+      "cohort_decision": {
+        "status": "INCOMPLETE",
+        "verdict": "INCONCLUSIVE",
+        "decision_reason": "PRE_RELEASE_EXECUTION_INCOMPLETE",
+        "passed": null,
+        "reason": "incomplete cohort (27/28 scored) cannot be recovered under verified frozen candidate identity",
+        "scored_case_count": 27,
+        "expected_case_count": 28,
+        "retryable_case_ids": [],
+        "missing_case_ids": [],
+        "terminal_exception_case_ids": [
+          "n018"
+        ],
+        "extra_case_ids": []
+      },
+      "stop_reason": null,
+      "attempt_started_at": "2026-09-29T22:43:17.829935+00:00",
+      "attempt_completed_at": "2026-09-29T23:22:25.251023+00:00",
+      "attempt_model_calls": 164,
+      "attempt_token_usage": 1126264,
+      "completed_ids": [
+        "n001",
+        "n002",
+        "n003",
+        "n004",
+        "n005",
+        "n006",
+        "n007",
+        "n008",
+        "n009",
+        "n010",
+        "n014",
+        "n015",
+        "n016",
+        "n017",
+        "n018",
+        "n019",
+        "n020",
+        "n021",
+        "n022",
+        "n023",
+        "n024",
+        "n025",
+        "n026",
+        "n027",
+        "n028",
+        "n029",
+        "n030",
+        "n031"
+      ],
+      "cumulative_model_calls": 164,
+      "cumulative_token_usage": 1126264,
+      "model_calls": 164,
+      "token_usage": 1126264
+    },
+    "gate": {
+      "checks": {
+        "all_questions_approved": true,
+        "all_version_conflicts_rejected": false,
+        "answer_point_coverage": false,
+        "citation_integrity": true,
+        "critical_answer_points": false,
+        "critical_evidence_coverage": false,
+        "expected_status_accuracy": false,
+        "final_evidence_recall": false,
+        "forbidden_evidence": true,
+        "gold_recall_at_10": false,
+        "identifier_hallucination_rate": true,
+        "intent_accuracy": false,
+        "no_contradictions": false,
+        "no_major_unsupported_claims": false,
+        "official_run": false,
+        "paper_code_dual_source": false,
+        "per_intent_accuracy": false,
+        "per_intent_recall": false,
+        "required_identifiers": true,
+        "required_source_coverage": false,
+        "unhandled_exceptions": false,
+        "wrong_version_evidence": true
+      },
+      "note": "Formal M6 release requires one complete approved hidden acceptance run; dev, focused, draft, regression, and partial runs cannot pass it.",
+      "passed": false
+    },
+    "development_gate": {
+      "checks": {
+        "all_questions_approved": true,
+        "citation_integrity": true,
+        "complete_full_dev": false,
+        "critical_evidence_coverage": false,
+        "dev_version_conflicts_rejected": false,
+        "expected_status_accuracy": false,
+        "final_evidence_recall": false,
+        "forbidden_evidence": true,
+        "gold_recall_at_10": false,
+        "identifier_hallucination_rate": true,
+        "intent_accuracy": false,
+        "paper_code_dual_source": false,
+        "per_intent_accuracy": false,
+        "per_intent_recall": false,
+        "required_identifiers": true,
+        "required_source_coverage": false,
+        "unhandled_exceptions": false,
+        "wrong_version_evidence": true
+      },
+      "note": "Focused or incomplete run: it can diagnose a layer but cannot pass the development gate.",
+      "passed": false
+    },
+    "product_development_gate": {
+      "compatible": false,
+      "passed": null,
+      "reason": "incompatible product-language calibration: calibration Gold version does not match active dataset"
+    }
+  },
+  "run_completeness": {
+    "approved_case_count": 28,
+    "terminal_record_count": 28,
+    "scored_qa_result_count": 27,
+    "qa_result_case_ids": [
+      "n001",
+      "n002",
+      "n003",
+      "n004",
+      "n005",
+      "n006",
+      "n007",
+      "n008",
+      "n009",
+      "n010",
+      "n014",
+      "n015",
+      "n016",
+      "n017",
+      "n019",
+      "n020",
+      "n021",
+      "n022",
+      "n023",
+      "n024",
+      "n025",
+      "n026",
+      "n027",
+      "n028",
+      "n029",
+      "n030",
+      "n031"
+    ],
+    "terminal_record_case_ids": [
+      "n001",
+      "n002",
+      "n003",
+      "n004",
+      "n005",
+      "n006",
+      "n007",
+      "n008",
+      "n009",
+      "n010",
+      "n014",
+      "n015",
+      "n016",
+      "n017",
+      "n018",
+      "n019",
+      "n020",
+      "n021",
+      "n022",
+      "n023",
+      "n024",
+      "n025",
+      "n026",
+      "n027",
+      "n028",
+      "n029",
+      "n030",
+      "n031"
+    ],
+    "missing_ids": [],
+    "extra_ids": [],
+    "retryable_ids": [],
+    "terminal_exception_ids": [
+      "n018"
+    ],
+    "g5_integrated_run_complete": false
+  },
+  "scientific_usage": {
+    "qa_runner_invocations": 1,
+    "qa_case_attempts": 28,
+    "qa_cases_completed": 27,
+    "supported_resumes": 0,
+    "model_calls": 164,
+    "tokens": 1126264,
+    "generation_calls": 136,
+    "embedding_calls": 28,
+    "external_judge_calls": 0,
+    "per_attempt": [
+      {
+        "attempt": 1,
+        "calls": 164,
+        "tokens": 1126264
+      }
+    ],
+    "budget_stop": false
+  },
+  "exceptions": [
+    {
+      "id": "n018",
+      "type": "ValidationError",
+      "retryable": false,
+      "stage": "D1 ambiguity validation",
+      "model_calls": 1,
+      "tokens": 1974,
+      "message": "1 validation error for _Ambiguity\nstatus\n  Input should be 'clear' or 'ambiguous' [type=literal_error, input_value='none', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/literal_error"
+    }
+  ],
+  "case_review_counts": {
+    "INSUFFICIENT_EVIDENCE": 8,
+    "ANSWERED_COMPLETE": 7,
+    "ANSWERED_INCOMPLETE": 12,
+    "ERROR": 1
+  },
+  "aggregate_blocker_inventory": {
+    "nonretryable_product_error_ids": [
+      "n018"
+    ],
+    "hard_safety_blocker_ids": [
+      "n018"
+    ],
+    "false_insufficiency_ids": [
+      "n001",
+      "n007",
+      "n009",
+      "n014",
+      "n022",
+      "n025",
+      "n028"
+    ],
+    "correct_abstention_ids": [
+      "n016"
+    ],
+    "answer_completeness_blocker_ids": [
+      "n003",
+      "n005",
+      "n006",
+      "n008",
+      "n010",
+      "n019",
+      "n020",
+      "n021",
+      "n023",
+      "n024",
+      "n029",
+      "n031"
+    ],
+    "observed_r2_contract_regression_ids": [],
+    "gold_or_evaluator_limit_ids": [
+      "n001"
+    ],
+    "unresolved_ownership_ids": [],
+    "wrong_version_evidence_count": 0,
+    "forbidden_evidence_count": 0,
+    "citation_integrity": 1.0,
+    "raw_identifier_flag_cases": [
+      "n004"
+    ],
+    "major_unsupported_claim_established_ids": [],
+    "observable_contradiction_established_ids": []
+  },
+  "cases": [
+    {
+      "id": "n001",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "answer_classification": "INSUFFICIENT_EVIDENCE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Independently answerable: configSettings.sh supplies nominal pairs, paths and exports and its as-written unmatched-input behavior.",
+      "semantic_completeness": false,
+      "critical_missing_content": "No supported branch/path/export answer; abstains despite script in retrieval pool.",
+      "relevant_evidence_availability": "Script object reached channel/pool; final response cites installation docs, not the governing script.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 20,
+          "sparse": 20,
+          "workflow": 1
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 2,
+        "final_count": 12,
+        "cited_count": 1
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.10e1a2edc34cb3a3f916be06",
+          "evidence_id": "evidence.8e296cf7a0ff82337e941273",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_Developers.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.50d52a0c234701fb6654a245",
+          "evidence_id": "evidence.ff0dc6b46e0aff26c5fd08a1",
+          "source_id": "restgas_determination",
+          "path": "configSettings.sh",
+          "line_start": 1,
+          "line_end": 13,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.7c683ccb9595dad20e4529fe",
+          "evidence_id": "evidence.4410d28943c43b9065bc7e67",
+          "source_id": "restgas_determination",
+          "path": "pgenerators/Target/PndTargetGenerator.cxx",
+          "line_start": 1,
+          "line_end": 115,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b87289a6b909eed82a8d14fa",
+          "evidence_id": "evidence.d5a56f774e7f932f502eab56",
+          "source_id": "restgas_determination",
+          "path": "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 407,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.080eb596d4f0b30c508fc718",
+          "evidence_id": "evidence.2e8e3a2e6f10aa36f0b5138d",
+          "source_id": "restgas_determination",
+          "path": "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 339,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.79822487f48e10a36cee471c",
+          "evidence_id": "evidence.ad6b4474616a507f6a85b3a9",
+          "source_id": "restgas_determination",
+          "path": "pid/PidCorr/PndPidCorrelator.cxx",
+          "line_start": 1,
+          "line_end": 1327,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.104aa04ebe315870a10a512e",
+          "evidence_id": "evidence.977171cd7752a9c2f54591f5",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_GSI.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.125956499883f545fcb3296b",
+          "evidence_id": "evidence.02769f274cfd1b5f53a51462",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/Docker.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.10b4317f137471e9c53a6d29",
+          "evidence_id": "evidence.2de7891d63c0d4bd6a21372e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_PandaRoot.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.2de0c11066dd97bc1177de1c",
+          "evidence_id": "evidence.0955ed6ad03497c2b04436de",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Installation.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.e363543e4fd82b6ccc0b1b4a",
+          "evidence_id": "evidence.cc9e1483da893fc6a311be7e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_Developers.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.ca564e726e33f5e9534cca14",
+          "evidence_id": "evidence.41d59bf41a37353ebb04beee",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_GSI.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.e363543e4fd82b6ccc0b1b4a",
+          "evidence_id": "evidence.cc9e1483da893fc6a311be7e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_Developers.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": false,
+        "complete": false,
+        "missing_point_ids": [
+          "point.1",
+          "point.2",
+          "point.3"
+        ],
+        "verification_errors": [
+          "unsupported requested symbol: FairSoft"
+        ]
+      },
+      "primary_owner": "Q1",
+      "secondary_owner": "R3",
+      "confidence": "high",
+      "failure_family": "FALSE_INSUFFICIENCY",
+      "authority_limitation": "Gold p1/p2 branch-execution wording conflicts with the script as-written Bash syntax error; only that dimension is authority-limited.",
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n001.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n001.json"
+    },
+    {
+      "id": "n002",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_COMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Cited permitted evidence supports required semantics.",
+      "semantic_completeness": true,
+      "critical_missing_content": "None under bounded independent review.",
+      "relevant_evidence_availability": "Final/cited evidence supports the answer.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 0,
+          "graph": 1,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 4,
+        "final_count": 9,
+        "cited_count": 1
+      },
+      "r2_status": "Requirements objects at dense ranks 7 and 8 entered via policy_role_frontier, then rerank/final/cited; no contract regression.",
+      "final_evidence": [
+        {
+          "object_id": "object.a45779701b982aff3e7554da",
+          "evidence_id": "evidence.7971affdc89fc0f9b4272aeb",
+          "source_id": "luminosityfit",
+          "path": "requirements.txt",
+          "line_start": 1,
+          "line_end": 12,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.feb0451634209784bcfa3a2a",
+          "evidence_id": "evidence.7e68b750e40a397c900ffc3f",
+          "source_id": "luminosityfit",
+          "path": "python/lumifit.egg-info/SOURCES.txt",
+          "line_start": 1,
+          "line_end": 18,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b6a67ff560b4a16e35f016ad",
+          "evidence_id": "evidence.8462e9e3a958e7971739c9a5",
+          "source_id": "luminosityfit",
+          "path": "python/Readme.md",
+          "line_start": 1,
+          "line_end": 29,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0a0b9ac30d5b09d5d976e6d4",
+          "evidence_id": "evidence.17e398256dd6f0b20e2010ce",
+          "source_id": "luminosityfit",
+          "path": "python/runKoaSimReco.py",
+          "line_start": 1,
+          "line_end": 112,
+          "pdf_page": null
+        },
+        {
+          "object_id": "subsystem.luminosityfit.model_and_fit",
+          "evidence_id": "evidence.23ec4edf89d423636b813e3d",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b25c9951b318b4f63c4bf023",
+          "evidence_id": "evidence.f6beb341f2ed4b30f4389e0a",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/Docker.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "concept.luminosityfit.luminosity_fit_model",
+          "evidence_id": "evidence.e89887abc2de635cf6e09d20",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.572a275ce1cce5dd3c71f64a",
+          "evidence_id": "evidence.4e55702160c72036376c55e5",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_Developers.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.8bba0d73a7a1dec21bcc7a69",
+          "evidence_id": "evidence.36c39b4683b7142e0f2839d5",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_PandaRoot.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.a45779701b982aff3e7554da",
+          "evidence_id": "evidence.7971affdc89fc0f9b4272aeb",
+          "source_id": "luminosityfit",
+          "path": "requirements.txt",
+          "line_start": 1,
+          "line_end": 12,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "NONE",
+      "secondary_owner": "NONE",
+      "confidence": "medium",
+      "failure_family": "NONE",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n002.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n002.json"
+    },
+    {
+      "id": "n003",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Fixed-step gun implementation is in the locked corpus.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits ReadEvent/CalcActValues per-event increment and rollover.",
+      "relevant_evidence_availability": "PndFixStepParticleGun.cxx appeared dense rank 16 but not in pool/final; cited material covers setup, not event loop.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 7,
+          "sparse": 20,
+          "workflow": 2
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 6,
+        "final_count": 12,
+        "cited_count": 2
+      },
+      "r2_status": "Potential evidence-role pool loss; no proven G4 retention-contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.a5f27147db632f6d7ed0f95f",
+          "evidence_id": "evidence.08102885c250d9c1af202f80",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/FixStepParticleGun.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.00aebe2d45fcff2fb2a0c11a",
+          "evidence_id": "evidence.f8777856fde05952fdd9801d",
+          "source_id": "pandaroot",
+          "path": "analysis/AnalysisTools/PndParticleQATask.cxx",
+          "line_start": 1,
+          "line_end": 31,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.af3da13dbbe391b8999697ec",
+          "evidence_id": "evidence.6afe2ad21cd20ef695e9cdd2",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/FixStepParticleGun.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.8aa495df90f3407a2acef60d",
+          "evidence_id": "evidence.a5ef7852cd1ccfbdfae3f537",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/EventGenerators.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.ab4e0272d27889c5089b33fe",
+          "evidence_id": "evidence.ebb87ae47b497c6d7d57da50",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/EventGenerators.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.01222be50d949512be897b74",
+          "evidence_id": "evidence.bcc495e89f1042fb5bbc6691",
+          "source_id": "pandaroot",
+          "path": "macro/outdated/tracking/sttmvdtracking/checkmomentum.C",
+          "line_start": 1,
+          "line_end": 55,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.00b0552c7839b48ba4bbcc64",
+          "evidence_id": "evidence.fc906cf2f9b5ae40dc7e52bf",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/rich/sim_complete_runs.C",
+          "line_start": 217,
+          "line_end": 269,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.02808ee38a8da20a4620833c",
+          "evidence_id": "evidence.a01ac109566e2926086a99a7",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 45
+        },
+        {
+          "object_id": "object.35f7ef422756656f8fd040c9",
+          "evidence_id": "evidence.77e74355352eb9bb6af06d22",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/hypGe/Marcell/Sim_Macros/HIMsterScripts/script_COSY.sh",
+          "line_start": 1,
+          "line_end": 159,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.ddc9a30b78df62cf2535b507",
+          "evidence_id": "evidence.4b14b65a8a0154bbc8f3fbef",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/EventGenerators.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.a88d8cdb8327d90cdecc60c8",
+          "evidence_id": "evidence.ac864bb698114acf2072e43e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/MasterTasks.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d3789b68980223f96419c6c7",
+          "evidence_id": "evidence.19dbf18f0b09391c239d533e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running_Sequence.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.af3da13dbbe391b8999697ec",
+          "evidence_id": "evidence.6afe2ad21cd20ef695e9cdd2",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/FixStepParticleGun.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.8aa495df90f3407a2acef60d",
+          "evidence_id": "evidence.a5ef7852cd1ccfbdfae3f537",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/EventGenerators.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "R2",
+      "secondary_owner": "GENERATION",
+      "confidence": "medium",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n003.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n003.json"
+    },
+    {
+      "id": "n004",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_COMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Cited source contains the named header string.",
+      "semantic_completeness": true,
+      "critical_missing_content": "None under independent semantic review; raw identifier flag remains.",
+      "relevant_evidence_availability": "Final cited docs support the claim as phrased.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 0,
+          "graph": 1,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 7,
+        "final_count": 12,
+        "cited_count": 3
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.6101005a6e9a289dfb8ee8d5",
+          "evidence_id": "evidence.719cbb3f3422c3fa1ad6a678",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Logging.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "document.pandaroot_sphinx_2023_08_25_dev",
+          "evidence_id": "evidence.8cb49fc92b287d165ee25cf3",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.eebb40ad3219185296de197e",
+          "evidence_id": "evidence.8fc40a0626c82b514caa6abd",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Logging.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.12ff97e6d4376bc8864c2a87",
+          "evidence_id": "evidence.30199b61c0df25a0847f4bae",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Logging.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b238f4a4478daec4489b0f4b",
+          "evidence_id": "evidence.d33e77b6c15198622bfe5d0d",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Logging.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.112af2438e48baee96dfdda0",
+          "evidence_id": "evidence.eb12db1dea5f34021c36b80b",
+          "source_id": "pandaroot",
+          "path": "outdated/mpiTools/scripts/addhisto.sh",
+          "line_start": 1,
+          "line_end": 66,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.051a3e49d589400336c446db",
+          "evidence_id": "evidence.c2a0b6ec30250754c28796ff",
+          "source_id": "pandaroot",
+          "path": "macro/softrig/compressall_ntpev.sh",
+          "line_start": 1,
+          "line_end": 8,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.45cd31cd0eca0d0e6193ea42",
+          "evidence_id": "evidence.8d37f83b34aa16156f66dae8",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/mvd/WrkBonnMacros/Readme.txt",
+          "line_start": 1,
+          "line_end": 33,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.59762baf464111e2cf72c8aa",
+          "evidence_id": "evidence.54635e7cb885e164f8217cf2",
+          "source_id": "pandaroot",
+          "path": "pgenerators/EvtGen/Photos/Photos.3.52/src/utilities/Log.h",
+          "line_start": 32,
+          "line_end": 127,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b2c373d5a3891f8a52f3b757",
+          "evidence_id": "evidence.7f370813a37e7ebab0a497c9",
+          "source_id": "pandaroot",
+          "path": "docs/Running/Logging.rst",
+          "line_start": 1,
+          "line_end": 93,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.fbb693303ca86d67b63b2e35",
+          "evidence_id": "evidence.52c829485a58e648bcf9de6b",
+          "source_id": "pandaroot",
+          "path": "docs/Running/Logging.rst",
+          "line_start": 71,
+          "line_end": 72,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.19fa5e827f4a2263c831b1af",
+          "evidence_id": "evidence.f5f80e7e32e9ce2e3d71b52a",
+          "source_id": "pandaroot",
+          "path": "docs/Running/Logging.rst",
+          "line_start": 38,
+          "line_end": 38,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.6101005a6e9a289dfb8ee8d5",
+          "evidence_id": "evidence.719cbb3f3422c3fa1ad6a678",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Logging.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.eebb40ad3219185296de197e",
+          "evidence_id": "evidence.8fc40a0626c82b514caa6abd",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Logging.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b2c373d5a3891f8a52f3b757",
+          "evidence_id": "evidence.7f370813a37e7ebab0a497c9",
+          "source_id": "pandaroot",
+          "path": "docs/Running/Logging.rst",
+          "line_start": 1,
+          "line_end": 93,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "NONE",
+      "secondary_owner": "NONE",
+      "confidence": "high",
+      "failure_family": "NONE",
+      "authority_limitation": "Raw fairlogger/Logger.h hallucinated-identifier flag is retained; literal appears in cited snippets although header itself is absent from locked inventory.",
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n004.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n004.json"
+    },
+    {
+      "id": "n005",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked macro and master-run setup source support the workflow.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits direct eventDisplay.C file-opening role and PndMasterRunAna::Setup mechanism.",
+      "relevant_evidence_availability": "Critical eventDisplay.C macro did not appear in stage trace/final evidence.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 3,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 10,
+        "final_count": 12,
+        "cited_count": 2
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.5bd471f8b2f702efce177825",
+          "evidence_id": "evidence.ec8c58b2bea0c1140b61a8d0",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.006e1bdc0243758beb6d24c6",
+          "evidence_id": "evidence.ff6698c6eb6c31c5cbc9892c",
+          "source_id": "pandaroot",
+          "path": "macro/softrig/toy/EventShape.h",
+          "line_start": 146,
+          "line_end": 148,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.c6eca16f844e98f5ad97e648",
+          "evidence_id": "evidence.1b843b08a1543b6835929faf",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0363eeb358378a939e91c3cd",
+          "evidence_id": "evidence.2dd02e12dbf19c3ce057d162",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d84c2ae1e70636991df03496",
+          "evidence_id": "evidence.07498fd2c805ca1780cefdff",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay_DetectorGeometry.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.04769f14cbc183b56400df8c",
+          "evidence_id": "evidence.d9a79433b4e3af14a425fda2",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/hypGe/Marcell/Lists/GammaSimulationsToAnaList.txt",
+          "line_start": 1,
+          "line_end": 52,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.063ebcc086791d91b7dfb9c2",
+          "evidence_id": "evidence.59c1a350c084dcb274c24ff1",
+          "source_id": "pandaroot",
+          "path": "tracking/sttmvdtracking/PndSttMvdGemTracking.cxx",
+          "line_start": 2198,
+          "line_end": 2240,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.f72d354b5ffe468d90da7d07",
+          "evidence_id": "evidence.af16f6eff5eae0530c4c1daf",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/lmd/README.md",
+          "line_start": 3,
+          "line_end": 7,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0ca42cb9f02292f8df2d6796",
+          "evidence_id": "evidence.839df958d48de4d1c489902a",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 55
+        },
+        {
+          "object_id": "object.806da763c34ced8842e3810c",
+          "evidence_id": "evidence.0f3fc876361b2f0735fbdb72",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay_DetectorGeometry.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.2b7033f49a15e5d62e882fa9",
+          "evidence_id": "evidence.5ec37d9264d2c9b19cd76cfa",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay_DetectorGeometry.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.466250f3ece0ace2fd7d24ae",
+          "evidence_id": "evidence.bc7301dea5f73cf6cf8e50d1",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay_DetectorGeometry.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.c6eca16f844e98f5ad97e648",
+          "evidence_id": "evidence.1b843b08a1543b6835929faf",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0363eeb358378a939e91c3cd",
+          "evidence_id": "evidence.2dd02e12dbf19c3ce057d162",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventDisplay/EventDisplay.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "R1",
+      "secondary_owner": "GENERATION",
+      "confidence": "medium",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n005.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n005.json"
+    },
+    {
+      "id": "n006",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked PndFileNameCreator.cxx supplies exact suffix defaults.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits trackF, idealTrackF, riemann, combRiemann, kalman and vertex suffix literals.",
+      "relevant_evidence_availability": "PndFileNameCreator.cxx was dense rank 9 but not admitted to pool; header was final/cited and runtime coverage accepted.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 17,
+          "sparse": 20,
+          "workflow": 6
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 8,
+        "final_count": 12,
+        "cited_count": 1
+      },
+      "r2_status": "Historical non-gating quota residual; no demonstrated G4 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.a16f67bf21d7d10138238dbd",
+          "evidence_id": "evidence.93cad8a4d963df6790021e5a",
+          "source_id": "pandaroot",
+          "path": "macro/run/run_chain.sh",
+          "line_start": 1,
+          "line_end": 16,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.70e80d1734face1646964a11",
+          "evidence_id": "evidence.a1ad47fbb4d555cf69c341bd",
+          "source_id": "pandaroot",
+          "path": "tools/PndFileNameCreator.h",
+          "line_start": 1,
+          "line_end": 74,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.026ae99879402e1bd1aa4f26",
+          "evidence_id": "evidence.97dce5a094a8281021842755",
+          "source_id": "pandaroot",
+          "path": "macro/QA/eventDet/sim.C",
+          "line_start": 105,
+          "line_end": 200,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.03507e1f40a9404ade63494d",
+          "evidence_id": "evidence.732617ed15eaaadb88d8d0ba",
+          "source_id": "pandaroot",
+          "path": "macro/outdated/data/sim.C",
+          "line_start": 8,
+          "line_end": 175,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0766bbb4b4741206c6ae60b9",
+          "evidence_id": "evidence.6daedeee5bb3ba6c1303aaa8",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/lumi/reco.C",
+          "line_start": 1,
+          "line_end": 62,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.04687c9e491702b520d05629",
+          "evidence_id": "evidence.e667a365e8dc07d1f096797a",
+          "source_id": "pandaroot",
+          "path": "macro/QA/pid/pid_unit/TestDetectorInfo/RichInfo/RichInfoHelper.h",
+          "line_start": 1,
+          "line_end": 20,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.pandaroot.generic",
+          "evidence_id": "evidence.58624a0e9410e67178dbf892",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6912bae57b9b64e1aaf98ef5",
+          "evidence_id": "evidence.7152b7dae69b306f1f6975a4",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 180
+        },
+        {
+          "object_id": "object.6b0c9215ab982da22a88e619",
+          "evidence_id": "evidence.9f7ff602a351747e89aa3e1e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Macros.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.bc8333ad0e15ee02eab751a9",
+          "evidence_id": "evidence.36627f22a2d5b9a3b6bb9fd4",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Macros.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.262d4647ef2dc9eb9bb47ffa",
+          "evidence_id": "evidence.a4310ac60df7ce4194e2bb45",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Macros.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.pandaroot.lmd_reconstruction",
+          "evidence_id": "evidence.39fc3319ccfd8a96ad4c54a3",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.70e80d1734face1646964a11",
+          "evidence_id": "evidence.a1ad47fbb4d555cf69c341bd",
+          "source_id": "pandaroot",
+          "path": "tools/PndFileNameCreator.h",
+          "line_start": 1,
+          "line_end": 74,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "R2",
+      "secondary_owner": "GENERATION",
+      "confidence": "high",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n006.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n006.json"
+    },
+    {
+      "id": "n007",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "answer_classification": "INSUFFICIENT_EVIDENCE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "GetPath and shortID setup appear in final permitted evidence.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Refuses the required GetPath relation after a verifier unsupported-identifier finding.",
+      "relevant_evidence_availability": "PndGeoHandling documentation, including GetPath(Int_t shortID), reached pool/final/citation.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 20,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 14,
+        "final_count": 12,
+        "cited_count": 1
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.470243c40a3e9cdca5e41e30",
+          "evidence_id": "evidence.b26ce9e5c08c64381b3ac05c",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndGeoHandling.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.2d67a91186d2d8b2f49a87f1",
+          "evidence_id": "evidence.a5ee8ebd36a4a2edd82f9bf9",
+          "source_id": "pandaroot",
+          "path": "tracking/GenfitTools/recohits2/PndSdsRecoHit2.cxx",
+          "line_start": 58,
+          "line_end": 99,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.7432ab1e2da79b24a0ed60b0",
+          "evidence_id": "evidence.d5003083e3205a8ecf8543a0",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndGeoHandling.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.9c3a7777f046973787a2f61f",
+          "evidence_id": "evidence.08bd4e0f79d2aa4c024c59a9",
+          "source_id": "pandaroot",
+          "path": "tracking/GenfitTools/recohits/PndSdsRecoHit.cxx",
+          "line_start": 59,
+          "line_end": 96,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6961dc11c59d048c26dfdebd",
+          "evidence_id": "evidence.76ef500d4e05be6426da0989",
+          "source_id": "restgas_determination",
+          "path": "tracking/GenfitTools/recohits/PndSdsRecoHit.cxx",
+          "line_start": 70,
+          "line_end": 108,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0cc97b046f22b9c173ec5ec1",
+          "evidence_id": "evidence.d8912ffad0f9d017f56b55ba",
+          "source_id": "restgas_determination",
+          "path": "macro/detectors/hypGe/Marcell/Analysis_macros/HIMsterScripts/ListSim.sh",
+          "line_start": 1,
+          "line_end": 34,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0e122426ede560dcc43d4330",
+          "evidence_id": "evidence.b2cfbcbbb6b52fece141e013",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/hypGe/Marcell/Sim_Macros/HIMsterScripts/StartMissingJobs.sh",
+          "line_start": 1,
+          "line_end": 14,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.972a77edff52d0c74abb9c23",
+          "evidence_id": "evidence.d8802f3acc6d14eef775fa1c",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/MasterTasks.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.f54db2665086f7b207c48736",
+          "evidence_id": "evidence.81e40a88d28d9e2f30c8279b",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/MasterTasks.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.5787724553a03ac41a26d96d",
+          "evidence_id": "evidence.d66940bd600cf804b521a53d",
+          "source_id": "restgas_determination",
+          "path": "tracking/GenfitTools/recohits2/PndSdsRecoHit2.cxx",
+          "line_start": 69,
+          "line_end": 111,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.dbd81196bb2ffde15b89268d",
+          "evidence_id": "evidence.a803bcdf91db099dfd5a6792",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/mvd/BonnTS/ReadHits.C",
+          "line_start": 1,
+          "line_end": 112,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.325a408811aa4a6c6836991e",
+          "evidence_id": "evidence.b5fcd539f26e62c17db15dd7",
+          "source_id": "restgas_determination",
+          "path": "tools/PndGeoHandling.cxx",
+          "line_start": 209,
+          "line_end": 220,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.470243c40a3e9cdca5e41e30",
+          "evidence_id": "evidence.b26ce9e5c08c64381b3ac05c",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tools/PndGeoHandling.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": false,
+        "missing_point_ids": [
+          "point.1"
+        ],
+        "verification_errors": [
+          "unsupported identifier PndGeoHandling::GetPath",
+          "missing answer point point.1"
+        ]
+      },
+      "primary_owner": "V1",
+      "secondary_owner": "GENERATION",
+      "confidence": "high",
+      "failure_family": "FALSE_INSUFFICIENCY",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n007.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n007.json"
+    },
+    {
+      "id": "n008",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked thesis evidence supports the algorithm comparison.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits low-hit requirement, fake/missed-track theta distortion, and 1.5-versus-15 GeV/c comparison.",
+      "relevant_evidence_availability": "Cited thesis supports part of comparison; critical quantitative detail omitted in answer.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 5,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 8,
+        "final_count": 12,
+        "cited_count": 5
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.a809f763e0e245dfd0dc2ad9",
+          "evidence_id": "evidence.81899e455750bec5144ebcbe",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 69
+        },
+        {
+          "object_id": "object.dfe44e90dfeb8dbd5092532e",
+          "evidence_id": "evidence.aac0ec0e3d9a44bee614111f",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 191
+        },
+        {
+          "object_id": "object.03162881f60d1c981e85d4b7",
+          "evidence_id": "evidence.cc45b44f89f3967fde6d7a5e",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 72
+        },
+        {
+          "object_id": "object.a85366ca9f2af0390777d260",
+          "evidence_id": "evidence.45e7856797831e51ef874cea",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 47
+        },
+        {
+          "object_id": "object.098a80f588d7cb6fc31926e4",
+          "evidence_id": "evidence.d4c249d7bd366db00f47a972",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 70
+        },
+        {
+          "object_id": "object.4e7e501d9aeb7d0710457883",
+          "evidence_id": "evidence.0c512f5ed6645aaf38523968",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 76
+        },
+        {
+          "object_id": "object.576f1214aa07b7407181f9dd",
+          "evidence_id": "evidence.d3a13e09ccefc2c7f6c98af0",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 112
+        },
+        {
+          "object_id": "object.c871d358bada29b1816397d6",
+          "evidence_id": "evidence.12ad09e0c3ce80d54302a390",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/lmd/reco_LMD.C",
+          "line_start": 1,
+          "line_end": 8,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.07cee64b2db1897b7112599a",
+          "evidence_id": "evidence.644a00e2f7786ad9c6eba3b8",
+          "source_id": "pandaroot",
+          "path": "pgenerators/FtfEvtGen/include/G4DecKineticTracks.hh",
+          "line_start": 38,
+          "line_end": 44,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.da218c1cc357b2929710d8ab",
+          "evidence_id": "evidence.76f44993d4cd8688a2dbf465",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/lmd/README.md",
+          "line_start": 1,
+          "line_end": 1,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0116c76b7d9084f5561e02b4",
+          "evidence_id": "evidence.b3e2da6979dd92b448a3e291",
+          "source_id": "luminosityfit",
+          "path": "python/runAlignedSimulations.py",
+          "line_start": 1,
+          "line_end": 107,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.07758324d812b3ee09797e10",
+          "evidence_id": "evidence.00285b694f5c8d33ed7989e1",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/hypGe/Marcell/Analysis_macros/HIMsterScripts/script_Neutron_COSY_AnaClass_List.sh",
+          "line_start": 1,
+          "line_end": 66,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.a809f763e0e245dfd0dc2ad9",
+          "evidence_id": "evidence.81899e455750bec5144ebcbe",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 69
+        },
+        {
+          "object_id": "object.dfe44e90dfeb8dbd5092532e",
+          "evidence_id": "evidence.aac0ec0e3d9a44bee614111f",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 191
+        },
+        {
+          "object_id": "object.03162881f60d1c981e85d4b7",
+          "evidence_id": "evidence.cc45b44f89f3967fde6d7a5e",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 72
+        },
+        {
+          "object_id": "object.a85366ca9f2af0390777d260",
+          "evidence_id": "evidence.45e7856797831e51ef874cea",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 47
+        },
+        {
+          "object_id": "object.098a80f588d7cb6fc31926e4",
+          "evidence_id": "evidence.d4c249d7bd366db00f47a972",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 70
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "GENERATION",
+      "secondary_owner": "V1/G2",
+      "confidence": "medium",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n008.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n008.json"
+    },
+    {
+      "id": "n009",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "answer_classification": "INSUFFICIENT_EVIDENCE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked thesis and PndLmdE760LikeModelParametrization.cxx support the requested distinction.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits independently required uncertainty/model detail, then abstains.",
+      "relevant_evidence_availability": "Relevant E760 implementation did not enter trace; thesis material reached final.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 11,
+          "graph": 0,
+          "paper": 60,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 30,
+        "final_count": 12,
+        "cited_count": 4
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.f4196a5a00e35fc8550a1da9",
+          "evidence_id": "evidence.9ec6eb2b6158a1696e0a78f4",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 52
+        },
+        {
+          "object_id": "object.4aa016da5e65b7a8dcfbce38",
+          "evidence_id": "evidence.ca567d1e48a92fc2f8d529f0",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 41
+        },
+        {
+          "object_id": "object.06ae95ed10b6aca597d4fccb",
+          "evidence_id": "evidence.88a139730c699ad0c558a361",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 40
+        },
+        {
+          "object_id": "object.faaced8bd5058b2a19ba9528",
+          "evidence_id": "evidence.4bfb7160f3c8158ba59d70f2",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 51
+        },
+        {
+          "object_id": "object.6186443f8f63cc299ec5a4da",
+          "evidence_id": "evidence.51a5441b4c429f0df4625208",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 50
+        },
+        {
+          "object_id": "object.caebcf3232486bf7721b6682",
+          "evidence_id": "evidence.f005ce8d0f757c847e067611",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 60
+        },
+        {
+          "object_id": "object.84d4cae9b1ce4009dfe06a25",
+          "evidence_id": "evidence.2301638255ce254f487b3fa2",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 57
+        },
+        {
+          "object_id": "object.0a0b9ac30d5b09d5d976e6d4",
+          "evidence_id": "evidence.17e398256dd6f0b20e2010ce",
+          "source_id": "luminosityfit",
+          "path": "python/runKoaSimReco.py",
+          "line_start": 1,
+          "line_end": 112,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.1014c57a44922bd987049935",
+          "evidence_id": "evidence.9e1bce08ff625951df9c894c",
+          "source_id": "luminosityfit",
+          "path": "python/createKoaFitData.sh",
+          "line_start": 1,
+          "line_end": 45,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6f313cf9fedfc3250de48ce9",
+          "evidence_id": "evidence.957c5ba3b5aae01b10e0e6c0",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 128
+        },
+        {
+          "object_id": "object.fdce122aee775d9038f08328",
+          "evidence_id": "evidence.2789b9296776a3bfbd250939",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 66
+        },
+        {
+          "object_id": "object.21ade3bc1b265169efad5300",
+          "evidence_id": "evidence.9b25e3c227798bc426619240",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 67
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.f4196a5a00e35fc8550a1da9",
+          "evidence_id": "evidence.9ec6eb2b6158a1696e0a78f4",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 52
+        },
+        {
+          "object_id": "object.4aa016da5e65b7a8dcfbce38",
+          "evidence_id": "evidence.ca567d1e48a92fc2f8d529f0",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 41
+        },
+        {
+          "object_id": "object.06ae95ed10b6aca597d4fccb",
+          "evidence_id": "evidence.88a139730c699ad0c558a361",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 40
+        },
+        {
+          "object_id": "object.faaced8bd5058b2a19ba9528",
+          "evidence_id": "evidence.4bfb7160f3c8158ba59d70f2",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 51
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": false,
+        "missing_point_ids": [
+          "point.4"
+        ],
+        "verification_errors": [
+          "missing answer point point.4",
+          "irrelevant claim claim_4"
+        ]
+      },
+      "primary_owner": "R1",
+      "secondary_owner": "Q1/Q2",
+      "confidence": "medium",
+      "failure_family": "FALSE_INSUFFICIENCY",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n009.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n009.json"
+    },
+    {
+      "id": "n010",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked fast-simulation code defines the requested role chain.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits PndFsmTrack, PndFsmAbsDet::respond, PndFsmDetFactory, PndFsmResponse and cutAndSmear relation.",
+      "relevant_evidence_availability": "Target class files absent in trace; final evidence addresses setup/detector list.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 6,
+          "graph": 6,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 11,
+        "final_count": 10,
+        "cited_count": 5
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.f6b8f93949c8c817129c016b",
+          "evidence_id": "evidence.6d0734e4b489a08a450aa20e",
+          "source_id": "pandaroot",
+          "path": "tutorials/analysis/simfast.C",
+          "line_start": 1,
+          "line_end": 79,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0f2b1d6ebd237e667d8577cc",
+          "evidence_id": "evidence.805a0d700bcee47a4d2018c3",
+          "source_id": "pandaroot",
+          "path": "fastsim/PndFastSim.cxx",
+          "line_start": 274,
+          "line_end": 343,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.90c4de70df3d6be1005c4dae",
+          "evidence_id": "evidence.999a591a970d00dfbf70eaa1",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_01_simulation.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.4fe93953aabff7e3a3a57360",
+          "evidence_id": "evidence.04d56c04bba86fa443703bc6",
+          "source_id": "pandaroot",
+          "path": "docs/Tutorials/tut_01_simulation.rst",
+          "line_start": 80,
+          "line_end": 80,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.5475e68a7da61f2563d18a4e",
+          "evidence_id": "evidence.8581bddc9f5b2e24faf8b88d",
+          "source_id": "pandaroot",
+          "path": "tutorials/charmonium/jul10/simfast.C",
+          "line_start": 5,
+          "line_end": 90,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.062869acf6611decf9f8013c",
+          "evidence_id": "evidence.453316e57832b607163b9bf4",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 15
+        },
+        {
+          "object_id": "object.b90305162d41f54cd1fc9634",
+          "evidence_id": "evidence.68cf1bf774a101fd716086fe",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 69
+        },
+        {
+          "object_id": "workflow.pandaroot.generic",
+          "evidence_id": "evidence.729e00b6edf2d067440b357a",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.605dd90e8d07ad835878fc8b",
+          "evidence_id": "evidence.f8fe7a386f2c50cc4f10e589",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 55
+        },
+        {
+          "object_id": "object.d637ccb53544b858b60946ef",
+          "evidence_id": "evidence.82526b31419b416bbb496039",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 2
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.f6b8f93949c8c817129c016b",
+          "evidence_id": "evidence.6d0734e4b489a08a450aa20e",
+          "source_id": "pandaroot",
+          "path": "tutorials/analysis/simfast.C",
+          "line_start": 1,
+          "line_end": 79,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0f2b1d6ebd237e667d8577cc",
+          "evidence_id": "evidence.805a0d700bcee47a4d2018c3",
+          "source_id": "pandaroot",
+          "path": "fastsim/PndFastSim.cxx",
+          "line_start": 274,
+          "line_end": 343,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.90c4de70df3d6be1005c4dae",
+          "evidence_id": "evidence.999a591a970d00dfbf70eaa1",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_01_simulation.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.4fe93953aabff7e3a3a57360",
+          "evidence_id": "evidence.04d56c04bba86fa443703bc6",
+          "source_id": "pandaroot",
+          "path": "docs/Tutorials/tut_01_simulation.rst",
+          "line_start": 80,
+          "line_end": 80,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.5475e68a7da61f2563d18a4e",
+          "evidence_id": "evidence.8581bddc9f5b2e24faf8b88d",
+          "source_id": "pandaroot",
+          "path": "tutorials/charmonium/jul10/simfast.C",
+          "line_start": 5,
+          "line_end": 90,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "R1",
+      "secondary_owner": "GENERATION",
+      "confidence": "medium",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n010.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n010.json"
+    },
+    {
+      "id": "n014",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "answer_classification": "INSUFFICIENT_EVIDENCE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked model_framework/README.md:1-4 explicitly describes an archived working copy of ModelFramework.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Repository-description point refused despite available locked source.",
+      "relevant_evidence_availability": "README object exists in normalized locked corpus but did not enter trace.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 20,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 11,
+        "final_count": 12,
+        "cited_count": 2
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.d884768f7fab1286c9e52448",
+          "evidence_id": "evidence.be352a37edaa377c2c05744e",
+          "source_id": "luminosityfit",
+          "path": "model/PndLmdModelFactory.h",
+          "line_start": 1,
+          "line_end": 74,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.05c4d3c28b6bb9ce2f660ed6",
+          "evidence_id": "evidence.957aeefc69eae85ccb81cefb",
+          "source_id": "luminosityfit",
+          "path": "ui/PndLmdFitFacade.cxx",
+          "line_start": 397,
+          "line_end": 466,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.03fc3e2866978c41a86259f5",
+          "evidence_id": "evidence.6e6096ad0178a073be9d2b9c",
+          "source_id": "luminosityfit",
+          "path": "model/AsymmetricGaussianModel1D.cxx",
+          "line_start": 1,
+          "line_end": 65,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+          "evidence_id": "evidence.08873b527eb593d445b58bdf",
+          "source_id": "luminosityfit",
+          "path": "model/PndLmdModelFactory.cxx",
+          "line_start": 1,
+          "line_end": 910,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.230b6af59b9cf223a8341977",
+          "evidence_id": "evidence.f01bac902dbf359c15dd4830",
+          "source_id": "luminosityfit",
+          "path": "model/PndLmdDPMAngModel1D.cxx",
+          "line_start": 1,
+          "line_end": 86,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.dc8be82193c3acfd81e8b269",
+          "evidence_id": "evidence.f833ba6d8e562259ebb84dbc",
+          "source_id": "luminosityfit",
+          "path": "model/PndLmdDPMAngModel2D.cxx",
+          "line_start": 1,
+          "line_end": 110,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.01db0c17a35dda276925ccbf",
+          "evidence_id": "evidence.608074966785a20da736e275",
+          "source_id": "luminosityfit",
+          "path": "model_framework/fit/data/Data.cxx",
+          "line_start": 1,
+          "line_end": 62,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6c2d5b38fa2f47627a047797",
+          "evidence_id": "evidence.3458a227b9eaa409fa125bb8",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_PandaRoot.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.f982904e8d8040e83ff64f39",
+          "evidence_id": "evidence.040f9f09d1ddae116a25cfb5",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 73
+        },
+        {
+          "object_id": "object.e77f22cf1393ca8d2281c29d",
+          "evidence_id": "evidence.f9b80186da505c0b4853cd8c",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 74
+        },
+        {
+          "object_id": "object.faaced8bd5058b2a19ba9528",
+          "evidence_id": "evidence.7dcd819f6e513f9243d22d87",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 51
+        },
+        {
+          "object_id": "object.086846aef68dccf5e066a34b",
+          "evidence_id": "evidence.c73d414589af30e160519155",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 60
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.d884768f7fab1286c9e52448",
+          "evidence_id": "evidence.be352a37edaa377c2c05744e",
+          "source_id": "luminosityfit",
+          "path": "model/PndLmdModelFactory.h",
+          "line_start": 1,
+          "line_end": 74,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.ceb44bd02a5e3a790cf2dfad",
+          "evidence_id": "evidence.08873b527eb593d445b58bdf",
+          "source_id": "luminosityfit",
+          "path": "model/PndLmdModelFactory.cxx",
+          "line_start": 1,
+          "line_end": 910,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": false,
+        "missing_point_ids": [
+          "point.1"
+        ],
+        "verification_errors": [
+          "missing answer point point.1"
+        ]
+      },
+      "primary_owner": "R1",
+      "secondary_owner": "GENERATION",
+      "confidence": "high",
+      "failure_family": "FALSE_INSUFFICIENCY",
+      "authority_limitation": "Pre-frozen answerability uncertainty resolved from locked README; no Gold change.",
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n014.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n014.json"
+    },
+    {
+      "id": "n015",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_COMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Official troubleshooting RST independently supports the same command and disabled components.",
+      "semantic_completeness": true,
+      "critical_missing_content": "None; independently equivalent source authority substitutes for Gold Sphinx selector.",
+      "relevant_evidence_availability": "Final/cited source is sufficient for the semantic point.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 18,
+          "graph": 3,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 8,
+        "final_count": 12,
+        "cited_count": 2
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.abff9be02635c5c1ed847943",
+          "evidence_id": "evidence.8a475387bdf47aff3e27b2ee",
+          "source_id": "pandaroot",
+          "path": "docs/Installation/Troubleshooting.rst",
+          "line_start": 10,
+          "line_end": 12,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.2bbb3ff551320e7ba1092413",
+          "evidence_id": "evidence.f6a204bd11a1bb032b3338a0",
+          "source_id": "pandaroot",
+          "path": "PandaROOTConfig.cmake",
+          "line_start": 1,
+          "line_end": 26,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.c8242a8ec61193f46fbb040e",
+          "evidence_id": "evidence.e14ebf6d1ac6130ba1d978fd",
+          "source_id": "pandaroot",
+          "path": "docs/Installation/Troubleshooting.rst",
+          "line_start": 1,
+          "line_end": 37,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.19d84fc6d846cfc245ea8087",
+          "evidence_id": "evidence.1b20b16bf8db0f428f2e94d6",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Troubleshooting.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.7002c83a3205588c3136c512",
+          "evidence_id": "evidence.22d3173309075f9b5349cc35",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Troubleshooting.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.f98b974ab2094596eaee1991",
+          "evidence_id": "evidence.886135771aff7333f6f68f27",
+          "source_id": "pandaroot",
+          "path": "PandaROOTConfig.cmake",
+          "line_start": 1,
+          "line_end": 25,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.cfe8f2138076307191772745",
+          "evidence_id": "evidence.8b4c70e4240841ad6a9103e6",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Troubleshooting.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.eec78f24044ed05440a53d6a",
+          "evidence_id": "evidence.f615a28a68c9b3d619a821a8",
+          "source_id": "pandaroot",
+          "path": "docs/Installation/Troubleshooting.rst",
+          "line_start": 8,
+          "line_end": 8,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.00d6df62ac7c4c3459511568",
+          "evidence_id": "evidence.001296169bfb46076923033d",
+          "source_id": "pandaroot",
+          "path": "tests/tracking/SttTracking/CMakeLists.txt",
+          "line_start": 1,
+          "line_end": 37,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.07fc694ff1502fc3fc20443d",
+          "evidence_id": "evidence.c2102f3a217c7c12f689948e",
+          "source_id": "pandaroot",
+          "path": "fastsim/PndFsmTrack.cxx",
+          "line_start": 274,
+          "line_end": 280,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.00ebec2599f4bbd398487c3a",
+          "evidence_id": "evidence.532c401ed89c4f9ce0d2a8b6",
+          "source_id": "pandaroot",
+          "path": "tools/PndContainer/tests/CMakeLists.txt",
+          "line_start": 1,
+          "line_end": 29,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0823d53d10c9101bf06b10ed",
+          "evidence_id": "evidence.b1839aa8e5f41a86d16a1aae",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/mvd/BonnTS/apvClusterReco.C",
+          "line_start": 1,
+          "line_end": 66,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.abff9be02635c5c1ed847943",
+          "evidence_id": "evidence.8a475387bdf47aff3e27b2ee",
+          "source_id": "pandaroot",
+          "path": "docs/Installation/Troubleshooting.rst",
+          "line_start": 10,
+          "line_end": 12,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.c8242a8ec61193f46fbb040e",
+          "evidence_id": "evidence.e14ebf6d1ac6130ba1d978fd",
+          "source_id": "pandaroot",
+          "path": "docs/Installation/Troubleshooting.rst",
+          "line_start": 1,
+          "line_end": 37,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "NONE",
+      "secondary_owner": "NONE",
+      "confidence": "medium",
+      "failure_family": "NONE",
+      "authority_limitation": "Gold selector recall is zero, but the cited official RST directly states cmake -DNOVC=1 and affected components.",
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n015.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n015.json"
+    },
+    {
+      "id": "n016",
+      "expected_status": "insufficient_evidence",
+      "actual_status": "insufficient_evidence",
+      "answer_classification": "INSUFFICIENT_EVIDENCE",
+      "independent_answerability": "insufficient locked support for complete answer",
+      "answerability_basis": "Allowed locked sources do not establish a complete native Windows installation answer.",
+      "semantic_completeness": null,
+      "critical_missing_content": "Correct abstention; Linux/Unix instructions do not establish Windows support.",
+      "relevant_evidence_availability": "Final evidence is Linux/Unix oriented and does not support a native Windows procedure.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 12,
+          "graph": 0,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 18,
+        "final_count": 12,
+        "cited_count": 2
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.125956499883f545fcb3296b",
+          "evidence_id": "evidence.60302d23ea72019c1d4bd193",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/Docker.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6dc0df95cb751d1138161081",
+          "evidence_id": "evidence.8b34487b21bb752859734957",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/Docker.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.9a6a9a55920e05287435042d",
+          "evidence_id": "evidence.88c48452bda0e4ce9bdbc8b9",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/Docker.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b25c9951b318b4f63c4bf023",
+          "evidence_id": "evidence.637a50b2377d684c74cbe77b",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/Docker.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.a58e8a58e6ed65ed6f143379",
+          "evidence_id": "evidence.daaed40ea44db79d2a9f4ae5",
+          "source_id": "pandaroot",
+          "path": "docs/Docker/Docker.rst",
+          "line_start": 66,
+          "line_end": 67,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.01409af519d56e28cf7e648e",
+          "evidence_id": "evidence.955d132264d639e54a26e1f7",
+          "source_id": "pandaroot",
+          "path": "docs/Docker/Docker.rst",
+          "line_start": 273,
+          "line_end": 274,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0184891d4c00ed96d41c61f7",
+          "evidence_id": "evidence.61f7a1c99c7a9094e58190e6",
+          "source_id": "pandaroot",
+          "path": "pid/PidClassifier/PndPidDrcAssociatorTask.cxx",
+          "line_start": 56,
+          "line_end": 59,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.01a78a49f83b383b02605456",
+          "evidence_id": "evidence.e3c6a1b8ea6abf72c6c3a022",
+          "source_id": "pandaroot",
+          "path": "tracking/PndUnassignedHits/PndUnassignedHitsTask.cxx",
+          "line_start": 23,
+          "line_end": 23,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.05088edceeaebcadc6c4bf8e",
+          "evidence_id": "evidence.fa94e064ff4f7ba040c9ad3a",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/DevelopingInContainer.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.fe57321a6186598b37179dd7",
+          "evidence_id": "evidence.e9b9654a804acf0c34fac691",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/DevelopingInContainer.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d5373fbd6452ca77acf474d9",
+          "evidence_id": "evidence.42993b2c276af9a6a8d06c97",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/toc.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.bbe0f58859c9dcf800b3ea86",
+          "evidence_id": "evidence.cedd03d60c7b7f7c3941aeb8",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/toc.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.125956499883f545fcb3296b",
+          "evidence_id": "evidence.60302d23ea72019c1d4bd193",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/Docker.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.9a6a9a55920e05287435042d",
+          "evidence_id": "evidence.88c48452bda0e4ce9bdbc8b9",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/Docker.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": false,
+        "missing_point_ids": [
+          "point.1"
+        ],
+        "verification_errors": [
+          "missing answer point point.1"
+        ]
+      },
+      "primary_owner": "C1",
+      "secondary_owner": "NONE",
+      "confidence": "high",
+      "failure_family": "CORRECT_ABSTENTION",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n016.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n016.json"
+    },
+    {
+      "id": "n017",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_COMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Cited permitted evidence supports required semantics.",
+      "semantic_completeness": true,
+      "critical_missing_content": "None under bounded independent review.",
+      "relevant_evidence_availability": "Final/cited evidence supports the answer.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 0,
+          "graph": 20,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 11,
+        "final_count": 12,
+        "cited_count": 1
+      },
+      "r2_status": "PndTrack object at dense rank 7 entered via policy_role_frontier, then rerank/final/cited; no contract regression.",
+      "final_evidence": [
+        {
+          "object_id": "object.015bff352e03a5f5ee88c307",
+          "evidence_id": "evidence.963bc9e530a7e4193d9df29f",
+          "source_id": "pandaroot",
+          "path": "pnddata/TrackData/PndTrack.h",
+          "line_start": 23,
+          "line_end": 126,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.040f1a368d71b0e9c1c1944c",
+          "evidence_id": "evidence.a261d030ebff00ac8e8a6319",
+          "source_id": "pandaroot",
+          "path": "pid/MatchBarrelForward/PndMatchBarrelForward.cxx",
+          "line_start": 1,
+          "line_end": 138,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.4148db1e1efa940ddee0ee82",
+          "evidence_id": "evidence.8629217598da4dc02a896b88",
+          "source_id": "pandaroot",
+          "path": "tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.h",
+          "line_start": 25,
+          "line_end": 105,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.47f09fc5ef218cee6e0192e5",
+          "evidence_id": "evidence.e2e8bc78fee2f010bb8c13ec",
+          "source_id": "pandaroot",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.462718f2b1ef7f92d71bc5f5",
+          "evidence_id": "evidence.18bba0b3e7e0eeef81f3e13e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0ca42cb9f02292f8df2d6796",
+          "evidence_id": "evidence.839df958d48de4d1c489902a",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 55
+        },
+        {
+          "object_id": "object.65ea50418d0a75bba8dec609",
+          "evidence_id": "evidence.856064e250bd70f41432824e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_05_analysis_fitting.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "data_product.pandaroot.lumi_trks_qa",
+          "evidence_id": "evidence.7a02e84f2c3abf3fc566f79f",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.3d346ba6e80667c721cd6920",
+          "evidence_id": "evidence.43ac9b4dec8c905e55bb7ab8",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_05_analysis_fitting.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.pandaroot.lmd_reconstruction",
+          "evidence_id": "evidence.6383e640abffb991ff3628a3",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.06a765002f130fb5481e64fa",
+          "evidence_id": "evidence.6916434257231ab6717c613b",
+          "source_id": "pandaroot",
+          "path": "tracking/CentralTracking/PndTrkTracking2.cxx",
+          "line_start": 1,
+          "line_end": 5085,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0a27612c8b1d2100a2d6839d",
+          "evidence_id": "evidence.72a3c23c125b245672b82cac",
+          "source_id": "pandaroot",
+          "path": "tools/PndMCTrackAna/PndMCTrackInfoTask.cxx",
+          "line_start": 1,
+          "line_end": 411,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.015bff352e03a5f5ee88c307",
+          "evidence_id": "evidence.963bc9e530a7e4193d9df29f",
+          "source_id": "pandaroot",
+          "path": "pnddata/TrackData/PndTrack.h",
+          "line_start": 23,
+          "line_end": 126,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "NONE",
+      "secondary_owner": "NONE",
+      "confidence": "medium",
+      "failure_family": "NONE",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n017.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n017.json"
+    },
+    {
+      "id": "n018",
+      "expected_status": "answered",
+      "actual_status": "error",
+      "answer_classification": "ERROR",
+      "independent_answerability": "not fully adjudicable after product exception",
+      "answerability_basis": "Expected answered; independent answerability not adjudicated from a usable QA result.",
+      "semantic_completeness": null,
+      "critical_missing_content": "No QA result: D1 ambiguity status none rejected by schema Literal[clear, ambiguous].",
+      "relevant_evidence_availability": "Exception occurred before retrieval; no stage trace/final/citation.",
+      "evidence_flow": {
+        "channel_candidate_counts": {},
+        "rerank_pool_count": 0,
+        "reranked_count": 0,
+        "final_count": 0,
+        "cited_count": 0
+      },
+      "r2_status": "R2 not reached.",
+      "final_evidence": [],
+      "cited_evidence": [],
+      "runtime_coverage": null,
+      "primary_owner": "D1",
+      "secondary_owner": "NONE",
+      "confidence": "high",
+      "failure_family": "PRODUCT_ERROR",
+      "authority_limitation": "Nonretryable product exception; no same-run retry or replacement permitted.",
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n018.json",
+      "raw_trace": null
+    },
+    {
+      "id": "n019",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked task implementation contains per-track fitting behavior.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits Exec loop, hypotheses, final constructor/index and branch ID.",
+      "relevant_evidence_availability": "Relevant .cxx body appeared sparse ranks 18-20 but not pool; early lines/header reached final.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 12,
+          "graph": 0,
+          "sparse": 20,
+          "workflow": 6
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 13,
+        "final_count": 12,
+        "cited_count": 3
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "workflow.pandaroot.generic",
+          "evidence_id": "evidence.ff1d178382d0095f70234722",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.beb303dac4f509473dfae0f3",
+          "evidence_id": "evidence.e64e35c449c930169a1ec1bb",
+          "source_id": "pandaroot",
+          "path": "tracking/GenfitTools/recotasks/PndRecoKalmanTask.h",
+          "line_start": 32,
+          "line_end": 99,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.02b73de287e1b5f57288b729",
+          "evidence_id": "evidence.078ccf53a8c7c7575f521039",
+          "source_id": "pandaroot",
+          "path": "tracking/GenfitTools/recotasks/PndRecoKalmanTask.h",
+          "line_start": 99,
+          "line_end": 101,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.015bff352e03a5f5ee88c307",
+          "evidence_id": "evidence.244a1832474013c70565536f",
+          "source_id": "pandaroot",
+          "path": "pnddata/TrackData/PndTrack.h",
+          "line_start": 23,
+          "line_end": 126,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b54a4972d2acd2367e08943f",
+          "evidence_id": "evidence.92ec891ad49c1be0b86d0dbc",
+          "source_id": "pandaroot",
+          "path": "tracking/GenfitTools/recotasks/PndRecoKalmanTask.cxx",
+          "line_start": 39,
+          "line_end": 48,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.pandaroot.lmd_reconstruction",
+          "evidence_id": "evidence.39fc3319ccfd8a96ad4c54a3",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.restgas.first_pass_poca",
+          "evidence_id": "evidence.7555b6f7bd0dbf6a5fe97f25",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.restgas.second_pass_pid",
+          "evidence_id": "evidence.8505b8e25f05f5d6e56c849e",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.3f2cd7cc173b6c2f2378db66",
+          "evidence_id": "evidence.a7dcba519f994dbd5a233417",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 107
+        },
+        {
+          "object_id": "object.4ff4f1d77a0a1661109e7e99",
+          "evidence_id": "evidence.c1a84fb6efe2e77c89c617ca",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_05_analysis_fitting.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.3d346ba6e80667c721cd6920",
+          "evidence_id": "evidence.43ac9b4dec8c905e55bb7ab8",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_05_analysis_fitting.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.65ea50418d0a75bba8dec609",
+          "evidence_id": "evidence.856064e250bd70f41432824e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_05_analysis_fitting.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.beb303dac4f509473dfae0f3",
+          "evidence_id": "evidence.e64e35c449c930169a1ec1bb",
+          "source_id": "pandaroot",
+          "path": "tracking/GenfitTools/recotasks/PndRecoKalmanTask.h",
+          "line_start": 32,
+          "line_end": 99,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.015bff352e03a5f5ee88c307",
+          "evidence_id": "evidence.244a1832474013c70565536f",
+          "source_id": "pandaroot",
+          "path": "pnddata/TrackData/PndTrack.h",
+          "line_start": 23,
+          "line_end": 126,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b54a4972d2acd2367e08943f",
+          "evidence_id": "evidence.92ec891ad49c1be0b86d0dbc",
+          "source_id": "pandaroot",
+          "path": "tracking/GenfitTools/recotasks/PndRecoKalmanTask.cxx",
+          "line_start": 39,
+          "line_end": 48,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "R2",
+      "secondary_owner": "GENERATION",
+      "confidence": "medium",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n019.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n019.json"
+    },
+    {
+      "id": "n020",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Cited README/macro supports the final recovery-task setting.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits PndRecoKalmanTask2 SetPropagateToIP(kFALSE) final step.",
+      "relevant_evidence_availability": "Requested final step is present in cited README/macro; answer stops before it.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 20,
+          "sparse": 20,
+          "workflow": 6
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 13,
+        "final_count": 11,
+        "cited_count": 5
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "workflow.restgas_profile_reconstruction",
+          "evidence_id": "evidence.7a51cadc010e94735760c2e5",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b87289a6b909eed82a8d14fa",
+          "evidence_id": "evidence.d5a56f774e7f932f502eab56",
+          "source_id": "restgas_determination",
+          "path": "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 407,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.080eb596d4f0b30c508fc718",
+          "evidence_id": "evidence.2e8e3a2e6f10aa36f0b5138d",
+          "source_id": "restgas_determination",
+          "path": "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 339,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.08993f3edcaf98c42a3bdf34",
+          "evidence_id": "evidence.2a6e96993552eec7f7c94347",
+          "source_id": "restgas_determination",
+          "path": "macro/target/reco_complete.C",
+          "line_start": 1,
+          "line_end": 170,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.48be486a9ecab8f524ef9f35",
+          "evidence_id": "evidence.3d1be3b1ea5a49c749fe872b",
+          "source_id": "restgas_determination",
+          "path": "README.md",
+          "line_start": 201,
+          "line_end": 215,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.3e8d11603d748d53854b2610",
+          "evidence_id": "evidence.1b1c6c7f25d05af9ea662bd5",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 130
+        },
+        {
+          "object_id": "object.63843629ac72da1bbfa636af",
+          "evidence_id": "evidence.befb897d0679467b1cff0780",
+          "source_id": "pandaroot",
+          "path": "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 385,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.pandaroot.generic",
+          "evidence_id": "evidence.ff1d178382d0095f70234722",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.pandaroot.lmd_reconstruction",
+          "evidence_id": "evidence.39fc3319ccfd8a96ad4c54a3",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.restgas.first_pass_poca",
+          "evidence_id": "evidence.7555b6f7bd0dbf6a5fe97f25",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.882d03a79790cd5832b559d9",
+          "evidence_id": "evidence.6ae8189935cc871d13e5a8f1",
+          "source_id": "pandaroot",
+          "path": "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 312,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.b87289a6b909eed82a8d14fa",
+          "evidence_id": "evidence.d5a56f774e7f932f502eab56",
+          "source_id": "restgas_determination",
+          "path": "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 407,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.080eb596d4f0b30c508fc718",
+          "evidence_id": "evidence.2e8e3a2e6f10aa36f0b5138d",
+          "source_id": "restgas_determination",
+          "path": "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 339,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.08993f3edcaf98c42a3bdf34",
+          "evidence_id": "evidence.2a6e96993552eec7f7c94347",
+          "source_id": "restgas_determination",
+          "path": "macro/target/reco_complete.C",
+          "line_start": 1,
+          "line_end": 170,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.48be486a9ecab8f524ef9f35",
+          "evidence_id": "evidence.3d1be3b1ea5a49c749fe872b",
+          "source_id": "restgas_determination",
+          "path": "README.md",
+          "line_start": 201,
+          "line_end": 215,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.3e8d11603d748d53854b2610",
+          "evidence_id": "evidence.1b1c6c7f25d05af9ea662bd5",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 130
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "GENERATION",
+      "secondary_owner": "V1/G2",
+      "confidence": "high",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n020.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n020.json"
+    },
+    {
+      "id": "n021",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked detectors/lmd build sources support the PandaRoot-side role.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Describes PandaRoot side generically; omits LmdMC/LmdDigi/libLmdReco build roles.",
+      "relevant_evidence_availability": "detectors/lmd/CMakeLists.txt absent from trace; LuminosityFit scripts reached final.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 18,
+          "graph": 6,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 15,
+        "final_count": 12,
+        "cited_count": 5
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.b6a67ff560b4a16e35f016ad",
+          "evidence_id": "evidence.8462e9e3a958e7971739c9a5",
+          "source_id": "luminosityfit",
+          "path": "python/Readme.md",
+          "line_start": 1,
+          "line_end": 29,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.9f7feb7ce6cb032f6cbe41f3",
+          "evidence_id": "evidence.a928997ee0bf28a67808c2f2",
+          "source_id": "luminosityfit",
+          "path": "README.md",
+          "line_start": 237,
+          "line_end": 253,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d54b43b7996c969b1bae57e3",
+          "evidence_id": "evidence.6c2386bdb478a3aa6b69de63",
+          "source_id": "luminosityfit",
+          "path": "docs/scripts/determineLuminosity.md",
+          "line_start": 91,
+          "line_end": 112,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.1014d75ad62ffa9af936fd32",
+          "evidence_id": "evidence.4c9b4b88b1cf96467c916a18",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/lmd/sim_LMD.C",
+          "line_start": 7,
+          "line_end": 115,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.1d6f4a0dce4ef487823ac967",
+          "evidence_id": "evidence.7a57610296f32a7f47933d4f",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 68
+        },
+        {
+          "object_id": "object.ae665c15393f2fd5881383fa",
+          "evidence_id": "evidence.4a2f8c4fe89c180933555af1",
+          "source_id": "luminosityfit",
+          "path": "docs/scripts/determineLuminosity.md",
+          "line_start": 34,
+          "line_end": 39,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.pandaroot.lmd_reconstruction",
+          "evidence_id": "evidence.147dc73b7b8c4aba313d0697",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "paper.karavdina_2015.chapter_4",
+          "evidence_id": "evidence.53a8a218e91700987b241228",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "subsystem.luminosityfit.model_and_fit",
+          "evidence_id": "evidence.bf7ca631f68954c719ba966e",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "concept.luminosityfit.luminosity_fit_model",
+          "evidence_id": "evidence.7c1096a68c29f4bdcf08afab",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.00ca25352ea58b62cc685554",
+          "evidence_id": "evidence.2a1bd06562c2612a04bbb7cb",
+          "source_id": "pandaroot",
+          "path": "detectors/disc/PndDiscTaskDigitization.h",
+          "line_start": 1,
+          "line_end": 31,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.03cee1d94ea795f3366d6508",
+          "evidence_id": "evidence.ee30009c79bbc85289850182",
+          "source_id": "pandaroot",
+          "path": "detectors/emc/EmcDigi/PndEmcWaveformToDigi.h",
+          "line_start": 64,
+          "line_end": 64,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.b6a67ff560b4a16e35f016ad",
+          "evidence_id": "evidence.8462e9e3a958e7971739c9a5",
+          "source_id": "luminosityfit",
+          "path": "python/Readme.md",
+          "line_start": 1,
+          "line_end": 29,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.9f7feb7ce6cb032f6cbe41f3",
+          "evidence_id": "evidence.a928997ee0bf28a67808c2f2",
+          "source_id": "luminosityfit",
+          "path": "README.md",
+          "line_start": 237,
+          "line_end": 253,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d54b43b7996c969b1bae57e3",
+          "evidence_id": "evidence.6c2386bdb478a3aa6b69de63",
+          "source_id": "luminosityfit",
+          "path": "docs/scripts/determineLuminosity.md",
+          "line_start": 91,
+          "line_end": 112,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.1014d75ad62ffa9af936fd32",
+          "evidence_id": "evidence.4c9b4b88b1cf96467c916a18",
+          "source_id": "pandaroot",
+          "path": "macro/detectors/lmd/sim_LMD.C",
+          "line_start": 7,
+          "line_end": 115,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.1d6f4a0dce4ef487823ac967",
+          "evidence_id": "evidence.7a57610296f32a7f47933d4f",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 68
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "R1",
+      "secondary_owner": "GENERATION",
+      "confidence": "medium",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n021.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n021.json"
+    },
+    {
+      "id": "n022",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "answer_classification": "INSUFFICIENT_EVIDENCE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked macro/README supply the fallback workflow.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Partial workflow followed by refusal; omitted fallback dimension.",
+      "relevant_evidence_availability": "ana_dpm.C absent from trace; other workflow documents final/cited.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 6,
+          "sparse": 20,
+          "workflow": 6
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 15,
+        "final_count": 11,
+        "cited_count": 5
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "workflow.restgas.second_pass_pid",
+          "evidence_id": "evidence.f454514196f2c619f114a17b",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.10de6bfa07d20258e308d379",
+          "evidence_id": "evidence.004cd90afeaa4d77e39a6883",
+          "source_id": "restgas_determination",
+          "path": "macro/target/poca_step2_analysis.py",
+          "line_start": 14,
+          "line_end": 41,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.071c042490423d7cd052317e",
+          "evidence_id": "evidence.e43bc446969283f4c9396481",
+          "source_id": "restgas_determination",
+          "path": "pid/PidCorr/PndPidCorrelator.h",
+          "line_start": 44,
+          "line_end": 239,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.e29c4fcd17107cabea45f18e",
+          "evidence_id": "evidence.39f00bef06a208f69d334ceb",
+          "source_id": "restgas_determination",
+          "path": "macro/target/README.md",
+          "line_start": 51,
+          "line_end": 66,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6a72bf9df87e9a5810015881",
+          "evidence_id": "evidence.a152b9210e11fce51b717112",
+          "source_id": "restgas_determination",
+          "path": "README.md",
+          "line_start": 233,
+          "line_end": 283,
+          "pdf_page": null
+        },
+        {
+          "object_id": "data_product.restgas.event_poca",
+          "evidence_id": "evidence.d003825f5740520ba07c1ea2",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.4ae6940438d16bb63702e1f6",
+          "evidence_id": "evidence.62b49909e56e5eb1cc7cbadb",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 135
+        },
+        {
+          "object_id": "workflow.restgas_profile_reconstruction",
+          "evidence_id": "evidence.7a51cadc010e94735760c2e5",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0271f03601b210af9951b1c1",
+          "evidence_id": "evidence.715de8b7f402dc1b3993457d",
+          "source_id": "pandaroot",
+          "path": "analysis/rho/RhoFitter/RhoVtxPoca.cxx",
+          "line_start": 35,
+          "line_end": 42,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.pandaroot.generic",
+          "evidence_id": "evidence.ff1d178382d0095f70234722",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.7e6e72dae292752d16ed0196",
+          "evidence_id": "evidence.5212466c1e2a4793ad9b8f80",
+          "source_id": "restgas_determination",
+          "path": "macro/target/poca_step1_worker.py",
+          "line_start": 13,
+          "line_end": 55,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.10de6bfa07d20258e308d379",
+          "evidence_id": "evidence.004cd90afeaa4d77e39a6883",
+          "source_id": "restgas_determination",
+          "path": "macro/target/poca_step2_analysis.py",
+          "line_start": 14,
+          "line_end": 41,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.071c042490423d7cd052317e",
+          "evidence_id": "evidence.e43bc446969283f4c9396481",
+          "source_id": "restgas_determination",
+          "path": "pid/PidCorr/PndPidCorrelator.h",
+          "line_start": 44,
+          "line_end": 239,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.e29c4fcd17107cabea45f18e",
+          "evidence_id": "evidence.39f00bef06a208f69d334ceb",
+          "source_id": "restgas_determination",
+          "path": "macro/target/README.md",
+          "line_start": 51,
+          "line_end": 66,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6a72bf9df87e9a5810015881",
+          "evidence_id": "evidence.a152b9210e11fce51b717112",
+          "source_id": "restgas_determination",
+          "path": "README.md",
+          "line_start": 233,
+          "line_end": 283,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.7e6e72dae292752d16ed0196",
+          "evidence_id": "evidence.5212466c1e2a4793ad9b8f80",
+          "source_id": "restgas_determination",
+          "path": "macro/target/poca_step1_worker.py",
+          "line_start": 13,
+          "line_end": 55,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": false,
+        "complete": false,
+        "missing_point_ids": [
+          "point.1"
+        ],
+        "verification_errors": [
+          "invalid answer-point coverage review: BAD_QUOTE",
+          "missing answer point point.1"
+        ]
+      },
+      "primary_owner": "R1",
+      "secondary_owner": "V1",
+      "confidence": "medium",
+      "failure_family": "FALSE_INSUFFICIENCY",
+      "authority_limitation": "Visible BAD_QUOTE review error does not establish a validator defect by itself.",
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n022.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n022.json"
+    },
+    {
+      "id": "n023",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked finder implementation supplies the branch and payload types.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits FtsTrackAnalytic branch and distinct payload object types.",
+      "relevant_evidence_availability": "PndFtsTrackFinderTask.cxx dense rank 11 but absent pool; package source final.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 20,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 9,
+        "final_count": 12,
+        "cited_count": 2
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.4148db1e1efa940ddee0ee82",
+          "evidence_id": "evidence.8629217598da4dc02a896b88",
+          "source_id": "pandaroot",
+          "path": "tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.h",
+          "line_start": 25,
+          "line_end": 105,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0f2b1d6ebd237e667d8577cc",
+          "evidence_id": "evidence.805a0d700bcee47a4d2018c3",
+          "source_id": "pandaroot",
+          "path": "fastsim/PndFastSim.cxx",
+          "line_start": 274,
+          "line_end": 343,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.02d0c65755de7c8da8eb6f3d",
+          "evidence_id": "evidence.553c80b59fac852d70d7cb38",
+          "source_id": "pandaroot",
+          "path": "macro/outdated/tracking/onlineTracking/runTimestampCheck.C",
+          "line_start": 1,
+          "line_end": 248,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d45acee8d03f70048b1d356c",
+          "evidence_id": "evidence.eb90b56ee985e10b621ade1a",
+          "source_id": "pandaroot",
+          "path": "tracking/PndFtsTrackFinder/CMakeLists.txt",
+          "line_start": 1,
+          "line_end": 76,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.1aee4037a3397a6c592693ec",
+          "evidence_id": "evidence.332187389ec068aae2591a12",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 43
+        },
+        {
+          "object_id": "object.1afb3a08523db4750d18fa3e",
+          "evidence_id": "evidence.2cd6efedfceff9c31cc8954c",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 159
+        },
+        {
+          "object_id": "object.44eecfac37a30850023b782f",
+          "evidence_id": "evidence.d7581e29213712210e9df695",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_04_ntuple.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.e363543e4fd82b6ccc0b1b4a",
+          "evidence_id": "evidence.7ae4154b791c89f47bdbc083",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_Developers.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.1b5752c71863465a0b8dea7a",
+          "evidence_id": "evidence.c60a576cfde0b5311d60ed16",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 34
+        },
+        {
+          "object_id": "object.4acf738ae3ee6b176c288c19",
+          "evidence_id": "evidence.64595d49f43a57f5ab3344fc",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 230
+        },
+        {
+          "object_id": "object.f2fdc70924081e0bf4765dfb",
+          "evidence_id": "evidence.9e37a1b55df800d894754dfc",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 44
+        },
+        {
+          "object_id": "object.14f408308c61f02004fc417b",
+          "evidence_id": "evidence.dc4aef24fb0e7afdd238a16d",
+          "source_id": "pandaroot",
+          "path": "CHANGELOG.md",
+          "line_start": 124,
+          "line_end": 132,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.4148db1e1efa940ddee0ee82",
+          "evidence_id": "evidence.8629217598da4dc02a896b88",
+          "source_id": "pandaroot",
+          "path": "tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.h",
+          "line_start": 25,
+          "line_end": 105,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d45acee8d03f70048b1d356c",
+          "evidence_id": "evidence.eb90b56ee985e10b621ade1a",
+          "source_id": "pandaroot",
+          "path": "tracking/PndFtsTrackFinder/CMakeLists.txt",
+          "line_start": 1,
+          "line_end": 76,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "R2",
+      "secondary_owner": "GENERATION",
+      "confidence": "medium",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n023.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n023.json"
+    },
+    {
+      "id": "n024",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Cited final headers support both propagator details.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits GEANE error/transport matrix and helix backward-propagation mode.",
+      "relevant_evidence_availability": "Helix header dense 8/sparse 19, fused 18, ordinary_rrf pool, reranked 2, final and cited.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 16,
+          "graph": 15,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 12,
+        "final_count": 10,
+        "cited_count": 5
+      },
+      "r2_status": "G4 n024 helix retention observed; no contract regression.",
+      "final_evidence": [
+        {
+          "object_id": "object.b92e31dcb2ee34a46234ac0f",
+          "evidence_id": "evidence.919cacd44e240f61485a38cc",
+          "source_id": "pandaroot",
+          "path": "tracking/PndGeanePropagator/PndGeanePro.h",
+          "line_start": 18,
+          "line_end": 88,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d6ef560b88c3926ecb32d3e1",
+          "evidence_id": "evidence.59e79b2eb223aa9dc25fca52",
+          "source_id": "pandaroot",
+          "path": "tracking/PndHelixPropagator/PndHelixPropagator.h",
+          "line_start": 24,
+          "line_end": 124,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.4bf27cf5bb81b1424c695cb7",
+          "evidence_id": "evidence.194fcfbd3062b91ba8ee15f2",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 71
+        },
+        {
+          "object_id": "object.30cf42f607e2c228dfe125fd",
+          "evidence_id": "evidence.7b2223654828acbeb31020ca",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 100
+        },
+        {
+          "object_id": "object.6e8c1f29f2419aa1d75dedd0",
+          "evidence_id": "evidence.483d32714a37e8b43df231b2",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 214
+        },
+        {
+          "object_id": "object.164c6dfc5088f339d869e342",
+          "evidence_id": "evidence.0c4513a0a9a72e26b822b496",
+          "source_id": "pandaroot",
+          "path": "macro/QA/helixPropagator/TestHelixPropagatorSetPCAPropagation.cxx",
+          "line_start": 1,
+          "line_end": 26,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.7f5ec682c4bf96030a305341",
+          "evidence_id": "evidence.7ab64b46c256b3ac2e43c885",
+          "source_id": "pandaroot",
+          "path": "macro/QA/helixPropagator/TestHelixPropagatorSetPCAPropagation.cxx",
+          "line_start": 1,
+          "line_end": 8,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b1739b9b6e502cda6a154406",
+          "evidence_id": "evidence.f2ebb8e0db1c0b0a0138d1a1",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 94
+        },
+        {
+          "object_id": "object.79b75480980719256f8b7937",
+          "evidence_id": "evidence.e375d12552eb0233e78d416b",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.deeebf203a3e05a3f55df26d",
+          "evidence_id": "evidence.330e30785581cb7f0d0408dc",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.b92e31dcb2ee34a46234ac0f",
+          "evidence_id": "evidence.919cacd44e240f61485a38cc",
+          "source_id": "pandaroot",
+          "path": "tracking/PndGeanePropagator/PndGeanePro.h",
+          "line_start": 18,
+          "line_end": 88,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d6ef560b88c3926ecb32d3e1",
+          "evidence_id": "evidence.59e79b2eb223aa9dc25fca52",
+          "source_id": "pandaroot",
+          "path": "tracking/PndHelixPropagator/PndHelixPropagator.h",
+          "line_start": 24,
+          "line_end": 124,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.4bf27cf5bb81b1424c695cb7",
+          "evidence_id": "evidence.194fcfbd3062b91ba8ee15f2",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 71
+        },
+        {
+          "object_id": "object.30cf42f607e2c228dfe125fd",
+          "evidence_id": "evidence.7b2223654828acbeb31020ca",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 100
+        },
+        {
+          "object_id": "object.6e8c1f29f2419aa1d75dedd0",
+          "evidence_id": "evidence.483d32714a37e8b43df231b2",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 214
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "GENERATION",
+      "secondary_owner": "V1/G2",
+      "confidence": "high",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": "Runtime VALID coverage is narrower than semantic Gold-detail requirement; no proven false validator acceptance.",
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n024.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n024.json"
+    },
+    {
+      "id": "n025",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "answer_classification": "INSUFFICIENT_EVIDENCE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Final cited README/thesis states up to eight tangent-circle solutions.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits eight-solution detail, then refuses after INVALID_SUPPORTER review.",
+      "relevant_evidence_availability": "Up-to-eight detail present in final/cited material; PndApolloniusTriplet.h sparse 15/16 not in pool.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 20,
+          "graph": 20,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 10,
+        "final_count": 10,
+        "cited_count": 4
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.b87289a6b909eed82a8d14fa",
+          "evidence_id": "evidence.d5a56f774e7f932f502eab56",
+          "source_id": "restgas_determination",
+          "path": "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 407,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.080eb596d4f0b30c508fc718",
+          "evidence_id": "evidence.2e8e3a2e6f10aa36f0b5138d",
+          "source_id": "restgas_determination",
+          "path": "tracking/PzFinder/PndSttSkewStrawPzFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 339,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.08993f3edcaf98c42a3bdf34",
+          "evidence_id": "evidence.2a6e96993552eec7f7c94347",
+          "source_id": "restgas_determination",
+          "path": "macro/target/reco_complete.C",
+          "line_start": 1,
+          "line_end": 170,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.bf98d2d18b8c71ee23891b94",
+          "evidence_id": "evidence.a663a0e2c5fc6797b863c488",
+          "source_id": "restgas_determination",
+          "path": "README.md",
+          "line_start": 217,
+          "line_end": 231,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.a78b8a95067e4f71eab2bd2e",
+          "evidence_id": "evidence.290b6e9b34847abb5fcc3836",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 129
+        },
+        {
+          "object_id": "object.5ce188626c2cd27e73257e6f",
+          "evidence_id": "evidence.6222de90a430ece2922b0abd",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 128
+        },
+        {
+          "object_id": "object.3e8d11603d748d53854b2610",
+          "evidence_id": "evidence.1b1c6c7f25d05af9ea662bd5",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 130
+        },
+        {
+          "object_id": "object.6c3da7f4ae319f0ab36c4b48",
+          "evidence_id": "evidence.00e95dc71b2c8c03d14c4045",
+          "source_id": "pandaroot",
+          "path": "tracking/PndPreselectSttHits/PndPreselectSttHitsTask.cxx",
+          "line_start": 1,
+          "line_end": 94,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.63843629ac72da1bbfa636af",
+          "evidence_id": "evidence.befb897d0679467b1cff0780",
+          "source_id": "pandaroot",
+          "path": "tracking/PndApolloniusTripletTrackFinder/PndApolloniusTripletTrackFinderTask.cxx",
+          "line_start": 1,
+          "line_end": 385,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.a96176599794058d0d5ecfa8",
+          "evidence_id": "evidence.658e603f11acc1384d1fe986",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 132
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.bf98d2d18b8c71ee23891b94",
+          "evidence_id": "evidence.a663a0e2c5fc6797b863c488",
+          "source_id": "restgas_determination",
+          "path": "README.md",
+          "line_start": 217,
+          "line_end": 231,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.a78b8a95067e4f71eab2bd2e",
+          "evidence_id": "evidence.290b6e9b34847abb5fcc3836",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 129
+        },
+        {
+          "object_id": "object.5ce188626c2cd27e73257e6f",
+          "evidence_id": "evidence.6222de90a430ece2922b0abd",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 128
+        },
+        {
+          "object_id": "object.3e8d11603d748d53854b2610",
+          "evidence_id": "evidence.1b1c6c7f25d05af9ea662bd5",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 130
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": false,
+        "complete": false,
+        "missing_point_ids": [
+          "point.1"
+        ],
+        "verification_errors": [
+          "invalid answer-point coverage review: INVALID_SUPPORTER",
+          "missing answer point point.1"
+        ]
+      },
+      "primary_owner": "GENERATION",
+      "secondary_owner": "V1",
+      "confidence": "high",
+      "failure_family": "FALSE_INSUFFICIENCY",
+      "authority_limitation": "Visible INVALID_SUPPORTER is not by itself proof of validator malfunction.",
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n025.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n025.json"
+    },
+    {
+      "id": "n026",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_COMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Cited permitted evidence supports required semantics.",
+      "semantic_completeness": true,
+      "critical_missing_content": "None under bounded independent review.",
+      "relevant_evidence_availability": "Final/cited evidence supports the answer.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 10,
+          "graph": 5,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 14,
+        "final_count": 12,
+        "cited_count": 4
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.c061a553d5a9d4b6a8243182",
+          "evidence_id": "evidence.690fac64b9dd0614f352ae91",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_outline.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.4c66ca529ad56e378b9b715b",
+          "evidence_id": "evidence.d7d5e2fb8edbb1c8764a9b57",
+          "source_id": "pandaroot",
+          "path": "tutorials/rho/README.md",
+          "line_start": 1,
+          "line_end": 7,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.93000e883ad773fdf817d2bc",
+          "evidence_id": "evidence.2166ece7aae5a4d56bff2cf0",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_outline.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.7355bb9be1a6adcfe32ef533",
+          "evidence_id": "evidence.7029eabfa527806d1a040b5e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_outline.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.bc93ff6902375b276ae9f82c",
+          "evidence_id": "evidence.1f4e0335e03f4b17f669060d",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_00_preface.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.c0476f977813198475b9377d",
+          "evidence_id": "evidence.b94ae68521ae0c131c66c2fc",
+          "source_id": "pandaroot",
+          "path": "tutorials/rho/README.md",
+          "line_start": 1,
+          "line_end": 57,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0024476c91d6174296c5f733",
+          "evidence_id": "evidence.963234c7fd18df84b54b50e8",
+          "source_id": "pandaroot",
+          "path": "analysis/AnalysisTools/PndSimpleCombinerTask.h",
+          "line_start": 38,
+          "line_end": 38,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.413d4f3afce881ed69f43667",
+          "evidence_id": "evidence.e44106e07dd7d6fba2fe6a53",
+          "source_id": "pandaroot",
+          "path": "macro/production/dayone-2017/fastsim/jobana_kronos.sh",
+          "line_start": 1,
+          "line_end": 51,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.becc40785663ac1bc0f7beea",
+          "evidence_id": "evidence.6a63c26c976324cd7b32cbd6",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_00_preface.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.83eb2b9b29570691885973c6",
+          "evidence_id": "evidence.b9204e4c618f15d8e1b79e78",
+          "source_id": "pandaroot",
+          "path": "docs/Tutorials/tut_00_preface.rst",
+          "line_start": 1,
+          "line_end": 63,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.a1fee890d03553f30064c89a",
+          "evidence_id": "evidence.116bf13715da6c72ebda1c05",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_00_preface.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.a38a71773b6dbebc4eeedfd9",
+          "evidence_id": "evidence.dac8eb2682fe0c09a1a55cdb",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_06_eventfilter.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.c061a553d5a9d4b6a8243182",
+          "evidence_id": "evidence.690fac64b9dd0614f352ae91",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_outline.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.4c66ca529ad56e378b9b715b",
+          "evidence_id": "evidence.d7d5e2fb8edbb1c8764a9b57",
+          "source_id": "pandaroot",
+          "path": "tutorials/rho/README.md",
+          "line_start": 1,
+          "line_end": 7,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.7355bb9be1a6adcfe32ef533",
+          "evidence_id": "evidence.7029eabfa527806d1a040b5e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_outline.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.83eb2b9b29570691885973c6",
+          "evidence_id": "evidence.b9204e4c618f15d8e1b79e78",
+          "source_id": "pandaroot",
+          "path": "docs/Tutorials/tut_00_preface.rst",
+          "line_start": 1,
+          "line_end": 63,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "NONE",
+      "secondary_owner": "NONE",
+      "confidence": "medium",
+      "failure_family": "NONE",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n026.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n026.json"
+    },
+    {
+      "id": "n027",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_COMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Cited permitted evidence supports required semantics.",
+      "semantic_completeness": true,
+      "critical_missing_content": "None under bounded independent review.",
+      "relevant_evidence_availability": "Final/cited evidence supports the answer.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 18,
+          "graph": 6,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 18,
+        "final_count": 12,
+        "cited_count": 2
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.683096baae062b985efef073",
+          "evidence_id": "evidence.7c09de0cee8bb344788f7e30",
+          "source_id": "pandaroot",
+          "path": "docs/Jupyter/Jupyter.rst",
+          "line_start": 1,
+          "line_end": 46,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.625bd60d575c41fc8747d2d4",
+          "evidence_id": "evidence.61c599fcd7df4a52c72c349a",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Jupyter/Jupyter.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.420ee00eabb1d7bf0c0c9f2c",
+          "evidence_id": "evidence.a0b394009e6426365840d1e5",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Jupyter/Jupyter.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.df7e5e2a581cfc1305086cda",
+          "evidence_id": "evidence.80a82b6ca25e573a6f7cd741",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Jupyter/Jupyter.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6d240dba0e4248e1428746d3",
+          "evidence_id": "evidence.3e0773b9758aa645b6546ac6",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Jupyter/Jupyter.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.7c6047078cd3642a2fb126cb",
+          "evidence_id": "evidence.f021ccb3d01c959ab8651c09",
+          "source_id": "pandaroot",
+          "path": "docs/Jupyter/Jupyter.rst",
+          "line_start": 20,
+          "line_end": 20,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.070fb9a5c34c402209a732db",
+          "evidence_id": "evidence.194c6afe7aa40ecf4b00e877",
+          "source_id": "pandaroot",
+          "path": "cmake/private/WriteKernelFile.cmake",
+          "line_start": 73,
+          "line_end": 185,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.5a75c3fb08aeb4e02df02e11",
+          "evidence_id": "evidence.eb7be306c4393839c1381109",
+          "source_id": "pandaroot",
+          "path": "tools/MVA/KNN/PndPrzWindowClassify.cpp",
+          "line_start": 162,
+          "line_end": 191,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.5cf9e0801748ac6d955df2de",
+          "evidence_id": "evidence.7d58502ec093edbb05185d1c",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Jupyter/notebooks/PandaRootPySim.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.081740e877a8fb641d2c41ea",
+          "evidence_id": "evidence.df941b2c8c39bc59d46508fb",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Jupyter/Jupyter.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.84b56256d3934edcec14ea4e",
+          "evidence_id": "evidence.fd84135e98b98950cb6b1189",
+          "source_id": "pandaroot",
+          "path": "docs/Jupyter/Jupyter.rst",
+          "line_start": 34,
+          "line_end": 34,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.1aa982976c5b08ae86856f02",
+          "evidence_id": "evidence.2734a77426910c73e4fe3d99",
+          "source_id": "pandaroot",
+          "path": "docs/Jupyter/Jupyter.rst",
+          "line_start": 36,
+          "line_end": 36,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.683096baae062b985efef073",
+          "evidence_id": "evidence.7c09de0cee8bb344788f7e30",
+          "source_id": "pandaroot",
+          "path": "docs/Jupyter/Jupyter.rst",
+          "line_start": 1,
+          "line_end": 46,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6d240dba0e4248e1428746d3",
+          "evidence_id": "evidence.3e0773b9758aa645b6546ac6",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Jupyter/Jupyter.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "NONE",
+      "secondary_owner": "NONE",
+      "confidence": "medium",
+      "failure_family": "NONE",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n027.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n027.json"
+    },
+    {
+      "id": "n028",
+      "expected_status": "answered",
+      "actual_status": "insufficient_evidence",
+      "answer_classification": "INSUFFICIENT_EVIDENCE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Locked producer/consumer implementation supports requested exact chain.",
+      "semantic_completeness": false,
+      "critical_missing_content": "High-level chain given, but exact registration/tuple details omitted before refusal.",
+      "relevant_evidence_availability": "Producer .cxx sparse 18 and consumer .cxx graph 5 did not enter pool; header/macro reached final.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 6,
+          "graph": 5,
+          "sparse": 20,
+          "workflow": 6
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 17,
+        "final_count": 12,
+        "cited_count": 4
+      },
+      "r2_status": "Candidate opportunity loss observed; no proven G4 retention-contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "workflow.pandaroot.generic",
+          "evidence_id": "evidence.77254854e76e6737ef24d0c1",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.5cedee693f3f38b1142ff753",
+          "evidence_id": "evidence.e50ba941687f3ad1f64ff9d6",
+          "source_id": "pandaroot",
+          "path": "softrig/PndOnlineFilterInfo.h",
+          "line_start": 1,
+          "line_end": 54,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.cd601a01ee5d3f65ea23cbf5",
+          "evidence_id": "evidence.5b2f98e5b1088ebe297830b6",
+          "source_id": "pandaroot",
+          "path": "softrig/PndOnlineFilterInfo.cxx",
+          "line_start": 1,
+          "line_end": 90,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.e6585a7c2a5b6f3ffc71ffb3",
+          "evidence_id": "evidence.5aec65f04ec751097c07fbd4",
+          "source_id": "pandaroot",
+          "path": "macro/softrig/ana_jpsi_task_ST.C",
+          "line_start": 1,
+          "line_end": 83,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.05141822f5407668f62a92f4",
+          "evidence_id": "evidence.4bf94185a76021c56caf12ef",
+          "source_id": "pandaroot",
+          "path": "macro/softrig/ana_jpsi_task_ST.C",
+          "line_start": 6,
+          "line_end": 83,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.bc8333ad0e15ee02eab751a9",
+          "evidence_id": "evidence.6176a8d60fdd467bd2f6fe08",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Macros.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.262d4647ef2dc9eb9bb47ffa",
+          "evidence_id": "evidence.a49ab460a17542f03249bb72",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Macros.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6b0c9215ab982da22a88e619",
+          "evidence_id": "evidence.91fcd766a6fb682c26bac8b1",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Macros.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.bb60ac1f1133603c8fa92f53",
+          "evidence_id": "evidence.03b71b4b94fa8ad466e81e31",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 56
+        },
+        {
+          "object_id": "workflow.pandaroot.lmd_reconstruction",
+          "evidence_id": "evidence.39fc3319ccfd8a96ad4c54a3",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.restgas.first_pass_poca",
+          "evidence_id": "evidence.7555b6f7bd0dbf6a5fe97f25",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "workflow.restgas.second_pass_pid",
+          "evidence_id": "evidence.8505b8e25f05f5d6e56c849e",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.5cedee693f3f38b1142ff753",
+          "evidence_id": "evidence.e50ba941687f3ad1f64ff9d6",
+          "source_id": "pandaroot",
+          "path": "softrig/PndOnlineFilterInfo.h",
+          "line_start": 1,
+          "line_end": 54,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.cd601a01ee5d3f65ea23cbf5",
+          "evidence_id": "evidence.5b2f98e5b1088ebe297830b6",
+          "source_id": "pandaroot",
+          "path": "softrig/PndOnlineFilterInfo.cxx",
+          "line_start": 1,
+          "line_end": 90,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.e6585a7c2a5b6f3ffc71ffb3",
+          "evidence_id": "evidence.5aec65f04ec751097c07fbd4",
+          "source_id": "pandaroot",
+          "path": "macro/softrig/ana_jpsi_task_ST.C",
+          "line_start": 1,
+          "line_end": 83,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.05141822f5407668f62a92f4",
+          "evidence_id": "evidence.4bf94185a76021c56caf12ef",
+          "source_id": "pandaroot",
+          "path": "macro/softrig/ana_jpsi_task_ST.C",
+          "line_start": 6,
+          "line_end": 83,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": false,
+        "complete": false,
+        "missing_point_ids": [
+          "point.2"
+        ],
+        "verification_errors": [
+          "invalid answer-point coverage review: INVALID_SUPPORTER",
+          "missing answer point point.2"
+        ]
+      },
+      "primary_owner": "R2",
+      "secondary_owner": "V1",
+      "confidence": "medium",
+      "failure_family": "FALSE_INSUFFICIENCY",
+      "authority_limitation": "Visible INVALID_SUPPORTER is not by itself proof of validator malfunction.",
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n028.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n028.json"
+    },
+    {
+      "id": "n029",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "PndRingSorter header/cxx exist in locked normalized corpus.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits named ring cells, AddElement, WriteOutElements and timestamp multimap ordering.",
+      "relevant_evidence_availability": "PndRingSorter objects absent across trace; final answer remains generic FairRoot buffering.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 12,
+          "graph": 12,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 5,
+        "final_count": 10,
+        "cited_count": 3
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.1efcdeab96fa29a3bbcf9550",
+          "evidence_id": "evidence.552369954fb92a6926aa820c",
+          "source_id": "pandaroot",
+          "path": "detectors/emc/EmcDigi/PndEmcWaveformToDigi.cxx",
+          "line_start": 309,
+          "line_end": 414,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.2f1e0b28b643896bdfaf774a",
+          "evidence_id": "evidence.d4f90e06b61f8c88ccedbe4d",
+          "source_id": "pandaroot",
+          "path": "detectors/mdt/MdtDigi/PndMdtHitProducer.cxx",
+          "line_start": 109,
+          "line_end": 324,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.12f15132c306d3d0f3e55f78",
+          "evidence_id": "evidence.39a8b85934c11c02e107b3a2",
+          "source_id": "pandaroot",
+          "path": "detectors/lmd/LmdDigi/PndLmdNoiseProducer.cxx",
+          "line_start": 1,
+          "line_end": 336,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.325ff7f3a663e90c8958e32b",
+          "evidence_id": "evidence.68f30f31b55a7f1233fd9608",
+          "source_id": "pandaroot",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.dc2c478da95321847aa9095a",
+          "evidence_id": "evidence.47df610aa99270a9b0414ea2",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 35
+        },
+        {
+          "object_id": "object.262d4647ef2dc9eb9bb47ffa",
+          "evidence_id": "evidence.b906d8609e4acb28561c64b7",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Macros.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.0aeb0bec22156dbcff5a7849",
+          "evidence_id": "evidence.c7d460f25a1dddb059cfa102",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Macros.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b90305162d41f54cd1fc9634",
+          "evidence_id": "evidence.68cf1bf774a101fd716086fe",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 69
+        },
+        {
+          "object_id": "object.0ca42cb9f02292f8df2d6796",
+          "evidence_id": "evidence.2bfe3883d8cdaf6916501d2a",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 55
+        },
+        {
+          "object_id": "object.e108eb61d917bca3d484ba1e",
+          "evidence_id": "evidence.d84c96fef842957be0b16118",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 68
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.1efcdeab96fa29a3bbcf9550",
+          "evidence_id": "evidence.552369954fb92a6926aa820c",
+          "source_id": "pandaroot",
+          "path": "detectors/emc/EmcDigi/PndEmcWaveformToDigi.cxx",
+          "line_start": 309,
+          "line_end": 414,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.2f1e0b28b643896bdfaf774a",
+          "evidence_id": "evidence.d4f90e06b61f8c88ccedbe4d",
+          "source_id": "pandaroot",
+          "path": "detectors/mdt/MdtDigi/PndMdtHitProducer.cxx",
+          "line_start": 109,
+          "line_end": 324,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.12f15132c306d3d0f3e55f78",
+          "evidence_id": "evidence.39a8b85934c11c02e107b3a2",
+          "source_id": "pandaroot",
+          "path": "detectors/lmd/LmdDigi/PndLmdNoiseProducer.cxx",
+          "line_start": 1,
+          "line_end": 336,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "R1",
+      "secondary_owner": "Q1/Q2",
+      "confidence": "medium",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n029.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n029.json"
+    },
+    {
+      "id": "n030",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_COMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Cited permitted evidence supports required semantics.",
+      "semantic_completeness": true,
+      "critical_missing_content": "None under bounded independent review.",
+      "relevant_evidence_availability": "Final/cited evidence supports the answer.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 13,
+          "graph": 2,
+          "sparse": 20,
+          "workflow": 20
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 8,
+        "final_count": 12,
+        "cited_count": 2
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.e77f22cf1393ca8d2281c29d",
+          "evidence_id": "evidence.c9c10a76d8924ff1c41a9188",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 74
+        },
+        {
+          "object_id": "object.6e39ac23e0899086b500141e",
+          "evidence_id": "evidence.784e21567366db304b905cec",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 76
+        },
+        {
+          "object_id": "object.25772a34446d53e2e1720b10",
+          "evidence_id": "evidence.57e977a9a37bb2a9f908c4ba",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 70
+        },
+        {
+          "object_id": "object.b3877ddf768ffcfa77c4157c",
+          "evidence_id": "evidence.a5e4e829f83e06d0c45473e0",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 78
+        },
+        {
+          "object_id": "object.568add68a78b82963f43db5a",
+          "evidence_id": "evidence.67514afa9d06b75336f20977",
+          "source_id": "luminosityfit",
+          "path": "docs/HowThisSoftwareWorks.md",
+          "line_start": 1,
+          "line_end": 25,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.f982904e8d8040e83ff64f39",
+          "evidence_id": "evidence.040f9f09d1ddae116a25cfb5",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 73
+        },
+        {
+          "object_id": "object.ae665c15393f2fd5881383fa",
+          "evidence_id": "evidence.4a2f8c4fe89c180933555af1",
+          "source_id": "luminosityfit",
+          "path": "docs/scripts/determineLuminosity.md",
+          "line_start": 34,
+          "line_end": 39,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.2c1a3bfd5d14d3fe5968eafd",
+          "evidence_id": "evidence.dd3393320b0dc17caa020a74",
+          "source_id": "pflueger_2017",
+          "path": "raw_pdf/Diss_2017_Pflueger_Stefan.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 46
+        },
+        {
+          "object_id": "concept.luminosityfit.luminosity_fit_model",
+          "evidence_id": "evidence.7c1096a68c29f4bdcf08afab",
+          "source_id": "curated_panda_domain",
+          "path": null,
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.01605e723d731f3b6606ef6f",
+          "evidence_id": "evidence.45434d120fd8db8995f4fcdb",
+          "source_id": "pandaroot",
+          "path": "macro/tracking/trackingQA/README.md",
+          "line_start": 21,
+          "line_end": 31,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.6c0b9e1549195150dc526dc7",
+          "evidence_id": "evidence.a3386e02c8aa16bd66d62d3d",
+          "source_id": "luminosityfit",
+          "path": "docker/README.md",
+          "line_start": 1,
+          "line_end": 1,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.015d183a412eb1fab6948b24",
+          "evidence_id": "evidence.bb0670da4e6024165f2d4d5c",
+          "source_id": "luminosityfit",
+          "path": "python/runLmdFit.sh",
+          "line_start": 1,
+          "line_end": 11,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.e77f22cf1393ca8d2281c29d",
+          "evidence_id": "evidence.c9c10a76d8924ff1c41a9188",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 74
+        },
+        {
+          "object_id": "object.6e39ac23e0899086b500141e",
+          "evidence_id": "evidence.784e21567366db304b905cec",
+          "source_id": "li_2026",
+          "path": "raw_pdf/thesis.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 76
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "NONE",
+      "secondary_owner": "NONE",
+      "confidence": "medium",
+      "failure_family": "NONE",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n030.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n030.json"
+    },
+    {
+      "id": "n031",
+      "expected_status": "answered",
+      "actual_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "independent_answerability": "answerable from permitted locked sources",
+      "answerability_basis": "Cited documentation contains previous DPMGenerator and BoxGenerator versus fixed-step distinction.",
+      "semantic_completeness": false,
+      "critical_missing_content": "Omits prior DPMGenerator and random BoxGenerator versus fixed-pattern FixStepParticleGun contrast.",
+      "relevant_evidence_availability": "Cited final document contains omitted details; runtime coverage accepted.",
+      "evidence_flow": {
+        "channel_candidate_counts": {
+          "dense": 20,
+          "exact": 11,
+          "graph": 0,
+          "sparse": 20,
+          "workflow": 1
+        },
+        "rerank_pool_count": 30,
+        "reranked_count": 18,
+        "final_count": 12,
+        "cited_count": 2
+      },
+      "r2_status": "No observed G4 R2 contract contradiction.",
+      "final_evidence": [
+        {
+          "object_id": "object.24a175084141bbf15914ba9c",
+          "evidence_id": "evidence.da39050357a6680bac2928cf",
+          "source_id": "pandaroot",
+          "path": "docs/EventGenerators/EventGenerators.rst",
+          "line_start": 1,
+          "line_end": 39,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.15fd1e4d16dd280cfe9be548",
+          "evidence_id": "evidence.7e8f7fff601ae481ea0f4155",
+          "source_id": "pandaroot",
+          "path": "detectors/hypGe/hypGeAna/PndHypGeCOSYBackgroundAna.h",
+          "line_start": 100,
+          "line_end": 102,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.ddc9a30b78df62cf2535b507",
+          "evidence_id": "evidence.4a834e1758150ee8d0c9a063",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/EventGenerators.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.ab4e0272d27889c5089b33fe",
+          "evidence_id": "evidence.ebd26c3d8f3d2ef28d8c0b90",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/EventGenerators.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.8aa495df90f3407a2acef60d",
+          "evidence_id": "evidence.e03e0b9db84eeed7af37376e",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/EventGenerators/EventGenerators.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.b90305162d41f54cd1fc9634",
+          "evidence_id": "evidence.0b912e64cf8792cdab26938d",
+          "source_id": "karavdina_2015",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": 69
+        },
+        {
+          "object_id": "object.1ae6116af223bb6ae5388903",
+          "evidence_id": "evidence.15b49b652218d8ef96d5d757",
+          "source_id": "pandaroot",
+          "path": "macro/examples/background/dpm_sim.C",
+          "line_start": 1,
+          "line_end": 6,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.1d698992e7e271c900893d0d",
+          "evidence_id": "evidence.5299a21ee1a59a836f19cbf5",
+          "source_id": "pandaroot",
+          "path": "tracking/sttmvdtracking/PndMixBackgroundEvents.cxx",
+          "line_start": 390,
+          "line_end": 392,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.2b662d7668d0c945bc05c63e",
+          "evidence_id": "evidence.413b6c7106004223145701ca",
+          "source_id": "pandaroot",
+          "path": "docs/EventGenerators/EventGenerators.rst",
+          "line_start": 13,
+          "line_end": 14,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d4183af9012d89d1310b1b31",
+          "evidence_id": "evidence.25f4fb3b24e2ed35b525a05f",
+          "source_id": "pandaroot",
+          "path": "docs/EventGenerators/EventGenerators.rst",
+          "line_start": 7,
+          "line_end": 8,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.d3789b68980223f96419c6c7",
+          "evidence_id": "evidence.88f01c04620336dce02879c4",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running_Sequence.html",
+          "line_start": null,
+          "line_end": null,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.7f591407246c5dea7280dbb2",
+          "evidence_id": "evidence.39fa5c309da556177e5f396d",
+          "source_id": "pandaroot",
+          "path": "docs/Running/Running_Sequence.rst",
+          "line_start": 16,
+          "line_end": 17,
+          "pdf_page": null
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.24a175084141bbf15914ba9c",
+          "evidence_id": "evidence.da39050357a6680bac2928cf",
+          "source_id": "pandaroot",
+          "path": "docs/EventGenerators/EventGenerators.rst",
+          "line_start": 1,
+          "line_end": 39,
+          "pdf_page": null
+        },
+        {
+          "object_id": "object.2b662d7668d0c945bc05c63e",
+          "evidence_id": "evidence.413b6c7106004223145701ca",
+          "source_id": "pandaroot",
+          "path": "docs/EventGenerators/EventGenerators.rst",
+          "line_start": 13,
+          "line_end": 14,
+          "pdf_page": null
+        }
+      ],
+      "runtime_coverage": {
+        "evaluable": true,
+        "complete": true,
+        "missing_point_ids": [],
+        "verification_errors": []
+      },
+      "primary_owner": "GENERATION",
+      "secondary_owner": "V1/G2",
+      "confidence": "high",
+      "failure_family": "ANSWER_COMPLETENESS",
+      "authority_limitation": null,
+      "raw_record": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/records/n031.json",
+      "raw_trace": "data/evaluation/runs/g5-integrated-candidate-novel-dev-v1/traces/n031.json"
+    }
+  ],
+  "g4_sentinels": {
+    "authoritative_g4_run_id": "g4-r2-post-correction-exposed-target-v1",
+    "status": "G5 integrated observations only; neither independent replication nor replacements",
+    "n002": "requirements objects dense ranks 7 and 8 retained by policy_role_frontier, reranked/final/cited; answered complete",
+    "n017": "PndTrack dense rank 7 retained by policy_role_frontier, reranked/final/cited; answered complete",
+    "n024": "helix header dense 8/sparse 19, fused 18, ordinary_rrf pool, reranked/final/cited; answered incomplete from omitted detail"
+  },
+  "integrated_decision": {
+    "g5": "INCOMPLETE / PRODUCT ERROR",
+    "primary_reason": "n018 nonretryable D1 ambiguity ValidationError leaves only 27/28 scored QA results",
+    "g5_integrated_run_complete": false,
+    "g5_integrated_candidate_ready_for_g6": false,
+    "secondary_quality_findings": "7 independently answerable false insufficiencies and 12 answered-incomplete cases on the 27 usable QA results; not a complete-cohort FAIL gate",
+    "next_task_recommendation": "G5 D1 NONRETRYABLE PRODUCT ERROR FAILURE REVIEW",
+    "next_task_execution_authorized": false
+  },
+  "evidence_limits": {
+    "exposed_development_only": true,
+    "fresh_generalization_evidence": false,
+    "novel_validation_evidence": false,
+    "holdout_evidence": false,
+    "release_evidence": false,
+    "no_external_judge": true,
+    "bounded_manual_semantic_review": true,
+    "package_differences_from_g4": true,
+    "n001_branch_execution_gold_source_conflict": true,
+    "raw_store_git_ignored": true
+  },
+  "protected_boundary": {
+    "novel_validation_content_access": 0,
+    "novel_validation_outcome_access": 0,
+    "holdout_content_access": 0,
+    "holdout_outcome_access": 0,
+    "protected_leakage": 0
+  },
+  "product_materiality": {
+    "product_source_change": false,
+    "product_behavior_change": false,
+    "test_change": false,
+    "prompt_change": false,
+    "config_change": false,
+    "schema_change": false,
+    "dataset_change": false,
+    "gold_change": false,
+    "calibration_change": false,
+    "new_runtime_mode": false
+  }
+}

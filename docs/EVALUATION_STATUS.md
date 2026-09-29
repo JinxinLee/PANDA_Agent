@@ -18,7 +18,7 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G5 integrated candidate design result commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G5 integrated candidate exposed regression result commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -46,13 +46,13 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G5_INTEGRATED_CANDIDATE_DESIGN_COMPLETE
+PHASE_G = IN_PROGRESS / G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION_INCOMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
 G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / HISTORICAL EXACT REPLAY UNAVAILABLE / CURRENT-LINEAGE EXPOSED R2 CORRECTION SUPPORTED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
-G5 = INTEGRATED CANDIDATE DEFINED / EXPOSED INTEGRATED REGRESSION DESIGNED / EXECUTION NOT_YET_RUN / FRESH GENERALIZATION NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G5 INTEGRATED CANDIDATE EXPOSED REGRESSION EXECUTION
+G5 = INTEGRATED CANDIDATE DEFINED / EXPOSED 28 CASE ATTEMPT TERMINATED / 27 OF 28 QA RESULTS / NONRETRYABLE D1 PRODUCT ERROR / INTEGRATED CANDIDATE NOT_READY_FOR_G6 / FRESH GENERALIZATION NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G5 D1 NONRETRYABLE PRODUCT ERROR FAILURE REVIEW
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -60,7 +60,7 @@ Phase F is terminal: F1–F5 completed their bounded engineering objectives, whi
 
 Post-A5 mechanisms remain product architecture, but the replacement T2 remains `COMPLETE / FAIL`: g011 PASS, g010 CONTROL_PASS, g013 FAIL, g014 CONTROL_PASS, g023 FAIL, g022 CONTROL_PASS, g047 FAIL, g050 CONTROL_FAIL. These exposed repair-target results do not establish sufficient completeness recovery or independent generalization. Their historical verdicts and records are unchanged.
 
-Phase G is ordinary product development for answer semantics and robustness. The old eight-case cohort is `NON_GATING REGRESSION DIAGNOSTICS`; the existing 28 exposed novel_dev cases provide the current G4 empirical development diagnostic, while fresh Lane B is optional/deferred future work. `novel_validation` and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
+Phase G is ordinary product development for answer semantics and robustness. The old eight-case cohort is `NON_GATING REGRESSION DIAGNOSTICS`; the existing 28 exposed novel_dev cases now provide one incomplete G5 integrated development snapshot, while fresh Lane B is optional/deferred future work. `novel_validation` and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
 
 G1 implements [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md): question-only canonical relations, ordinary C1 checks for relation-free points, required-relation dispositions for relation-bearing points, target-local A1 authorization, and full-contract V2 recheck. Focused deterministic and fake-provider regression tests passed. This is a material product/prompt/schema change within `production_answer_obligations_v1`; scientific calls/tokens are 0/0. Real-model extraction quality, provider runtime acceptance, and empirical completeness benefit remain unverified.
 
@@ -106,7 +106,9 @@ The separately authorized [G4 post-correction targeted live verification](../eva
 
 The [G5 integrated candidate design](../evaluation/G5_INTEGRATED_CANDIDATE_DESIGN.md) is `PASS / EXECUTION READY` for a separately authorized, single-run complete exposed `novel_dev` `qa` regression on product-behavior lineage `047201166057edd9859292a1760bc2e9bbf173a2`. G1/G2/G4 already coexist in normal `production_answer_obligations_v1`; G3 remains `NO_CHANGE`. No new runtime mode or F6/release-oriented formal freezer is required. The checked current split has 28 approved IDs (27 expected answered, one expected insufficient), but completeness is the exact approved ID set under one run/product/dataset identity. The design freezes preflight, case-level semantic completeness and answerability review, safety/readiness blockers, Gold/evaluator authority limits, causal ownership, runner-verdict separation, same-run retry, and exposed-only inference. G5 execution, fresh generalization, G6, `novel_validation`, holdout and release evaluation remain unperformed/unauthorized. Design work used zero scientific calls/tokens and zero protected-data access. The next recommendation is **G5 INTEGRATED CANDIDATE EXPOSED REGRESSION EXECUTION**, under separate authorization.
 
-The current project decision supersedes the historical mandatory Lane B proposal: **fresh Lane B is OPTIONAL / DEFERRED, not a mandatory G4 gate**. G3 admission `NO_CHANGE` remains unchanged; novel_validation and release evidence remain false. The G5 design grants no next-task execution, exposed run, G6, or protected-data authorization.
+The separately authorized [G5 exposed integrated regression](../evaluation/G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION.md) attempted the exact 28 approved `novel_dev` IDs once on the unchanged product-behavior lineage, with 27 usable QA results and one nonretryable D1 ambiguity-validation exception (`n018`). The frozen precedence yields **INCOMPLETE / PRODUCT ERROR**, `G5_INTEGRATED_RUN_COMPLETE=false`, and `G5_INTEGRATED_CANDIDATE_READY_FOR_G6=false`; no replacement run or case retry was made. The runner separately remains `INCOMPLETE / INCONCLUSIVE`, its formal and development gates fail, and product-language calibration is incompatible with this dataset. Bounded offline review of the 27 results found seven answered-complete, twelve answered-incomplete, seven independently answerable false insufficiencies, and one justified abstention (`n016`). No observable G4 R2 retention-contract regression was established; n002/n017/n024 remain G5 integrated observations, not independent replication of the G4 target authority. The n001 Gold/source conflict is limited to branch-execution wording; n014 answerability was resolved from the locked README. Actual usage was 164 model calls / 1,126,264 tokens (136 generation, 28 embedding), no judge or protected access. These exposed data establish neither fresh generalization nor G6 readiness. The next recommendation is **G5 D1 NONRETRYABLE PRODUCT ERROR FAILURE REVIEW**, under separate authorization.
+
+The current project decision supersedes the historical mandatory Lane B proposal: **fresh Lane B is OPTIONAL / DEFERRED, not a mandatory G4 gate**. G3 admission `NO_CHANGE` remains unchanged; novel_validation and release evidence remain false. This G5 result grants no product repair, new run, G6, or protected-data authorization.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 

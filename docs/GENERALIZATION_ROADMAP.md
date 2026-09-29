@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G5 integrated candidate design result commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G5 integrated candidate exposed regression result commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -53,13 +53,13 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G5_INTEGRATED_CANDIDATE_DESIGN_COMPLETE
+PHASE_G = IN_PROGRESS / G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION_INCOMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
 G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / HISTORICAL EXACT REPLAY UNAVAILABLE / CURRENT-LINEAGE EXPOSED R2 CORRECTION SUPPORTED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
-G5 = INTEGRATED CANDIDATE DEFINED / EXPOSED INTEGRATED REGRESSION DESIGNED / EXECUTION NOT_YET_RUN / FRESH GENERALIZATION NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G5 INTEGRATED CANDIDATE EXPOSED REGRESSION EXECUTION
+G5 = INTEGRATED CANDIDATE DEFINED / EXPOSED 28 CASE ATTEMPT TERMINATED / 27 OF 28 QA RESULTS / NONRETRYABLE D1 PRODUCT ERROR / INTEGRATED CANDIDATE NOT_READY_FOR_G6 / FRESH GENERALIZATION NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G5 D1 NONRETRYABLE PRODUCT ERROR FAILURE REVIEW
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -67,7 +67,7 @@ Phase F is terminal: F1–F5 completed their bounded engineering objectives, whi
 
 Post-A5 mechanisms remain product architecture, but the replacement T2 remains `COMPLETE / FAIL`: g011 PASS, g010 CONTROL_PASS, g013 FAIL, g014 CONTROL_PASS, g023 FAIL, g022 CONTROL_PASS, g047 FAIL, g050 CONTROL_FAIL. These exposed repair-target results do not establish sufficient completeness recovery or independent generalization. Their historical verdicts and records are unchanged.
 
-Phase G is ordinary product development for answer semantics and robustness. The old eight-case cohort is `NON_GATING REGRESSION DIAGNOSTICS`; the existing 28 exposed novel_dev cases supplied G4 development diagnostics and are selected for a future G5 integrated snapshot, while fresh Lane B is optional/deferred future work. `novel_validation` and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
+Phase G is ordinary product development for answer semantics and robustness. The old eight-case cohort is `NON_GATING REGRESSION DIAGNOSTICS`; the existing 28 exposed novel_dev cases supplied G4 development diagnostics and now one incomplete G5 integrated snapshot, while fresh Lane B is optional/deferred future work. `novel_validation` and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
 
 G1 implements [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md): question-only canonical relations, ordinary C1 checks for relation-free points, required-relation dispositions for relation-bearing points, target-local A1 authorization, and full-contract V2 recheck. Focused deterministic and fake-provider regression tests passed. This is a material product/prompt/schema change within `production_answer_obligations_v1`; scientific calls/tokens are 0/0. Real-model extraction quality, provider runtime acceptance, and empirical completeness benefit remain unverified.
 
@@ -1100,10 +1100,11 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 
 ### G5 — Integrated Candidate
 
-- **Status:** DESIGN COMPLETE / PASS / EXPOSED INTEGRATED REGRESSION EXECUTION NOT_YET_RUN / FRESH GENERALIZATION NOT_ESTABLISHED.
+- **Status:** EXPOSED INTEGRATED REGRESSION INCOMPLETE / PRODUCT ERROR / NOT READY FOR G6 / FRESH GENERALIZATION NOT_ESTABLISHED.
 - **Prerequisite:** Justified G1–G4 product work, including the G3 audit gate; an audit need not result in an admission-policy change.
 - **Goal:** Integrate compatible Phase-G improvements and assess them as one product candidate, with their interaction and false-refusal behavior considered together.
-- **Integrated design:** [G5 integrated candidate design](../evaluation/G5_INTEGRATED_CANDIDATE_DESIGN.md) selects the existing `047201166057edd9859292a1760bc2e9bbf173a2` product-behavior lineage, with later documentation-only descendants permitted, as the single normal-path development candidate. G1/G2/G4 are already active; G3 remains `NO_CHANGE`. One separately authorized, complete, exposed 28-case `novel_dev` `qa` run with stage traces and no external judge is selected to assess interaction, semantic completeness, false insufficiency, and failure ownership together. Completeness requires the dataset's exact approved ID set and one run/product/dataset identity; the current count is a checked fact. G4's three repeated targets are not independent replication and historical mixed-provenance results remain directional diagnostics only. G5 run completion and candidate readiness are separate decisions; hard safety, false insufficiency, R2 contract contradiction, and critical semantic omissions block readiness under the design rubric. Runner verdicts are preserved, while its official-`dev` and benchmark-calibration gates do not themselves decide this draft `novel_dev` G5 contract. No G5 run or fresh generalization result exists yet.
+- **Integrated design:** [G5 integrated candidate design](../evaluation/G5_INTEGRATED_CANDIDATE_DESIGN.md) selects the existing `047201166057edd9859292a1760bc2e9bbf173a2` product-behavior lineage, with later documentation-only descendants permitted, as the single normal-path development candidate. G1/G2/G4 are already active; G3 remains `NO_CHANGE`. The separately authorized exposed 28-case `novel_dev` `qa` run with stage traces and no external judge was selected to assess interaction, semantic completeness, false insufficiency, and failure ownership together. Completeness requires the dataset's exact approved ID set and one run/product/dataset identity. G4's three repeated targets are not independent replication and historical mixed-provenance results remain directional diagnostics only. G5 run completion and candidate readiness are separate decisions; hard safety, false insufficiency, R2 contract contradiction, and critical semantic omissions block readiness under the design rubric. Runner verdicts are preserved, while its official-`dev` and benchmark-calibration gates do not themselves decide this draft `novel_dev` G5 contract.
+- **Exposed execution:** [The G5 result](../evaluation/G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION.md) attempted all 28 approved IDs once, yielding 27 QA results and one nonretryable D1 `ValidationError` for `n018` before retrieval. The decision is `INCOMPLETE / PRODUCT ERROR`, and G5 is not ready for G6. On the 27 usable cases, independent offline review found seven complete answers, twelve incomplete answers, seven false insufficiencies and one justified abstention. No G4 R2 contract regression was observed. Runner status is separately `INCOMPLETE / INCONCLUSIVE`; calibration is incompatible. Usage was 164 calls / 1,126,264 tokens, with no judge or protected access. The next step is a separately authorized generic D1 product-error failure review, without product tuning or another run in this task.
 - **Identity and lifecycle boundary:** `production_answer_obligations_v2` is neither reserved nor activated; normal mode remains `production_answer_obligations_v1`. No prompt version, runtime mode, or F6/release candidate freeze is changed. G5 PASS would support only recommending a separately authorized G6 fresh-development **design**; it would not authorize new data, `novel_validation`, holdout, or release evaluation. Fresh Lane B remains optional/deferred.
 
 ### G6 — Fresh Development Evaluation
@@ -1121,7 +1122,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G5 INTEGRATED CANDIDATE EXPOSED REGRESSION EXECUTION
+NEXT_TASK_RECOMMENDATION = G5 D1 NONRETRYABLE PRODUCT ERROR FAILURE REVIEW
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
