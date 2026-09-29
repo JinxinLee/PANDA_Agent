@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 exposed post-repair regression analysis commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G4 R2 collateral retention review/design commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
@@ -52,12 +52,12 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_EXPOSED_POST_REPAIR_SAFETY_REGRESSION_REVIEW_REQUIRED
+PHASE_G = IN_PROGRESS / G4_R2_COLLATERAL_RETENTION_DESIGN_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR IMPLEMENTED IN NORMAL PRODUCT PATH / NORMAL-PRODUCTION DETERMINISTIC RED→GREEN PASS / EXPOSED POST-REPAIR TARGET RERUN COMPLETE / 28 OF 28 SELECTED QA RESULTS / DIAGNOSTIC COMPOSITE; ORIGINAL COHORT INCOMPLETE / SAFETY REGRESSION / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G4 R2 COLLATERAL RETENTION / COMPLETENESS FAILURE REVIEW
+G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED R2 BENEFIT OBSERVED / R2 COLLATERAL COMPLETENESS REGRESSION ESTABLISHED / COLLATERAL RETENTION FAILURE REVIEW COMPLETE / GENERIC CORRECTION DESIGN READY / VERIFICATION FAIL / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G4 R2 COLLATERAL RETENTION DETERMINISTIC RED / IMPLEMENTATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -1031,11 +1031,11 @@ At release, Generalization Gap means benchmark score minus novel score. Benchmar
 ## Phase G — Answer Semantics & Robustness
 
 ```text
-PHASE_G = IN_PROGRESS / G4_EXPOSED_POST_REPAIR_SAFETY_REGRESSION_REVIEW_REQUIRED
+PHASE_G = IN_PROGRESS / G4_R2_COLLATERAL_RETENTION_DESIGN_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR IMPLEMENTED IN NORMAL PRODUCT PATH / NORMAL-PRODUCTION DETERMINISTIC RED→GREEN PASS / EXPOSED POST-REPAIR TARGET RERUN COMPLETE / 28 OF 28 SELECTED QA RESULTS / DIAGNOSTIC COMPOSITE; ORIGINAL COHORT INCOMPLETE / SAFETY REGRESSION / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED R2 BENEFIT OBSERVED / R2 COLLATERAL COMPLETENESS REGRESSION ESTABLISHED / COLLATERAL RETENTION FAILURE REVIEW COMPLETE / GENERIC CORRECTION DESIGN READY / VERIFICATION FAIL / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
 ```
 
 Phase G is a new ordinary product-development phase. Its goal is to improve how the QA system represents requested semantic relationships, validates partial structured reviews, and connects retrieved evidence to answer-authorized support, without optimizing directly for exposed benchmark cases. The guiding principles are relationship-aware semantics, local failure containment, evidence-to-answer continuity, false-refusal control, fresh development evidence, and lean validation.
@@ -1072,7 +1072,7 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 
 ### G4 — False-Insufficiency / Conservatism Regression
 
-- **Status:** DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR IMPLEMENTED IN NORMAL PRODUCT PATH / NORMAL-PRODUCTION DETERMINISTIC RED→GREEN PASS / EXPOSED POST-REPAIR REGRESSION ATTEMPT TERMINATED / 26 OF 28 QA RESULTS / SAFETY REGRESSION / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+- **Status:** DETERMINISTIC HARNESS COMPLETE / EXPOSED R2 BENEFIT OBSERVED / R2 COLLATERAL COMPLETENESS REGRESSION ESTABLISHED / COLLATERAL RETENTION FAILURE REVIEW COMPLETE / GENERIC CORRECTION DESIGN READY / VERIFICATION FAIL / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
 - **Goal:** Measure and control false refusal / false insufficient_evidence regressions introduced by stricter completeness verification.
 - **Product constraint:** Higher completeness sensitivity must not produce uncontrolled false insufficiency. Correct abstention and unsupported-answer prevention remain required.
 - **Design:** [G4 false-insufficiency / conservatism regression design](../evaluation/G4_FALSE_INSUFFICIENCY_CONSERVATISM_REGRESSION_DESIGN.md) separates independently adjudicated answerability from pipeline outcome, correct abstention from false refusal, and false insufficiency from missed obligations. It records the actual finalization paths, causal ownership, answerability authority, paired deterministic controls, observability limits, and directional denominators. G3 `NO_CHANGE` and G1/G2 safety remain binding. No behavior repair or scientific evaluation is authorized.
@@ -1086,7 +1086,8 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 - **Initial exposed post-repair result:** The separately authorized [G4 exposed post-repair regression](../evaluation/G4_EXPOSED_NOVEL_DEV_POST_REPAIR_REGRESSION.md) attempted all 28 existing exposed novel_dev cases once on product lineage `a22c8f70eeebe4a53490e11a4b6852561ca8afa6`. All cases have terminal records; 26 have QA results and n002/n018 have nonretryable D1 ambiguity-validation exceptions. The standard runner remains `INCOMPLETE / INCONCLUSIVE`, without retryable infrastructure cases. The bounded exposed finding is `SAFETY REGRESSION`: n017 shows repair-consistent recovery, but n024 loses an identical RRF-rank-18 header from the new pool despite identical channel rankings, while n006 is answered without independently required critical suffix literals. Reviewed categories are 19 complete, 1 incomplete, 6 insufficient and 2 errors (including the unchanged n016 incorrect abstention in the complete count). Six prior production-complete candidate sentinels worsen; independent validity caveats are preserved. Scientific usage is 153 calls / 1,107,119 recorded tokens (126 generation, 27 embedding), no external judge or protected access. Frontier receipts exist for all 26 retrieval cases, totaling 276 entries; they do not alone establish efficacy. Product, prompts, schemas, config, dataset, Gold and calibration are unchanged. No G4 closeout or G5 progression is justified.
 - **Authorized target rerun:** The [n002/n018 rerun result](../evaluation/G4_EXPOSED_NOVEL_DEV_POST_REPAIR_REGRESSION_RERUN.md) records two answered results from one supported focused QA run (`COMPLETE / FAIL`, 2/2 scored). n002 recovers its lost requirements information via frontier; n018 remains manually incomplete for critical operating conditions despite runtime coverage 1.0. The 26 original QA records plus two authorized replacements provide 28/28 selected QA results: 20 complete, 2 incomplete and 6 insufficient. This mixed-provenance composite cannot pass a full-cohort gate; the original `INCOMPLETE / INCONCLUSIVE` verdict is preserved. Six saved production-complete sentinels still worsen, including the unchanged credible n024 R2 pool displacement, so G4 remains `SAFETY REGRESSION / FAIL`. Frontier receipts cover all 28 selected cases, with 295 entries. Additional usage is 12 calls / 80,517 tokens; cumulative accounting is 165 calls / 1,187,636 tokens including failed attempts. No product change, judge or protected access occurred.
 - **Historical Lane B proposal (superseded/deferred):** Fresh outcome-blind reviewed novel_dev remains optional future confirmation, not a mandatory current G4 gate. The existing exposed regression does not establish fresh generalization.
-- **Next recommended step:** G4 R2 COLLATERAL RETENTION / COMPLETENESS FAILURE REVIEW using saved artifacts, under separate authorization. No product repair, parameter tuning, new scientific cohort or G5 execution is authorized by this roadmap.
+- **Collateral review and selected correction:** The [G4 R2 collateral retention review](../evaluation/G4_R2_COLLATERAL_RETENTION_COMPLETENESS_FAILURE_REVIEW.md) establishes that the current frontier is formally compliant but its replacement contract is incomplete. Saved-artifact analysis finds 28/28 active cases, 295 frontier entries, 4/10/14 min/median/max, and six 14-frontier/16-RRF pools. n024 is confirmed collateral displacement; n006 remains a role-queue-capacity residual with a separate completeness false-acceptance concern. n002/n017 remain repair-consistent exposed recoveries. The selected `BOUNDED_POLICY_ROLE_CHALLENGER_EXCHANGE_WITH_RANK_WITNESS_RETENTION` uses existing plan ceilings as bounded role/channel witness breadth: every specific exchange must preserve all witness ranks and improve one for its charged role. Capacity is only an upper bound, with strict majority, supplement precedence and pool <=30 retained. There is no new threshold, LLM, R3/admission/verifier/finalization change, product implementation, test execution or scientific/protected access. Design PASS does not change product verification FAIL or establish fresh generalization; exact n006 recovery remains unpromised.
+- **Next recommended step:** Exactly **G4 R2 COLLATERAL RETENTION DETERMINISTIC RED / IMPLEMENTATION**, under separate authorization. Write CR-1 RED first, implement the shared generic contract, run CR-1–CR-10, existing R2 controls and G4 18/18, then separately decide whether any exposed rerun is needed. No implementation, parameter tuning, new scientific cohort or G5 execution is authorized by this roadmap.
 
 ### G5 — Integrated Candidate
 
@@ -1109,7 +1110,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G4 R2 COLLATERAL RETENTION / COMPLETENESS FAILURE REVIEW
+NEXT_TASK_RECOMMENDATION = G4 R2 COLLATERAL RETENTION DETERMINISTIC RED / IMPLEMENTATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
