@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 post-correction targeted live verification result commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G5 integrated candidate design result commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -53,12 +53,13 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_COMPLETE_POST_CORRECTION_TARGETED_LIVE_VERIFIED
+PHASE_G = IN_PROGRESS / G5_INTEGRATED_CANDIDATE_DESIGN_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
 G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / HISTORICAL EXACT REPLAY UNAVAILABLE / CURRENT-LINEAGE EXPOSED R2 CORRECTION SUPPORTED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G5 INTEGRATED CANDIDATE DESIGN
+G5 = INTEGRATED CANDIDATE DEFINED / EXPOSED INTEGRATED REGRESSION DESIGNED / EXECUTION NOT_YET_RUN / FRESH GENERALIZATION NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G5 INTEGRATED CANDIDATE EXPOSED REGRESSION EXECUTION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -66,7 +67,7 @@ Phase F is terminal: F1–F5 completed their bounded engineering objectives, whi
 
 Post-A5 mechanisms remain product architecture, but the replacement T2 remains `COMPLETE / FAIL`: g011 PASS, g010 CONTROL_PASS, g013 FAIL, g014 CONTROL_PASS, g023 FAIL, g022 CONTROL_PASS, g047 FAIL, g050 CONTROL_FAIL. These exposed repair-target results do not establish sufficient completeness recovery or independent generalization. Their historical verdicts and records are unchanged.
 
-Phase G is ordinary product development for answer semantics and robustness. The old eight-case cohort is `NON_GATING REGRESSION DIAGNOSTICS`; the existing 28 exposed novel_dev cases provide the current G4 empirical development diagnostic, while fresh Lane B is optional/deferred future work. `novel_validation` and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
+Phase G is ordinary product development for answer semantics and robustness. The old eight-case cohort is `NON_GATING REGRESSION DIAGNOSTICS`; the existing 28 exposed novel_dev cases supplied G4 development diagnostics and are selected for a future G5 integrated snapshot, while fresh Lane B is optional/deferred future work. `novel_validation` and any future Release Candidate Evaluation require separate authorization. No F6-A Attempt 6 continuation is planned.
 
 G1 implements [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md): question-only canonical relations, ordinary C1 checks for relation-free points, required-relation dispositions for relation-bearing points, target-local A1 authorization, and full-contract V2 recheck. Focused deterministic and fake-provider regression tests passed. This is a material product/prompt/schema change within `production_answer_obligations_v1`; scientific calls/tokens are 0/0. Real-model extraction quality, provider runtime acceptance, and empirical completeness benefit remain unverified.
 
@@ -1073,7 +1074,7 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 
 ### G4 — False-Insufficiency / Conservatism Regression
 
-- **Status:** DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / POST-CORRECTION EXPOSED VERIFICATION INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE / LAYER B NOT_RUN / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+- **Status:** DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / HISTORICAL EXACT REPLAY UNAVAILABLE / CURRENT-LINEAGE EXPOSED R2 CORRECTION SUPPORTED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
 - **Goal:** Measure and control false refusal / false insufficient_evidence regressions introduced by stricter completeness verification.
 - **Product constraint:** Higher completeness sensitivity must not produce uncontrolled false insufficiency. Correct abstention and unsupported-answer prevention remain required.
 - **Design:** [G4 false-insufficiency / conservatism regression design](../evaluation/G4_FALSE_INSUFFICIENCY_CONSERVATISM_REGRESSION_DESIGN.md) separates independently adjudicated answerability from pipeline outcome, correct abstention from false refusal, and false insufficiency from missed obligations. It records the actual finalization paths, causal ownership, answerability authority, paired deterministic controls, observability limits, and directional denominators. G3 `NO_CHANGE` and G1/G2 safety remain binding. No behavior repair or scientific evaluation is authorized.
@@ -1095,14 +1096,15 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 - **Forward evidence-boundary review:** The [review](../evaluation/G4_POST_CORRECTION_VERIFICATION_EVIDENCE_BOUNDARY_REVIEW.md) found no immutable source proving the missing text and provenance actually consumed by the historical runs; object/corpus/index identity does not supply per-row historical payload attestation. The old Layer A `INCONCLUSIVE` and historical exposed `FAIL` are preserved. Exact replay is non-blocking corroboration under selected Model B: generic deterministic RED→GREEN and bidirectional safeguards remain mechanism authority; one separately authorized targeted current-lineage live `qa` run on n002/n017/n024 is still required. Causal comparability depends on relevant qualified evidence reaching an observable R2 decision, not exact historical rank or whole-pool equality. n024 must be mechanistically observable for a scoped PASS; n006 is not a live gate. No live QA, G4 closeout, fresh generalization, product change, protected access, or G5 entry occurred.
 - **Next recommended step at the evidence-boundary checkpoint:** Exactly **G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION**, under separate authorization. A later targeted scoped PASS could permit separately authorized G5 integration; `FAIL` or `INCONCLUSIVE` would keep G5 blocked.
 - **Targeted current-lineage result:** The [G4 targeted live verification](../evaluation/G4_POST_CORRECTION_TARGETED_LIVE_VERIFICATION.md) passes the scoped Model B R2 gate after one identity-matched draft `qa` run of n002/n017/n024. The n024 helix witness, dense 8/sparse 19 and RRF 18, remains `ordinary_rrf` through 11 frontier admissions and reaches final/cited evidence; n002's requirements witnesses and n017's `PndTrack` witness enter via frontier. All three R2 decisions are observable; no R2 opportunity regression is observed. The runner separately reports `COMPLETE / FAIL` for the focused cohort, not a full development pass. Conservative Gold-detail review records n024 answered-incomplete because generation omitted details available in cited headers; this is separate from R2 retention. Usage is 18 calls / 199,797 tokens (15 generation, 3 embedding), with no judge or protected access. Historical exact replay remains unavailable and its `INCONCLUSIVE` artifact unchanged. No full 28-case post-correction regression, fresh generalization, `novel_validation`, or release conclusion follows.
-- **Next recommended step (current):** Exactly **G5 INTEGRATED CANDIDATE DESIGN**, under separate authorization. G4 is complete at the scoped exposed R2 correction boundary; G5 has not begun.
+- **Next recommended step at the G4 closeout checkpoint:** Exactly **G5 INTEGRATED CANDIDATE DESIGN**, under separate authorization. G4 is complete at the scoped exposed R2 correction boundary; G5 had not begun at that checkpoint.
 
 ### G5 — Integrated Candidate
 
-- **Status:** PLANNED / NOT_STARTED
+- **Status:** DESIGN COMPLETE / PASS / EXPOSED INTEGRATED REGRESSION EXECUTION NOT_YET_RUN / FRESH GENERALIZATION NOT_ESTABLISHED.
 - **Prerequisite:** Justified G1–G4 product work, including the G3 audit gate; an audit need not result in an admission-policy change.
 - **Goal:** Integrate compatible Phase-G improvements and assess them as one product candidate, with their interaction and false-refusal behavior considered together.
-- **Identity boundary:** production_answer_obligations_v2 is only a possible future identity. It is neither reserved nor activated here; no prompt version, runtime mode, or candidate freeze is changed by this roadmap.
+- **Integrated design:** [G5 integrated candidate design](../evaluation/G5_INTEGRATED_CANDIDATE_DESIGN.md) selects the existing `047201166057edd9859292a1760bc2e9bbf173a2` product-behavior lineage, with later documentation-only descendants permitted, as the single normal-path development candidate. G1/G2/G4 are already active; G3 remains `NO_CHANGE`. One separately authorized, complete, exposed 28-case `novel_dev` `qa` run with stage traces and no external judge is selected to assess interaction, semantic completeness, false insufficiency, and failure ownership together. Completeness requires the dataset's exact approved ID set and one run/product/dataset identity; the current count is a checked fact. G4's three repeated targets are not independent replication and historical mixed-provenance results remain directional diagnostics only. G5 run completion and candidate readiness are separate decisions; hard safety, false insufficiency, R2 contract contradiction, and critical semantic omissions block readiness under the design rubric. Runner verdicts are preserved, while its official-`dev` and benchmark-calibration gates do not themselves decide this draft `novel_dev` G5 contract. No G5 run or fresh generalization result exists yet.
+- **Identity and lifecycle boundary:** `production_answer_obligations_v2` is neither reserved nor activated; normal mode remains `production_answer_obligations_v1`. No prompt version, runtime mode, or F6/release candidate freeze is changed. G5 PASS would support only recommending a separately authorized G6 fresh-development **design**; it would not authorize new data, `novel_validation`, holdout, or release evaluation. Fresh Lane B remains optional/deferred.
 
 ### G6 — Fresh Development Evaluation
 
@@ -1110,6 +1112,7 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 - **Goal:** Use fresh novel_dev as the main development-level empirical evidence for material Phase-G behavior after integration, under a separately authorized evaluation scope.
 - **Exposed cohort disposition:** The old eight-case T2 cohort becomes NON_GATING REGRESSION DIAGNOSTICS. It is neither an optimization target nor sufficient generalization evidence; historical T1/T2 outcomes remain unchanged.
 - **Lean validation:** Start with satisfactory generic deterministic/adversarial checks and use the smallest decision-relevant empirical scope. Do not repeat exposed-Gold release attempts as the routine product-development loop.
+- **Entry boundary:** G5 integrated candidate PASS is required before G6 is recommended as the next design step. The current fresh Lane B decision is optional/deferred; G6 may design an appropriate fresh-development scope only under separate authorization, without retroactively making fresh curation mandatory for G4 or G5.
 
 ### Phase-level validation and future release boundary
 
@@ -1118,7 +1121,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G5 INTEGRATED CANDIDATE DESIGN
+NEXT_TASK_RECOMMENDATION = G5 INTEGRATED CANDIDATE EXPOSED REGRESSION EXECUTION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
