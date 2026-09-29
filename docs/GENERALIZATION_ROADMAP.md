@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 post-correction replay reproducibility result commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G4 post-correction evidence-boundary review commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -53,12 +53,12 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_POST_CORRECTION_VERIFICATION_INCONCLUSIVE
+PHASE_G = IN_PROGRESS / G4_POST_CORRECTION_EVIDENCE_BOUNDARY_RECONCILED
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / POST-CORRECTION EXPOSED VERIFICATION INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE / LAYER B NOT_RUN / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW
+G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / HISTORICAL EXACT REPLAY UNAVAILABLE / EXACT REPLAY NON_BLOCKING / TARGETED CURRENT-LINEAGE LIVE VERIFICATION REQUIRED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -1092,6 +1092,8 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 - **Post-correction exposed verification design:** The [two-layer targeted design](../evaluation/G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION_DESIGN.md) selects zero-call exact saved-state replay for n002/n006/n017/n024 as a hard prerequisite, then one three-case draft `qa` run for n002/n017/n024 only if replay passes. It retains n006 as a non-gating quota residual and rejects a full 28-case rerun for this correction. Historical traces have metadata-only candidate rows and no aligned specialized-origin sidecars, so the execution must establish exact replay input reproducibility or stop before live QA; conditional reconstruction is not acceptance evidence. No replay, QA, product change, or fresh generalization result is claimed by the design. Successful scoped correction verification could close G4 at the exposed-development level and permit separately authorized G5 integration, not release validation.
 - **Post-correction execution boundary:** The [execution result](../evaluation/G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION.md) establishes that saved channel rows omit text for many candidates, including the n024 critical incumbent and n006 residual target, and that aligned workflow/graph normal/fallback origins are absent. Four selected successful records/traces exist, but none supplies a lossless corrected-constructor input. Layer A is `INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE`; the corrected pool constructor and Layer B live QA were not invoked. No new empirical correction verdict, fresh generalization, product change, scientific call or protected access follows. Historical exposed FAIL and G3 `NO_CHANGE` remain; G5 stays blocked.
 - **Next recommended step:** Exactly **G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW**, under separate authorization. Decide whether authorized immutable evidence can establish the missing input fields or whether the exact-replay prerequisite needs forward revision. Do not start live QA or G5 from this inconclusive result.
+- **Forward evidence-boundary review:** The [review](../evaluation/G4_POST_CORRECTION_VERIFICATION_EVIDENCE_BOUNDARY_REVIEW.md) found no immutable source proving the missing text and provenance actually consumed by the historical runs; object/corpus/index identity does not supply per-row historical payload attestation. The old Layer A `INCONCLUSIVE` and historical exposed `FAIL` are preserved. Exact replay is non-blocking corroboration under selected Model B: generic deterministic RED→GREEN and bidirectional safeguards remain mechanism authority; one separately authorized targeted current-lineage live `qa` run on n002/n017/n024 is still required. Causal comparability depends on relevant qualified evidence reaching an observable R2 decision, not exact historical rank or whole-pool equality. n024 must be mechanistically observable for a scoped PASS; n006 is not a live gate. No live QA, G4 closeout, fresh generalization, product change, protected access, or G5 entry occurred.
+- **Next recommended step (current):** Exactly **G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION**, under separate authorization. A later targeted scoped PASS may permit separately authorized G5 integration; `FAIL` or `INCONCLUSIVE` keeps G5 blocked.
 
 ### G5 — Integrated Candidate
 
@@ -1114,7 +1116,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW
+NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
