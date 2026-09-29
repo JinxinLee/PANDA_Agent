@@ -1920,15 +1920,26 @@ class Retriever:
                 channels[oid].append(channel)
         fused_order = sorted(scores, key=scores.get, reverse=True)
         rerank_pool = fused_order[:30]
+        rerank_pool_entries: list[dict[str, str]] | None = None
         structured_replacement_receipt: dict[str, Any] | None = None
         supplemental_candidates: list[dict[str, Any]] = []
         if d3_config is None:
-            rerank_pool, eligible_supplemental_ids, structured_replacement_receipt = self._apply_structured_replacement(
+            # Discover structured eligibility against the unchanged legacy pool.
+            _, eligible_supplemental_ids, structured_replacement_receipt = self._apply_structured_replacement(
                 question, plan, rankings, rerank_pool, payloads
             )
             for oid in eligible_supplemental_ids:
                 if oid in payloads:
                     supplemental_candidates.append(dict(payloads[oid]))
+            pass_occurrences = self._channel_pass_occurrences(
+                rankings, getattr(self, "_specialized_origins", {}), "initial"
+            )
+            rerank_pool, rerank_pool_entries = self._r2_rerank_pool(
+                plan, payloads, pass_occurrences, scores, fused_order, eligible_supplemental_ids
+            )
+            if structured_replacement_receipt is not None:
+                # Other displacement/reservation fields remain structured-only.
+                structured_replacement_receipt["final_rerank_pool_ids"] = list(rerank_pool)
 
         rerank_payload = [{"object_id":oid,"title":payloads[oid].get("title"),"source_id":payloads[oid].get("source_id"),"text":payloads[oid].get("text","")[:2000]} for oid in rerank_pool]
         rerank_schema = {"type":"object","properties":{"ranked_object_ids":{"type":"array","items":{"type":"string","enum":rerank_pool}}},"required":["ranked_object_ids"],"additionalProperties":False}
@@ -1976,6 +1987,8 @@ class Retriever:
             "backfill_admissions": backfill_admissions,
             "evidence": [item.model_dump(mode="json") for item in selected],
         }
+        if rerank_pool_entries is not None:
+            result["rerank_pool_entries"] = rerank_pool_entries
         if capture_candidates:
             result["candidate_snapshot"] = {
                 "pass_origin": "initial",
@@ -2116,6 +2129,25 @@ class Retriever:
             "channel_origins": dict(getattr(self, "_specialized_origins", {})),
             "supplemental_candidates": supplemental,
         }
+
+    @staticmethod
+    def _channel_pass_occurrences(
+        rankings: dict[str, list[dict[str, Any]]],
+        channel_origins: dict[str, list[str]],
+        pass_origin: str,
+    ) -> dict[str, list[dict[str, Any]]]:
+        occurrences: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for channel, items in rankings.items():
+            origins = channel_origins.get(channel, [])
+            for rank, item in enumerate(items, 1):
+                oid = item.get("object_id")
+                if not oid:
+                    continue
+                occurrence = {"pass_origin": pass_origin, "channel": channel, "rank": rank}
+                if channel in {"workflow", "graph"} and len(origins) == len(items):
+                    occurrence["origin"] = origins[rank - 1]
+                occurrences[oid].append(occurrence)
+        return dict(occurrences)
 
     def _r2_rerank_pool(
         self,
@@ -2287,15 +2319,11 @@ class Retriever:
 
                     if channel not in best_ranks[oid] or rank < best_ranks[oid][channel]:
                         best_ranks[oid][channel] = rank
-                    occurrence = {
-                        "pass_origin": pass_origin,
-                        "channel": channel,
-                        "rank": rank,
-                    }
-                    origins = channel_origins.get(channel, [])
-                    if channel in {"workflow", "graph"} and len(origins) == len(items):
-                        occurrence["origin"] = origins[rank - 1]
-                    pass_occurrences[oid].append(occurrence)
+
+            for oid, occurrences in self._channel_pass_occurrences(
+                pass_rankings, channel_origins, pass_origin
+            ).items():
+                pass_occurrences[oid].extend(occurrences)
 
             supplemental_items = snapshot.get("supplemental_candidates", [])
             for item in supplemental_items:

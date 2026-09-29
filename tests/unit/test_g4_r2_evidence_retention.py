@@ -77,6 +77,145 @@ def reasons(result):
     return {entry["object_id"]: entry["reason"] for entry in result["rerank_pool_entries"]}
 
 
+class NormalPoolRetriever(PoolOnlyRetriever):
+    def __init__(self, rankings, channel_origins=None):
+        super().__init__(EchoReranker())
+        self.policies.candidate_pool_per_channel = 20
+        self.rankings = {channel: [] for channel in ("exact", "dense", "sparse", "workflow", "graph")}
+        self.rankings.update(rankings)
+        self.channel_origins = channel_origins or {}
+
+    def _collect_channel_rankings(self, question, plan, limit):
+        self._specialized_origins = self.channel_origins
+        semantic_query = SimpleNamespace(
+            text=question, intent=plan.intent, symbols=[],
+            as_dict=lambda: {"text": question, "intent": plan.intent, "symbols": []},
+        )
+        return self.rankings, semantic_query, []
+
+    def _apply_structured_replacement(self, question, plan, rankings, pool, payloads):
+        return pool, [], None
+
+
+def normal_consensus_rankings(necessary):
+    rows = [candidate(f"synthetic_consensus_{i:02d}") for i in range(30)]
+    return {
+        "exact": rows[:20], "sparse": rows[:20], "dense": [necessary],
+        "workflow": rows[20:], "graph": rows[20:],
+    }
+
+
+def test_r2_normal_retrieve_uses_policy_role_frontier():
+    necessary = candidate("synthetic_normal_necessary")
+    retriever = NormalPoolRetriever(
+        normal_consensus_rankings(necessary),
+        {"workflow": ["normal"] * 10, "graph": ["normal"] * 10},
+    )
+    result = retriever.retrieve("Synthetic question", plan=plan_for(code=1.0))
+
+    assert necessary["object_id"] not in result["fusion_scores"]
+    assert necessary["object_id"] in retriever.vertex.offered_ids
+    assert reasons(result)[necessary["object_id"]] == "policy_role_frontier"
+
+
+def test_normal_supplements_and_frontier_share_global_membership_and_truthful_receipt():
+    necessary = candidate("synthetic_normal_necessary")
+    rankings = normal_consensus_rankings(necessary)
+    origins = {"workflow": ["normal"] * 10, "graph": ["normal"] * 10}
+    external = candidate("synthetic_external_supplement")
+    supplements = [external, rankings["exact"][0]]
+
+    class SupplementRetriever(NormalPoolRetriever):
+        def _apply_structured_replacement(self, question, plan, rankings, pool, payloads):
+            self.discovery_pool = list(pool)
+            payloads[external["object_id"]] = external
+            eligible = [item["object_id"] for item in supplements]
+            treatment = [*pool[:-1], external["object_id"]]
+            return treatment, eligible, {
+                "reserved_ids": [external["object_id"]],
+                "eligible_supplemental_ids": eligible,
+                "displaced_ordinary_ids": [pool[-1]],
+                "final_rerank_pool_ids": treatment,
+            }
+
+    plan = plan_for(code=1.0)
+    retriever = SupplementRetriever(rankings, origins)
+    result = retriever.retrieve("Synthetic question", plan=plan)
+    offered = retriever.vertex.offered_ids
+    receipt = result["structured_replacement"]
+    counts = list(reasons(result).values())
+    assert retriever.discovery_pool == list(result["fusion_scores"])
+    assert necessary["object_id"] not in retriever.discovery_pool
+    assert len(offered) == len(set(offered)) == 30
+    assert counts.count("ordinary_rrf") > counts.count("policy_role_frontier")
+    assert offered[-2:] == [item["object_id"] for item in supplements]
+    assert all(reasons(result)[item["object_id"]] == "structured_supplemental" for item in supplements)
+    assert reasons(result)[necessary["object_id"]] == "policy_role_frontier"
+    assert receipt["final_rerank_pool_ids"] == offered
+    assert receipt["reserved_ids"] == [external["object_id"]]
+    assert receipt["displaced_ordinary_ids"] == [retriever.discovery_pool[-1]]
+
+    global_result, global_offered = run_pool(plan, [{
+        "rankings": retriever.rankings, "channel_origins": origins,
+        "supplemental_candidates": supplements,
+    }])
+    assert offered == global_offered
+    assert result["rerank_pool_entries"] == global_result["rerank_pool_entries"]
+
+
+def test_normal_pool_without_omitted_challenger_preserves_ordinary_rrf():
+    rows = [candidate(f"synthetic_ordinary_{i:02d}") for i in range(8)]
+    retriever = NormalPoolRetriever({"exact": rows, "dense": list(reversed(rows[:4]))})
+    result = retriever.retrieve("Synthetic question", plan=plan_for(code=1.0))
+    assert retriever.vertex.offered_ids == list(result["fusion_scores"])
+    assert set(reasons(result).values()) == {"ordinary_rrf"}
+
+
+def test_normal_specialized_fallback_and_missing_origin_do_not_gain_frontier():
+    workflow = candidate("synthetic_normal_workflow_fallback")
+    graph = candidate("synthetic_normal_graph_fallback")
+    rankings = normal_consensus_rankings(candidate("unused"))
+    rankings["dense"] = []
+    rankings["workflow"] = [*rankings["workflow"], workflow]
+    rankings["graph"] = [*rankings["graph"], graph]
+    for origins in ({
+        "workflow": ["normal"] * 10 + ["generic_fallback"],
+        "graph": ["normal"] * 10 + ["generic_fallback"],
+    }, {}):
+        retriever = NormalPoolRetriever(rankings, origins)
+        result = retriever.retrieve("Synthetic question", plan=plan_for(code=0.5, workflow=0.25, graph=0.25))
+        assert workflow["object_id"] not in reasons(result)
+        assert graph["object_id"] not in reasons(result)
+
+
+def test_normal_qa_detailed_diagnostics_preserve_actual_pool_receipt():
+    necessary = candidate("synthetic_normal_necessary")
+    retriever = NormalPoolRetriever(
+        normal_consensus_rankings(necessary),
+        {"workflow": ["normal"] * 10, "graph": ["normal"] * 10},
+    )
+    retriever.analyze = lambda question, **kwargs: plan_for(code=1.0)
+    agent = QAAgent.__new__(QAAgent)
+    agent.retriever = retriever
+    agent.decompose_question = lambda question, **kwargs: {"points": [{
+        "answer_point_id": "synthetic.point", "text": "Synthetic aspect",
+        "support_spans": [question], "required_relations": [],
+    }]}
+    agent._stats_snapshot = lambda: {}
+    agent._model_usage_delta = lambda before: {}
+    agent._model_roles_diagnostics = lambda: {}
+    agent.graph = SimpleNamespace(invoke=lambda initial: {
+        **agent._retrieve(initial),
+        "result": {"status": "insufficient_evidence", "answer": "Synthetic no-answer result"},
+        "answer_point_audit": {},
+    })
+    detailed = agent.run_detailed("Synthetic question")
+    entries = detailed["diagnostics"]["rerank_pool_entries"]
+    assert [entry["object_id"] for entry in entries] == retriever.vertex.offered_ids
+    assert {entry["object_id"]: entry["reason"] for entry in entries}[necessary["object_id"]] == "policy_role_frontier"
+    assert "rerank_pool_entries" not in detailed["result"]
+
+
 def test_r2_a_valid_single_channel_policy_candidate_gets_rerank_opportunity():
     plan = RetrievalPlan(
         intent="api",

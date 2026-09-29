@@ -18,8 +18,8 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 R2 evidence-retention implementation commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = G4 R2 evidence-retention implementation commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G4 R2 normal-production integration correction commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = G4 R2 normal-production integration correction commit (resolve from Git history; exact SHA reported on delivery).
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
 QUESTION_DECOMPOSITION_SCHEMA_VERSION = e1.question_decomposition.v3
@@ -45,11 +45,11 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_R2_DETERMINISTIC_IMPLEMENTATION_COMPLETE
+PHASE_G = IN_PROGRESS / G4_R2_NORMAL_PRODUCT_INTEGRATION_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR IMPLEMENTED / DETERMINISTIC RED→GREEN PASS / EMPIRICAL REPAIR BENEFIT NOT_ESTABLISHED
+G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED DEVELOPMENT DIAGNOSTIC COMPLETE / GENERIC R2 FALSE_INSUFFICIENCY MECHANISM ESTABLISHED / R2 REPAIR IMPLEMENTED IN NORMAL PRODUCT PATH / NORMAL-PRODUCTION DETERMINISTIC RED→GREEN PASS / EMPIRICAL REPAIR BENEFIT NOT_ESTABLISHED
 NEXT_TASK_RECOMMENDATION = G4 FRESH NOVEL_DEV LANE B CURATION / FREEZE DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
@@ -82,7 +82,9 @@ The separately authorized [G4 exposed-development diagnostic](../evaluation/G4_E
 
 The separately authorized [G4 R2 evidence-retention repair design](../evaluation/G4_R2_FUSION_EVIDENCE_RETENTION_REPAIR_DESIGN.md) initially selected a fixed one-fifth direct-channel frontier. A later independent review found that fraction and the static channel list unjustified. The corrected, implementation-ready design derives opportunity ceilings from the current query plan's source-role budgets and final-evidence limit, keeps a strict RRF majority within the unchanged 30-object pool after structured supplements, and distinguishes normal workflow/graph results from generic fallback at the existing branch boundary. It specifies generic R2-A RED, R2-B–H safety controls, a non-code R2-I control, and a diagnostic-only pool-entry receipt. This is a design correction only: no implementation, rerun, fresh confirmation, or repaired QA benefit is claimed. New outcome-blind, reviewed Lane B `novel_dev` must be frozen after deterministic implementation and before any empirical comparison. The sole next recommendation remains separately authorized deterministic RED / implementation; G3 `NO_CHANGE` and the 18/18 G4 T0 baseline retain their historical meaning.
 
-The separately authorized [G4 R2 deterministic implementation](../evaluation/G4_R2_EVIDENCE_RETENTION_IMPLEMENTATION_RESULT.md) reproduced generic R2-A RED before the source change and obtained R2-A–I GREEN under the corrected bounded policy-role frontier. Focused retrieval neighbors passed (203 tests and 27 subtests in the combined run); the existing G4 baseline remained 18/18. The [non-gating exposed offline replay](../evaluation/G4_R2_EXPOSED_POOL_RETENTION_REPLAY.md) placed all five previously lost reviewed objects from `n002`, `n006`, and `n017` in the new offered pool, with historical-trace compatibility limits recorded. No live QA/model run or parameter tuning followed the replay. This is a material R2 retrieval behavior change, with no prompt/schema/admission/verifier/finalization change. Empirical repaired-QA benefit remains unestablished; the next separate step is a fresh, reviewed, outcome-blind Lane B curation/freeze design, not an evaluation authorization.
+At historical checkpoint `642527e1...`, the separately authorized [G4 R2 deterministic implementation](../evaluation/G4_R2_EVIDENCE_RETENTION_IMPLEMENTATION_RESULT.md) reproduced generic R2-A RED before the source change and obtained R2-A–I GREEN in global consolidation under the corrected bounded policy-role frontier. Focused retrieval neighbors passed (203 tests and 27 subtests in the combined run); the existing G4 baseline remained 18/18. The [non-gating exposed offline replay](../evaluation/G4_R2_EXPOSED_POOL_RETENTION_REPLAY.md) placed all five previously lost reviewed objects from `n002`, `n006`, and `n017` in that constructor's offered pool, with historical-trace compatibility limits recorded. No live QA/model run or parameter tuning followed the replay. This was a material global R2 retrieval behavior change, with no prompt/schema/admission/verifier/finalization change. Independent audit subsequently found that normal `production_answer_obligations_v1` retrieval still used the legacy local pool; the earlier complete normal-product interpretation was too strong. The historical result and replay files remain unchanged.
+
+The forward [normal-product pool-integration correction](../evaluation/G4_R2_NORMAL_PRODUCT_POOL_INTEGRATION_CORRECTION.md) demonstrated RED through the actual `Retriever.retrieve` path before source correction, then made the same fixture GREEN using the existing shared pool policy. Normal structured discovery retains the legacy RRF pool as its decision reference; actual-pool receipts and internal QA diagnostics now reflect the final offer. NP-1–4, shared-caller equivalence, and existing R2-A–I pass in the 17-test module. Required retrieval neighbors and the directly affected structured runtime gates pass; one pre-existing historical config-equality assertion in an additional D4 module remains failing and is documented. G4 safety remains 18/18. No policy retuning, exposed replay rerun, live model call, or data curation occurred. The correction commit is the new product-behavior lineage. Empirical repaired-QA benefit remains unestablished; the next separate step is fresh Lane B curation/freeze design.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 

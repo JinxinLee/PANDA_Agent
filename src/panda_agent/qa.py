@@ -4156,6 +4156,7 @@ class QAAgent:
             "plan": bundle.get("plan", {}),
             "rankings": bundle.get("rankings", {}),
             "fusion_scores": bundle.get("fusion_scores", {}),
+            "rerank_pool_entries": bundle.get("rerank_pool_entries", []),
             "reranked_object_ids": bundle.get("reranked_object_ids", []),
             "ranked_object_ids": bundle.get("ranked_object_ids", []),
             "excluded": bundle.get("excluded", []),
