@@ -18,8 +18,9 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 R2 collateral retention review/design commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
+CURRENT_REPOSITORY_HEAD = G4 R2 collateral rank-witness implementation commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = CURRENT_REPOSITORY_HEAD (G4 R2 collateral rank-witness implementation commit).
+PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
 QUESTION_DECOMPOSITION_SCHEMA_VERSION = e1.question_decomposition.v3
@@ -45,12 +46,12 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_R2_COLLATERAL_RETENTION_DESIGN_COMPLETE
+PHASE_G = IN_PROGRESS / G4_R2_COLLATERAL_RETENTION_IMPLEMENTATION_COMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED R2 BENEFIT OBSERVED / R2 COLLATERAL COMPLETENESS REGRESSION ESTABLISHED / COLLATERAL RETENTION FAILURE REVIEW COMPLETE / GENERIC CORRECTION DESIGN READY / VERIFICATION FAIL / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G4 R2 COLLATERAL RETENTION DETERMINISTIC RED / IMPLEMENTATION
+G4 = DETERMINISTIC HARNESS COMPLETE / EXPOSED R2 BENEFIT OBSERVED / HISTORICAL R2 COLLATERAL COMPLETENESS REGRESSION ESTABLISHED / COLLATERAL RETENTION CORRECTION IMPLEMENTED / DETERMINISTIC RED→GREEN PASS / EXISTING R2 CONTROLS PASS / G4 DUAL-SIDED SAFETY PASS / EXPOSED POST-CORRECTION EMPIRICAL RESULT NOT_YET_ESTABLISHED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION EXPOSED VERIFICATION DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -92,7 +93,9 @@ The separately authorized [n002/n018 target rerun](../evaluation/G4_EXPOSED_NOVE
 
 The separately authorized [G4 R2 collateral retention review](../evaluation/G4_R2_COLLATERAL_RETENTION_COMPLETENESS_FAILURE_REVIEW.md) confirms n024 collateral displacement and n006 residual queue-bound loss, while preserving n002/n017 repair-consistent exposed recoveries. Read-only saved-artifact characterization finds frontier in 28/28 selected cases, 295 entries, min/median/max 4/10/14; six cases use 14 frontier / 16 ordinary. The current constructor complies with its formulas but lacks an incumbent-retention condition. The selected generic correction is `BOUNDED_POLICY_ROLE_CHALLENGER_EXCHANGE_WITH_RANK_WITNESS_RETENTION`: capacity is an admission upper bound; each specific exchange must preserve every plan-derived role/channel rank-witness component and improve one for its charged role. The unchanged strict RRF majority remains a coarse bound. It uses existing role ceilings, valid normal provenance and structured-supplement precedence, with pool <=30, no new threshold/model call, and no R3/admission/verifier/finalization change. Review/design PASS does not repair the product: exposed verification remains FAIL, n006 recovery is not guaranteed, and fresh benefit remains unestablished. No source/tests/config/data changed; scientific calls/tokens and protected access are zero. The next separately authorized task is exactly **G4 R2 COLLATERAL RETENTION DETERMINISTIC RED / IMPLEMENTATION**: CR-1 RED first, then the shared correction, CR-1–CR-10, existing R2 controls and G4 18/18; none ran in this review.
 
-The current project decision supersedes the historical mandatory Lane B proposal: **fresh Lane B is OPTIONAL / DEFERRED, not a mandatory G4 gate**. G3 admission `NO_CHANGE` remains unchanged; fresh generalization, novel_validation and release evidence remain false. The review grants no next-task execution, exposed rerun, G5, or protected-data authorization.
+The separately authorized [G4 R2 collateral rank-witness implementation](../evaluation/G4_R2_COLLATERAL_RETENTION_IMPLEMENTATION_RESULT.md) established CR-1 RED while product source was still unchanged, then GREEN after the shared `_r2_rerank_pool` exchange correction. The approved componentwise rank-witness guard, charged-role strict improvement, and capacity-as-upper-bound semantics are implemented for both normal and global callers. All CR-1–CR-10 synthetic controls and existing R2-A–I checks pass: 31/31 focused tests; G4 dual-sided baseline 18/18; retrieval/C8/E3/trace/fusion neighbors 173 tests plus 27 subtests passed locally. The correction uses existing ceilings and provenance; structured supplements, strict RRF majority, and pool <=30 remain. It introduces no magic threshold, prompt/schema/config change, model call, protected access, or R3/admission/verifier/finalization change. The implementation commit is the new product-behavior lineage. **Historical exposed safety regression remains a historical FAIL**; post-correction exposed QA outcome and fresh generalization benefit are not established, and n006 recovery is not guaranteed. The next recommended step is **G4 POST-CORRECTION EXPOSED VERIFICATION DESIGN** under separate authorization, not an automatic rerun.
+
+The current project decision supersedes the historical mandatory Lane B proposal: **fresh Lane B is OPTIONAL / DEFERRED, not a mandatory G4 gate**. G3 admission `NO_CHANGE` remains unchanged; novel_validation and release evidence remain false. The implementation grants no next-task execution, exposed rerun, G5, or protected-data authorization.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 

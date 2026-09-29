@@ -77,6 +77,275 @@ def reasons(result):
     return {entry["object_id"]: entry["reason"] for entry in result["rerank_pool_entries"]}
 
 
+def code_rank_vector(result, pool_ids, channel, depth):
+    ranks = result["best_channel_ranks"]
+    values = sorted(ranks[oid][channel] for oid in pool_ids if channel in ranks[oid])[:depth]
+    return values + [float("inf")] * (depth - len(values))
+
+
+def collateral_exchange_fixture(*, superior_substitute=False):
+    consensus = [candidate(f"fictional_consensus_{index:02d}") for index in range(29)]
+    incumbent = candidate("fictional_cross_channel_incumbent")
+    challenger = candidate("fictional_code_substitute")
+    other_roles = [
+        candidate(f"fictional_{role}_{index:02d}", source_type=role)
+        for role, count in (("paper", 7), ("documentation", 4), ("readme", 2))
+        for index in range(count)
+    ]
+    dense = [challenger, incumbent] if superior_substitute else [incumbent, challenger]
+    dense.extend(other_roles)
+    snapshot = {
+        "pass_origin": "initial",
+        "rankings": {
+            "exact": [*consensus[:26], incumbent, *consensus[26:]],
+            "sparse": consensus,
+            "dense": dense,
+        },
+    }
+    plan = plan_for(code=0.01, paper=0.55, documentation=0.30, readme=0.14)
+    return plan, snapshot, incumbent, challenger
+
+
+def test_r2_collateral_rank_witness_retention():
+    plan, snapshot, incumbent, _ = collateral_exchange_fixture()
+    result, offered = run_pool(plan, [snapshot])
+
+    assert incumbent["object_id"] in result["fused_candidate_ids"][:30]
+    assert result["best_channel_ranks"][incumbent["object_id"]] == {
+        "exact": 27, "dense": 1,
+    }
+    assert incumbent["object_id"] in offered
+    assert reasons(result)[incumbent["object_id"]] == "ordinary_rrf"
+
+
+def test_r2_collateral_rank_witness_substitution_is_not_frozen_id_protection():
+    plan, snapshot, incumbent, challenger = collateral_exchange_fixture(superior_substitute=True)
+    result, offered = run_pool(plan, [snapshot])
+
+    assert incumbent["object_id"] in result["fused_candidate_ids"][:30]
+    assert result["best_channel_ranks"][incumbent["object_id"]] == {
+        "exact": 27, "dense": 2,
+    }
+    assert challenger["object_id"] in offered
+    assert incumbent["object_id"] not in offered
+    assert reasons(result)[challenger["object_id"]] == "policy_role_frontier"
+
+
+def test_r2_single_channel_recovery_can_beat_a_higher_rrf_victim():
+    challenger = candidate("fictional_single_channel_need")
+    result, offered = run_pool(plan_for(code=1.0), consensus_snapshots({"dense": [challenger]}))
+    legacy = result["fused_candidate_ids"][:30]
+    victim = legacy[-1]
+
+    assert challenger["object_id"] not in legacy
+    assert result["scores"][challenger["object_id"]] < result["scores"][victim]
+    assert challenger["object_id"] in offered
+    assert victim not in offered
+    assert reasons(result)[challenger["object_id"]] == "policy_role_frontier"
+    for channel in ("exact", "dense", "sparse"):
+        before = code_rank_vector(result, legacy, channel, 12)
+        after = code_rank_vector(result, offered, channel, 12)
+        assert all(new <= old for new, old in zip(after, before))
+        if channel == "dense":
+            assert any(new < old for new, old in zip(after, before))
+
+
+def test_r2_each_synthetic_exchange_preserves_rank_witness_components():
+    previous_pool = None
+    legacy = None
+    for count in range(1, 5):
+        challengers = [candidate(f"fictional_rank_step_{index}") for index in range(count)]
+        result, offered = run_pool(plan_for(code=1.0), consensus_snapshots({"dense": challengers}))
+        if legacy is None:
+            legacy = result["fused_candidate_ids"][:30]
+        before_pool = legacy if previous_pool is None else previous_pool
+
+        assert result["fused_candidate_ids"][:30] == legacy
+        assert len(set(offered) - set(before_pool)) == 1
+        assert len(set(before_pool) - set(offered)) == 1
+        assert list(reasons(result).values()).count("policy_role_frontier") == count
+        improvements = []
+        for channel in ("exact", "dense", "sparse"):
+            before = code_rank_vector(result, before_pool, channel, 12)
+            after = code_rank_vector(result, offered, channel, 12)
+            assert all(new <= old for new, old in zip(after, before))
+            improvements.extend(new < old for new, old in zip(after, before))
+        assert any(improvements)
+        previous_pool = offered
+
+
+def residual_queue_fixture(*, add_later_offer=False):
+    consensus = [candidate(f"fictional_queue_base_{index:02d}") for index in range(29)]
+    incumbent = candidate("fictional_dense_incumbent")
+    rejected = candidate("fictional_earlier_rejected")
+    admitted = candidate("fictional_later_graph")
+    fillers = [candidate(f"fictional_graph_filler_{index}", source_type="paper") for index in range(2)]
+    rankings = {
+        "exact": [*consensus[:26], incumbent, *consensus[26:]],
+        "sparse": consensus,
+        "dense": [incumbent, rejected],
+        "graph": [*fillers, admitted],
+    }
+    snapshot = {
+        "rankings": rankings,
+        "channel_origins": {"graph": ["normal"] * 3},
+    }
+    later = None
+    if add_later_offer:
+        later = candidate("fictional_later_paper_channel")
+        rankings["paper"] = [
+            *[candidate(f"fictional_paper_filler_{index}", source_type="paper") for index in range(3)],
+            later,
+        ]
+    return snapshot, rejected, admitted, later
+
+
+def test_r2_rejected_offer_does_not_exhaust_later_role_opportunity():
+    snapshot, rejected, admitted, _ = residual_queue_fixture()
+    result, offered = run_pool(plan_for(code=0.01, documentation=0.99), [snapshot])
+
+    assert rejected["object_id"] not in offered
+    assert admitted["object_id"] in offered
+    assert list(reasons(result).values()).count("policy_role_frontier") == 1
+
+
+def test_r2_successful_role_quota_can_leave_later_candidate_out():
+    snapshot, rejected, admitted, later = residual_queue_fixture(add_later_offer=True)
+    result, offered = run_pool(plan_for(code=0.01, documentation=0.99), [snapshot])
+
+    assert rejected["object_id"] not in offered
+    assert admitted["object_id"] in offered
+    assert later["object_id"] in result["fused_candidate_ids"]
+    assert later["object_id"] not in offered
+    assert list(reasons(result).values()).count("policy_role_frontier") == 1
+
+
+def test_r2_many_eligible_same_channel_offers_are_not_entitled_to_pool_slots():
+    consensus = [candidate(f"fictional_strong_{index:02d}") for index in range(30)]
+    offers = [candidate(f"fictional_more_exact_{index:02d}") for index in range(15)]
+    snapshot = {"rankings": {"exact": [*consensus, *offers], "sparse": consensus}}
+    result, offered = run_pool(plan_for(code=1.0), [snapshot])
+
+    assert offered == result["fused_candidate_ids"][:30]
+    assert all(item["object_id"] not in offered for item in offers)
+    assert set(reasons(result).values()) == {"ordinary_rrf"}
+
+
+def test_r2_equal_rank_witness_vectors_do_not_admit_a_challenger():
+    consensus = [candidate(f"fictional_equal_base_{index:02d}") for index in range(29)]
+    incumbent = candidate("fictional_equal_incumbent")
+    challenger = candidate("fictional_equal_challenger")
+    snapshots = [
+        {"rankings": {
+            "exact": [*consensus[:26], incumbent, *consensus[26:]],
+            "sparse": consensus,
+            "dense": [incumbent],
+        }},
+        {"rankings": {"dense": [challenger]}},
+    ]
+    result, offered = run_pool(plan_for(code=0.01, documentation=0.99), snapshots)
+
+    assert challenger["object_id"] in result["fused_candidate_ids"]
+    assert result["best_channel_ranks"][incumbent["object_id"]]["dense"] == 1
+    assert result["best_channel_ranks"][challenger["object_id"]]["dense"] == 1
+    assert challenger["object_id"] not in offered
+    assert set(reasons(result).values()) == {"ordinary_rrf"}
+
+
+def test_r2_componentwise_guard_rejects_cross_channel_regression():
+    exact = candidate("fictional_exact_guard")
+    sparse = candidate("fictional_a_sparse_guard")
+    paper = candidate("fictional_paper_guard", source_type="paper")
+    challenger = candidate("fictional_z_dense_offer")
+    supplements = [candidate(f"fictional_supplement_{index:02d}") for index in range(27)]
+    snapshot = {"rankings": {
+        "exact": [exact], "sparse": [sparse], "paper": [paper], "dense": [challenger],
+    }, "supplemental_candidates": supplements}
+    result, offered = run_pool(plan_for(code=0.5, paper=0.5), [snapshot])
+
+    assert result["fused_candidate_ids"][:3] == [exact["object_id"], paper["object_id"], sparse["object_id"]]
+    assert result["best_channel_ranks"][challenger["object_id"]]["dense"] == 1
+    assert result["best_channel_ranks"][sparse["object_id"]]["sparse"] == 1
+    assert offered[:3] == result["fused_candidate_ids"][:3]
+    assert challenger["object_id"] not in offered
+    assert offered[-27:] == [item["object_id"] for item in supplements]
+
+
+def test_r2_specialized_witness_uses_only_best_normal_occurrence():
+    retriever = PoolOnlyRetriever(EchoReranker())
+    base = [candidate(f"fictional_exact_base_{index:02d}") for index in range(29)]
+    incumbent = candidate("fictional_normal_graph_incumbent")
+    challenger = candidate("fictional_graph_challenger")
+    payloads = {item["object_id"]: item for item in [*base, incumbent, challenger]}
+    occurrences = {
+        item["object_id"]: [{"channel": "exact", "rank": index + 1}]
+        for index, item in enumerate(base)
+    }
+    occurrences[incumbent["object_id"]] = [
+        {"channel": "graph", "rank": 5, "origin": "normal"},
+        {"channel": "graph", "rank": 1, "origin": "generic_fallback"},
+    ]
+    scores = {oid: 1.0 / (index + 1) for index, oid in enumerate(payloads)}
+    base_order = [*[item["object_id"] for item in base], incumbent["object_id"], challenger["object_id"]]
+    plan = plan_for(code=0.01, documentation=0.99)
+
+    for origin, expected in (("normal", True), ("generic_fallback", False), (None, False)):
+        occurrences[challenger["object_id"]] = [{"channel": "graph", "rank": 4, **({"origin": origin} if origin else {})}]
+        pool, entries = retriever._r2_rerank_pool(plan, payloads, occurrences, scores, base_order, [])
+        assert (challenger["object_id"] in pool) is expected
+        if expected:
+            assert any(entry["reason"] == "policy_role_frontier" for entry in entries)
+        else:
+            assert incumbent["object_id"] in pool
+
+    occurrences[incumbent["object_id"]].append({"channel": "graph", "rank": 2, "origin": "normal"})
+    occurrences[challenger["object_id"]] = [{"channel": "graph", "rank": 3, "origin": "normal"}]
+    pool, _ = retriever._r2_rerank_pool(plan, payloads, occurrences, scores, base_order, [])
+    assert challenger["object_id"] not in pool
+
+
+def test_r2_structured_reservation_reduces_exchange_capacity():
+    legacy = [candidate(f"fictional_legacy_workflow_{index}", source_type="workflow") for index in range(3)]
+    challenger = candidate("fictional_code_challenger")
+    supplements = [candidate(f"fictional_reserved_{index:02d}") for index in range(27)]
+    snapshot = {"rankings": {
+        "exact": legacy, "sparse": legacy, "dense": [challenger],
+    }, "supplemental_candidates": supplements}
+    result, offered = run_pool(plan_for(code=1.0), [snapshot])
+
+    assert len(offered) == len(set(offered)) == 30
+    assert offered[-27:] == [item["object_id"] for item in supplements]
+    assert [entry["reason"] for entry in result["rerank_pool_entries"]].count("ordinary_rrf") == 2
+    assert reasons(result)[challenger["object_id"]] == "policy_role_frontier"
+
+
+def test_r2_required_only_paper_role_uses_existing_minimum_opportunity():
+    paper = candidate("fictional_required_paper", source_type="paper")
+    plan = plan_for(code=1.0).model_copy(update={"required_source_types": ["paper"]})
+    result, offered = run_pool(plan, consensus_snapshots({"dense": [paper]}))
+
+    assert paper["object_id"] not in result["fused_candidate_ids"][:30]
+    assert paper["object_id"] in offered
+    assert reasons(result)[paper["object_id"]] == "policy_role_frontier"
+
+
+def test_r2_overlapping_roles_and_repeated_passes_use_one_pool_slot():
+    shared = candidate("fictional_code_graph_shared")
+    snapshots = consensus_snapshots({"graph": [shared]})
+    snapshots[0]["channel_origins"] = {"graph": ["normal"]}
+    snapshots[1]["rankings"]["graph"] = [shared]
+    snapshots[1]["channel_origins"] = {"graph": ["normal"]}
+    plan = plan_for(code=0.5, graph=0.5)
+    first, offered = run_pool(plan, snapshots)
+    second, repeated = run_pool(plan, snapshots)
+
+    assert offered == repeated
+    assert first["rerank_pool_entries"] == second["rerank_pool_entries"]
+    assert offered.count(shared["object_id"]) == 1
+    assert list(reasons(first).values()).count("policy_role_frontier") == 1
+    assert len(first["pass_occurrences"][shared["object_id"]]) == 2
+
+
 class NormalPoolRetriever(PoolOnlyRetriever):
     def __init__(self, rankings, channel_origins=None):
         super().__init__(EchoReranker())
@@ -103,6 +372,21 @@ def normal_consensus_rankings(necessary):
         "exact": rows[:20], "sparse": rows[:20], "dense": [necessary],
         "workflow": rows[20:], "graph": rows[20:],
     }
+
+
+def test_r2_exchange_normal_and_global_callers_share_actual_pool():
+    challenger = candidate("fictional_shared_challenger")
+    rankings = normal_consensus_rankings(challenger)
+    origins = {"workflow": ["normal"] * 10, "graph": ["normal"] * 10}
+    retriever = NormalPoolRetriever(rankings, origins)
+    normal = retriever.retrieve("Synthetic question", plan=plan_for(code=1.0))
+    global_result, global_offered = run_pool(plan_for(code=1.0), [{
+        "rankings": retriever.rankings, "channel_origins": origins,
+    }])
+
+    assert retriever.vertex.offered_ids == global_offered
+    assert normal["rerank_pool_entries"] == global_result["rerank_pool_entries"]
+    assert challenger["object_id"] in global_offered
 
 
 def test_r2_normal_retrieve_uses_policy_role_frontier():

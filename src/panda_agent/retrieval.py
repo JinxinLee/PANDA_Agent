@@ -2162,7 +2162,8 @@ class Retriever:
         supp_set = set(supp_pool)
         base_slots = 30 - len(supp_pool)
         ordinary = [oid for oid in base_fused_order if oid not in supp_set]
-        old_base_set = set(ordinary[:base_slots])
+        incumbent_order = ordinary[:base_slots]
+        old_base_set = set(incumbent_order)
         final_limit = getattr(getattr(self, "policies", None), "final_evidence_limit", 12)
         active_roles = {
             role for role, budget in plan.source_budgets.items() if budget > 0
@@ -2188,38 +2189,72 @@ class Retriever:
                 return bool(resolved and version == f"{source}@{resolved}")
             return source in context_sources or source == "curated_panda_domain"
 
+        # Reuse frontier eligibility for incumbent and challenger rank witnesses.
+        qualifying: dict[str, dict[str, dict[str, int]]] = {}
+        regular_channels = {"exact", "dense", "sparse", "paper"}
+        specialized_channels = {"workflow", "graph"}
+        for oid in ordinary:
+            by_role: dict[str, dict[str, int]] = {}
+            if valid_challenger(oid):
+                source_role = self._source_type(payloads[oid])
+                for occurrence in pass_occurrences[oid]:
+                    channel = occurrence["channel"]
+                    normal = channel in regular_channels or (
+                        channel in specialized_channels and occurrence.get("origin") == "normal"
+                    )
+                    if not normal:
+                        continue
+                    for role in (source_role, channel if channel in specialized_channels else None):
+                        if role not in active_roles or (role == channel and channel in specialized_channels and occurrence.get("origin") != "normal"):
+                            continue
+                        ranks = by_role.setdefault(role, {})
+                        ranks[channel] = min(ranks.get(channel, math.inf), occurrence["rank"])
+            qualifying[oid] = by_role
+
         role_queues: dict[str, list[str]] = {}
         role_limits: dict[str, int] = {}
+        role_ceilings: dict[str, int] = {}
         for role in role_order:
             challengers: list[tuple[int, float, str]] = []
             for oid in ordinary:
-                if oid in old_base_set or not valid_challenger(oid):
+                if oid in old_base_set:
                     continue
-                source_role = self._source_type(payloads[oid])
-                qualifying_ranks = []
-                for occurrence in pass_occurrences[oid]:
-                    channel = occurrence["channel"]
-                    origin = occurrence.get("origin")
-                    normal = channel in {"exact", "dense", "sparse", "paper"} or (
-                        channel in {"workflow", "graph"} and origin == "normal"
-                    )
-                    if normal and (source_role == role or channel == role and role in {"workflow", "graph"}):
-                        qualifying_ranks.append(occurrence["rank"])
+                qualifying_ranks = qualifying[oid].get(role, {}).values()
                 if qualifying_ranks:
                     challengers.append((min(qualifying_ranks), -scores[oid], oid))
             challengers.sort()
             role_queues[role] = [oid for _, _, oid in challengers]
             budget = plan.source_budgets.get(role, 0)
             capacity = max(1, math.ceil(final_limit * budget)) if budget > 0 else 1
+            role_ceilings[role] = capacity
             role_limits[role] = min(capacity, len(challengers))
 
         frontier_capacity = min(sum(role_limits.values()), max(0, (base_slots - 1) // 2))
+        witness_keys = sorted({
+            (role, channel)
+            for by_role in qualifying.values()
+            for role, by_channel in by_role.items()
+            for channel in by_channel
+        })
+
+        def rank_witnesses(pool: set[str]) -> dict[tuple[str, str], list[float]]:
+            vectors: dict[tuple[str, str], list[float]] = {}
+            for role, channel in witness_keys:
+                depth = role_ceilings[role]
+                ranks = sorted(
+                    qualifying[oid].get(role, {}).get(channel, math.inf)
+                    for oid in pool
+                )[:depth]
+                vectors[(role, channel)] = ranks + [math.inf] * (depth - len(ranks))
+            return vectors
+
         frontier: list[str] = []
         frontier_set: set[str] = set()
+        incumbents = set(incumbent_order)
         positions = {role: 0 for role in role_order}
         used = {role: 0 for role in role_order}
         while len(frontier) < frontier_capacity:
-            added = False
+            examined = False
             for role in role_order:
                 if used[role] >= role_limits[role]:
                     continue
@@ -2230,16 +2265,34 @@ class Retriever:
                     continue
                 oid = queue[positions[role]]
                 positions[role] += 1
-                frontier.append(oid)
-                frontier_set.add(oid)
-                used[role] += 1
-                added = True
+                examined = True
+                pool = incumbents | frontier_set
+                before = rank_witnesses(pool)
+                for victim in reversed(incumbent_order):
+                    if victim not in incumbents:
+                        continue
+                    after = rank_witnesses((pool - {victim}) | {oid})
+                    if not all(
+                        all(new <= old for new, old in zip(after[key], before[key]))
+                        for key in witness_keys
+                    ):
+                        continue
+                    if not any(
+                        any(new < old for new, old in zip(after[key], before[key]))
+                        for key in witness_keys if key[0] == role
+                    ):
+                        continue
+                    incumbents.remove(victim)
+                    frontier.append(oid)
+                    frontier_set.add(oid)
+                    used[role] += 1
+                    break
                 if len(frontier) == frontier_capacity:
                     break
-            if not added:
+            if not examined:
                 break
 
-        backbone = [oid for oid in ordinary if oid not in frontier_set][:base_slots - len(frontier)]
+        backbone = [oid for oid in incumbent_order if oid in incumbents]
         entries = [
             *({"object_id": oid, "reason": "ordinary_rrf"} for oid in backbone),
             *({"object_id": oid, "reason": "policy_role_frontier"} for oid in frontier),
