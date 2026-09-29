@@ -1,0 +1,2288 @@
+{
+  "schema_version": "g4.post_correction_targeted_live_verification.v1",
+  "task": "G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION",
+  "scoped_verdict": "PASS / CURRENT-LINEAGE EXPOSED R2 CORRECTION SUPPORTED",
+  "repository": {
+    "start_head": "e2c59740f5736bf520a2241d267364bae867d381",
+    "evaluated_head": "e2c59740f5736bf520a2241d267364bae867d381",
+    "product_behavior_lineage": "047201166057edd9859292a1760bc2e9bbf173a2",
+    "result_commit": "resolve_from_git_history"
+  },
+  "identity_preflight": {
+    "status": "PASS",
+    "product_lineage_match": true,
+    "source_manifest_identity_match": true,
+    "normalized_corpus_identity_match": true,
+    "index_identity_match": true,
+    "dataset_identity_match": true,
+    "prompt_identity_match": true,
+    "model_identity_match": true,
+    "retrieval_policy_match": true,
+    "query_expansion_match": true,
+    "run_id_unused_before_launch": true,
+    "historical_reference_run_ids": [
+      "g4-r2-post-repair-novel-dev-regression-v1",
+      "g4-r2-post-repair-n002-n018-rerun-v1"
+    ],
+    "non_material_package_differences": {
+      "langgraph": {
+        "historical": "1.2.10",
+        "current": "1.2.11"
+      },
+      "python": {
+        "historical": "3.12.14",
+        "current": "3.13.14"
+      },
+      "qdrant-client": {
+        "historical": "1.15.1",
+        "current": "1.19.0"
+      }
+    },
+    "qdrant_client_server_warning": "client 1.19.0 versus server 1.15.5; run completed, comparison confound retained"
+  },
+  "run": {
+    "run_id": "g4-r2-post-correction-exposed-target-v1",
+    "mode": "qa",
+    "split": "novel_dev",
+    "case_ids": [
+      "n002",
+      "n017",
+      "n024"
+    ],
+    "allow_draft": true,
+    "capture_stage_trace": true,
+    "external_judge": false,
+    "manifest_path": "data/evaluation/runs/g4-r2-post-correction-exposed-target-v1/manifest.json",
+    "run_status_path": "data/evaluation/runs/g4-r2-post-correction-exposed-target-v1/run_status.json",
+    "runner_status": "COMPLETE",
+    "runner_quality_verdict": "FAIL",
+    "runner_quality_reason": "complete cohort (3/3 scored); quality gates failed",
+    "development_gate_passed": false,
+    "development_gate_note": "Focused or incomplete run: it can diagnose a layer but cannot pass the development gate.",
+    "product_development_gate": {
+      "compatible": false,
+      "passed": null,
+      "reason": "incompatible product-language calibration: calibration Gold version does not match active dataset"
+    }
+  },
+  "cases": {
+    "n002": {
+      "current_r2_observability": "OBSERVABLE",
+      "relevant_evidence_ids_or_equivalents": [
+        "object.a45779701b982aff3e7554da",
+        "object.03af96b1110e782792253a18"
+      ],
+      "qualifying_role_channel_geometry": [
+        {
+          "object_id": "object.a45779701b982aff3e7554da",
+          "source_id": "luminosityfit",
+          "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "object_type": "source_file",
+          "locator": {
+            "end_line": 12,
+            "path": "requirements.txt",
+            "pdf_page": null,
+            "printed_page": null,
+            "section_path": [],
+            "snapshot_date": null,
+            "start_line": 1,
+            "symbol": null,
+            "url": null
+          },
+          "channel_occurrences": [
+            {
+              "channel": "dense",
+              "rank": 7
+            }
+          ],
+          "role": "code",
+          "version_matches_resolved_plan": true,
+          "locator_present": true,
+          "text_validity_basis": "NONEMPTY_CURRENT_FINAL_EVIDENCE",
+          "legacy_rrf_rank": null,
+          "legacy_rrf_score": null,
+          "corrected_pool_reason": "policy_role_frontier",
+          "semantic_rerank_rank": 1,
+          "final_evidence_id": "evidence.7971affdc89fc0f9b4272aeb",
+          "cited_evidence_id": "evidence.7971affdc89fc0f9b4272aeb"
+        },
+        {
+          "object_id": "object.03af96b1110e782792253a18",
+          "source_id": "luminosityfit",
+          "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32",
+          "object_type": "source_file_chunk",
+          "locator": {
+            "end_line": 12,
+            "path": "requirements.txt",
+            "pdf_page": null,
+            "printed_page": null,
+            "section_path": [],
+            "snapshot_date": null,
+            "start_line": 1,
+            "symbol": null,
+            "url": null
+          },
+          "channel_occurrences": [
+            {
+              "channel": "dense",
+              "rank": 8
+            }
+          ],
+          "role": "code",
+          "version_matches_resolved_plan": true,
+          "locator_present": true,
+          "text_validity_basis": "PASSED_CURRENT_FRONTIER_ADMISSION",
+          "legacy_rrf_rank": null,
+          "legacy_rrf_score": null,
+          "corrected_pool_reason": "policy_role_frontier",
+          "semantic_rerank_rank": 2,
+          "final_evidence_id": null,
+          "cited_evidence_id": null
+        }
+      ],
+      "question_decomposition": {
+        "ambiguity": {
+          "reason": "",
+          "status": "clear"
+        },
+        "mode": "production_authoritative",
+        "points": [
+          {
+            "answer_point_id": "point.1",
+            "required_relations": [],
+            "support_spans": [
+              "What Python packages does the LuminosityFit repository declare in its Python requirements/tooling list"
+            ],
+            "text": "Identify what Python packages the LuminosityFit repository declares in its Python requirements/tooling list."
+          },
+          {
+            "answer_point_id": "point.2",
+            "required_relations": [],
+            "support_spans": [
+              "where is that list located?"
+            ],
+            "text": "Specify where the Python requirements/tooling list is located in the LuminosityFit repository."
+          }
+        ],
+        "schema_version": "e1.question_decomposition.v3"
+      },
+      "retrieval_plan": {
+        "analysis_diagnostics": {
+          "analyzer_accepted_semantic_delta": {
+            "concept_scopes": [],
+            "concepts": [
+              {
+                "support_spans": [
+                  "Python packages"
+                ],
+                "value": "Python packages"
+              },
+              {
+                "support_spans": [
+                  "Python requirements/tooling list"
+                ],
+                "value": "Python requirements/tooling list"
+              }
+            ],
+            "repository_additions": [],
+            "symbols": [],
+            "version_mentions": []
+          },
+          "analyzer_final": {
+            "concept_scopes": {},
+            "concepts": [
+              "Python packages",
+              "Python requirements/tooling list"
+            ],
+            "intent": "api",
+            "requested_versions": {},
+            "symbols": [],
+            "target_repositories": [
+              "luminosityfit"
+            ]
+          },
+          "analyzer_item_support": {
+            "concept_scopes": [],
+            "concepts": [
+              {
+                "support_spans": [
+                  "Python packages"
+                ],
+                "value": "Python packages"
+              },
+              {
+                "support_spans": [
+                  "Python requirements/tooling list"
+                ],
+                "value": "Python requirements/tooling list"
+              }
+            ],
+            "repository_additions": [],
+            "symbols": [],
+            "version_mentions": []
+          },
+          "analyzer_llm_called": true,
+          "analyzer_raw_semantic_delta": {
+            "concept_scopes": [],
+            "concepts": [
+              {
+                "support_spans": [
+                  "Python packages"
+                ],
+                "value": "Python packages"
+              },
+              {
+                "support_spans": [
+                  "Python requirements/tooling list"
+                ],
+                "value": "Python requirements/tooling list"
+              }
+            ],
+            "repository_additions": [],
+            "symbols": [],
+            "version_mentions": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "deterministic_parse": {
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "fixed": {
+              "intent": "api"
+            },
+            "known_partial": {
+              "target_repositories": [
+                "luminosityfit"
+              ]
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "ownership": "fixed",
+                  "rule": "api",
+                  "source": "deterministic_route",
+                  "value": "api"
+                }
+              ],
+              "target_repositories": [
+                {
+                  "ownership": "known_partial",
+                  "rule": "manifest_repo_id",
+                  "source": "explicit_query_reference",
+                  "value": "luminosityfit"
+                }
+              ]
+            },
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "concept_scopes": "resolve",
+              "concepts": "resolve",
+              "repository_additions": "augment_known_partial",
+              "symbols": "resolve",
+              "target_repositories": "augment_known_partial",
+              "version_mentions": "resolve"
+            }
+          },
+          "matched_expansion_rules": [],
+          "source_obligations": {
+            "authority": "intent_policy",
+            "matches": [],
+            "mode": "retained_intent_policy_r02",
+            "required_source_types": [
+              "code"
+            ]
+          },
+          "unbound_version_tokens": []
+        },
+        "concept_scopes": {},
+        "concepts": [
+          "Python packages",
+          "Python requirements/tooling list"
+        ],
+        "intent": "api",
+        "paper_page_hints": {},
+        "premise_corrections": [],
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "resolved_versions": {
+          "luminosityfit": "ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        "routing_method": "rule",
+        "secondary_intents": [],
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "graph": 0.1,
+          "paper": 0.05,
+          "readme": 0.1
+        },
+        "symbols": [],
+        "target_repositories": [
+          "luminosityfit"
+        ],
+        "version_conflicts": []
+      },
+      "channel_rankings_artifact": "data/evaluation/runs/g4-r2-post-correction-exposed-target-v1/traces/n002.json#channel_candidates",
+      "legacy_rrf_base": [
+        {
+          "object_id": "object.b6a67ff560b4a16e35f016ad",
+          "rank": 1,
+          "score": 0.032018442622950824
+        },
+        {
+          "object_id": "object.cce8388dd59c41f444377e50",
+          "rank": 2,
+          "score": 0.03200204813108039
+        },
+        {
+          "object_id": "object.feb0451634209784bcfa3a2a",
+          "rank": 3,
+          "score": 0.028125
+        },
+        {
+          "object_id": "object.0a0b9ac30d5b09d5d976e6d4",
+          "rank": 4,
+          "score": 0.019672131147540982
+        },
+        {
+          "object_id": "object.1014c57a44922bd987049935",
+          "rank": 5,
+          "score": 0.01935483870967742
+        },
+        {
+          "object_id": "object.1fa2a3e7933f95f360bc3d4b",
+          "rank": 6,
+          "score": 0.019047619047619046
+        },
+        {
+          "object_id": "object.28114175f77c843dc520267d",
+          "rank": 7,
+          "score": 0.01875
+        },
+        {
+          "object_id": "object.2e234c35cea896e0130d8c7c",
+          "rank": 8,
+          "score": 0.01846153846153846
+        },
+        {
+          "object_id": "object.3095c58c81e43833437866d5",
+          "rank": 9,
+          "score": 0.01818181818181818
+        },
+        {
+          "object_id": "object.329bcf33eb27efe9be483493",
+          "rank": 10,
+          "score": 0.01791044776119403
+        },
+        {
+          "object_id": "object.33713a2b6a3b8889de889222",
+          "rank": 11,
+          "score": 0.01764705882352941
+        },
+        {
+          "object_id": "object.33edd53b78108d2be7933053",
+          "rank": 12,
+          "score": 0.017391304347826087
+        },
+        {
+          "object_id": "object.4bf90085b7b8bf352ebe8525",
+          "rank": 13,
+          "score": 0.017142857142857144
+        },
+        {
+          "object_id": "object.5b10996c00f625bf97fd9ec2",
+          "rank": 14,
+          "score": 0.016901408450704224
+        },
+        {
+          "object_id": "object.6822f818b17ec082bc332962",
+          "rank": 15,
+          "score": 0.016666666666666666
+        },
+        {
+          "object_id": "object.015d183a412eb1fab6948b24",
+          "rank": 16,
+          "score": 0.01643835616438356
+        },
+        {
+          "object_id": "object.7228fb2f1e2eac80a4296c9c",
+          "rank": 17,
+          "score": 0.01639344262295082
+        },
+        {
+          "object_id": "object.71334d2937f3f1bb5bfb9d4b",
+          "rank": 18,
+          "score": 0.016216216216216217
+        },
+        {
+          "object_id": "object.e4c7e48c82e9f93f74443f62",
+          "rank": 19,
+          "score": 0.016129032258064516
+        },
+        {
+          "object_id": "object.01a3a37a5b2a114c5f088ed4",
+          "rank": 20,
+          "score": 0.016
+        },
+        {
+          "object_id": "object.49eca40be326362c5e4cc998",
+          "rank": 21,
+          "score": 0.015873015873015872
+        },
+        {
+          "object_id": "object.769ebd72ae0b6d59073c359c",
+          "rank": 22,
+          "score": 0.015789473684210527
+        },
+        {
+          "object_id": "object.7bc57f01593d971e9bc1a7f8",
+          "rank": 23,
+          "score": 0.015584415584415584
+        },
+        {
+          "object_id": "subsystem.luminosityfit.model_and_fit",
+          "rank": 24,
+          "score": 0.015384615384615385
+        },
+        {
+          "object_id": "object.b25c9951b318b4f63c4bf023",
+          "rank": 25,
+          "score": 0.015384615384615385
+        },
+        {
+          "object_id": "object.84adb9ee24a25c2237b03923",
+          "rank": 26,
+          "score": 0.015384615384615384
+        },
+        {
+          "object_id": "object.88e94597aa262c5617389855",
+          "rank": 27,
+          "score": 0.015189873417721518
+        },
+        {
+          "object_id": "object.d99e48a1474e0acaf26903d4",
+          "rank": 28,
+          "score": 0.015151515151515152
+        },
+        {
+          "object_id": "object.8bfed25fb714b9c4a4d1af6b",
+          "rank": 29,
+          "score": 0.015151515151515152
+        },
+        {
+          "object_id": "object.a0ea4fd6d4c2a59473a78724",
+          "rank": 30,
+          "score": 0.015
+        }
+      ],
+      "rerank_pool_entries": [
+        {
+          "object_id": "object.b6a67ff560b4a16e35f016ad",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.cce8388dd59c41f444377e50",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.feb0451634209784bcfa3a2a",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0a0b9ac30d5b09d5d976e6d4",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.1014c57a44922bd987049935",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.1fa2a3e7933f95f360bc3d4b",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.28114175f77c843dc520267d",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.2e234c35cea896e0130d8c7c",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.3095c58c81e43833437866d5",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.329bcf33eb27efe9be483493",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.33713a2b6a3b8889de889222",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.33edd53b78108d2be7933053",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.4bf90085b7b8bf352ebe8525",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.5b10996c00f625bf97fd9ec2",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.6822f818b17ec082bc332962",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.015d183a412eb1fab6948b24",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.7228fb2f1e2eac80a4296c9c",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.e4c7e48c82e9f93f74443f62",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.49eca40be326362c5e4cc998",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "subsystem.luminosityfit.model_and_fit",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.b25c9951b318b4f63c4bf023",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.d99e48a1474e0acaf26903d4",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "concept.luminosityfit.luminosity_fit_model",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.572a275ce1cce5dd3c71f64a",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.a45779701b982aff3e7554da",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.8bba0d73a7a1dec21bcc7a69",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.03af96b1110e782792253a18",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.17892b873a26113e2dcb805a",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.c1ad0b79e21c18ef44e5281d",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.e6efab8a1169dc5eecac8059",
+          "reason": "policy_role_frontier"
+        }
+      ],
+      "pool_reason_counts": {
+        "ordinary_rrf": 22,
+        "policy_role_frontier": 8
+      },
+      "specialized_origin_interpretation": "Relevant witnesses use regular dense/sparse channels; no specialized-origin inference is required. Aligned specialized-origin sidecars are not exposed in the public trace.",
+      "exchange_witness_interpretation": "Qualifying code/dense omitted witnesses are admitted through the current policy-role frontier; individual exchange vectors/victims are not logged.",
+      "final_evidence": [
+        {
+          "object_id": "object.a45779701b982aff3e7554da",
+          "evidence_id": "evidence.7971affdc89fc0f9b4272aeb",
+          "path": "requirements.txt",
+          "source_id": "luminosityfit",
+          "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        {
+          "object_id": "object.feb0451634209784bcfa3a2a",
+          "evidence_id": "evidence.7e68b750e40a397c900ffc3f",
+          "path": "python/lumifit.egg-info/SOURCES.txt",
+          "source_id": "luminosityfit",
+          "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        {
+          "object_id": "object.b6a67ff560b4a16e35f016ad",
+          "evidence_id": "evidence.8462e9e3a958e7971739c9a5",
+          "path": "python/Readme.md",
+          "source_id": "luminosityfit",
+          "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        {
+          "object_id": "object.0a0b9ac30d5b09d5d976e6d4",
+          "evidence_id": "evidence.17e398256dd6f0b20e2010ce",
+          "path": "python/runKoaSimReco.py",
+          "source_id": "luminosityfit",
+          "source_version_id": "luminosityfit@ddd83dcd1a74093bf48ef259a2849a67f9413f32"
+        },
+        {
+          "object_id": "subsystem.luminosityfit.model_and_fit",
+          "evidence_id": "evidence.23ec4edf89d423636b813e3d",
+          "path": null,
+          "source_id": "curated_panda_domain",
+          "source_version_id": "curated_panda_domain@1.0"
+        },
+        {
+          "object_id": "object.b25c9951b318b4f63c4bf023",
+          "evidence_id": "evidence.f6beb341f2ed4b30f4389e0a",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Docker/Docker.html",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+        },
+        {
+          "object_id": "concept.luminosityfit.luminosity_fit_model",
+          "evidence_id": "evidence.e89887abc2de635cf6e09d20",
+          "path": null,
+          "source_id": "curated_panda_domain",
+          "source_version_id": "curated_panda_domain@1.0"
+        },
+        {
+          "object_id": "object.572a275ce1cce5dd3c71f64a",
+          "evidence_id": "evidence.4e55702160c72036376c55e5",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_Developers.html",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+        },
+        {
+          "object_id": "object.8bba0d73a7a1dec21bcc7a69",
+          "evidence_id": "evidence.36c39b4683b7142e0f2839d5",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Installation/Install_PandaRoot.html",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.a45779701b982aff3e7554da",
+          "evidence_id": "evidence.7971affdc89fc0f9b4272aeb",
+          "path": "requirements.txt"
+        }
+      ],
+      "answer_status": "answered",
+      "answer_classification": "ANSWERED_COMPLETE",
+      "answer_review_basis": "All twelve declared packages and requirements.txt location are answered from the cited requirements list.",
+      "runtime_coverage_validation": "VALID",
+      "runtime_missing_answer_point_ids": [],
+      "causal_owner": null,
+      "secondary_non_r2_concern": null,
+      "scientific_usage": {
+        "model_calls": 6,
+        "token_usage": 31907,
+        "generation_calls": 5,
+        "embedding_calls": 1
+      },
+      "legacy_rrf_membership": {
+        "object.a45779701b982aff3e7554da": false,
+        "object.03af96b1110e782792253a18": false
+      },
+      "corrected_pool_membership": {
+        "object.a45779701b982aff3e7554da": true,
+        "object.03af96b1110e782792253a18": true
+      },
+      "pool_reason": {
+        "object.a45779701b982aff3e7554da": "policy_role_frontier",
+        "object.03af96b1110e782792253a18": "policy_role_frontier"
+      },
+      "r2_opportunity_regression": false,
+      "live_benefit_preservation_observed": true
+    },
+    "n017": {
+      "current_r2_observability": "OBSERVABLE",
+      "relevant_evidence_ids_or_equivalents": [
+        "object.015bff352e03a5f5ee88c307"
+      ],
+      "qualifying_role_channel_geometry": [
+        {
+          "object_id": "object.015bff352e03a5f5ee88c307",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "object_type": "class",
+          "locator": {
+            "end_line": 126,
+            "path": "pnddata/TrackData/PndTrack.h",
+            "pdf_page": null,
+            "printed_page": null,
+            "section_path": [],
+            "snapshot_date": null,
+            "start_line": 23,
+            "symbol": "PndTrack",
+            "url": null
+          },
+          "channel_occurrences": [
+            {
+              "channel": "dense",
+              "rank": 7
+            }
+          ],
+          "role": "code",
+          "version_matches_resolved_plan": true,
+          "locator_present": true,
+          "text_validity_basis": "NONEMPTY_CURRENT_FINAL_EVIDENCE",
+          "legacy_rrf_rank": null,
+          "legacy_rrf_score": null,
+          "corrected_pool_reason": "policy_role_frontier",
+          "semantic_rerank_rank": 1,
+          "final_evidence_id": "evidence.963bc9e530a7e4193d9df29f",
+          "cited_evidence_id": "evidence.963bc9e530a7e4193d9df29f"
+        }
+      ],
+      "question_decomposition": {
+        "ambiguity": {
+          "reason": "",
+          "status": "clear"
+        },
+        "mode": "production_authoritative",
+        "points": [
+          {
+            "answer_point_id": "point.1",
+            "required_relations": [],
+            "support_spans": [
+              "reconstructed-track object handed between PandaRoot tracking tasks",
+              "where is that persistent object defined"
+            ],
+            "text": "Identify where the persistent reconstructed-track object handed between PandaRoot tracking tasks is defined."
+          },
+          {
+            "answer_point_id": "point.2",
+            "required_relations": [
+              {
+                "relation_id": "point.2.rel.1",
+                "support_spans": [
+                  "which fitted endpoints",
+                  "does it store"
+                ],
+                "text": "The persistent reconstructed-track object stores fitted endpoints."
+              }
+            ],
+            "support_spans": [
+              "which fitted endpoints",
+              "does it store"
+            ],
+            "text": "Identify which fitted endpoints are stored by the reconstructed-track object."
+          },
+          {
+            "answer_point_id": "point.3",
+            "required_relations": [
+              {
+                "relation_id": "point.3.rel.1",
+                "support_spans": [
+                  "track-candidate links does it store"
+                ],
+                "text": "The persistent reconstructed-track object stores track-candidate links."
+              }
+            ],
+            "support_spans": [
+              "track-candidate links does it store"
+            ],
+            "text": "Identify which track-candidate links are stored by the reconstructed-track object."
+          }
+        ],
+        "schema_version": "e1.question_decomposition.v3"
+      },
+      "retrieval_plan": {
+        "analysis_diagnostics": {
+          "analyzer_accepted_semantic_delta": {
+            "concept_scopes": [],
+            "concepts": [
+              {
+                "support_spans": [
+                  "reconstructed-track object"
+                ],
+                "value": "reconstructed-track object"
+              },
+              {
+                "support_spans": [
+                  "tracking tasks"
+                ],
+                "value": "tracking tasks"
+              },
+              {
+                "support_spans": [
+                  "persistent object"
+                ],
+                "value": "persistent object"
+              },
+              {
+                "support_spans": [
+                  "fitted endpoints"
+                ],
+                "value": "fitted endpoints"
+              },
+              {
+                "support_spans": [
+                  "track-candidate links"
+                ],
+                "value": "track-candidate links"
+              }
+            ],
+            "repository_additions": [
+              {
+                "support_spans": [
+                  "PandaRoot"
+                ],
+                "value": "pandaroot"
+              }
+            ],
+            "symbols": [],
+            "version_mentions": []
+          },
+          "analyzer_final": {
+            "concept_scopes": {},
+            "concepts": [
+              "reconstructed-track object",
+              "tracking tasks",
+              "persistent object",
+              "fitted endpoints",
+              "track-candidate links"
+            ],
+            "intent": "api",
+            "requested_versions": {},
+            "symbols": [],
+            "target_repositories": [
+              "pandaroot"
+            ]
+          },
+          "analyzer_item_support": {
+            "concept_scopes": [],
+            "concepts": [
+              {
+                "support_spans": [
+                  "reconstructed-track object"
+                ],
+                "value": "reconstructed-track object"
+              },
+              {
+                "support_spans": [
+                  "tracking tasks"
+                ],
+                "value": "tracking tasks"
+              },
+              {
+                "support_spans": [
+                  "persistent object"
+                ],
+                "value": "persistent object"
+              },
+              {
+                "support_spans": [
+                  "fitted endpoints"
+                ],
+                "value": "fitted endpoints"
+              },
+              {
+                "support_spans": [
+                  "track-candidate links"
+                ],
+                "value": "track-candidate links"
+              }
+            ],
+            "repository_additions": [
+              {
+                "support_spans": [
+                  "PandaRoot"
+                ],
+                "value": "pandaroot"
+              }
+            ],
+            "symbols": [],
+            "version_mentions": []
+          },
+          "analyzer_llm_called": true,
+          "analyzer_raw_semantic_delta": {
+            "concept_scopes": [],
+            "concepts": [
+              {
+                "support_spans": [
+                  "reconstructed-track object"
+                ],
+                "value": "reconstructed-track object"
+              },
+              {
+                "support_spans": [
+                  "tracking tasks"
+                ],
+                "value": "tracking tasks"
+              },
+              {
+                "support_spans": [
+                  "persistent object"
+                ],
+                "value": "persistent object"
+              },
+              {
+                "support_spans": [
+                  "fitted endpoints"
+                ],
+                "value": "fitted endpoints"
+              },
+              {
+                "support_spans": [
+                  "track-candidate links"
+                ],
+                "value": "track-candidate links"
+              }
+            ],
+            "repository_additions": [
+              {
+                "support_spans": [
+                  "PandaRoot"
+                ],
+                "value": "pandaroot"
+              }
+            ],
+            "symbols": [],
+            "version_mentions": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_semantic_output_fields": [
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "deterministic_parse": {
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "fixed": {
+              "intent": "api"
+            },
+            "known_partial": {
+              "target_repositories": [
+                "pandaroot"
+              ]
+            },
+            "provenance": {
+              "intent": [
+                {
+                  "ownership": "fixed",
+                  "rule": "api",
+                  "source": "deterministic_route",
+                  "value": "api"
+                }
+              ],
+              "target_repositories": [
+                {
+                  "ownership": "known_partial",
+                  "rule": "manifest_repo_id",
+                  "source": "explicit_query_reference",
+                  "value": "pandaroot"
+                }
+              ]
+            },
+            "semantic_output_fields": [
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "concept_scopes": "resolve",
+              "concepts": "resolve",
+              "repository_additions": "augment_known_partial",
+              "symbols": "resolve",
+              "target_repositories": "augment_known_partial",
+              "version_mentions": "resolve"
+            }
+          },
+          "matched_expansion_rules": [],
+          "source_obligations": {
+            "authority": "intent_policy",
+            "matches": [],
+            "mode": "retained_intent_policy_r02",
+            "required_source_types": [
+              "code"
+            ]
+          },
+          "unbound_version_tokens": []
+        },
+        "concept_scopes": {},
+        "concepts": [
+          "reconstructed-track object",
+          "tracking tasks",
+          "persistent object",
+          "fitted endpoints",
+          "track-candidate links"
+        ],
+        "intent": "api",
+        "paper_page_hints": {},
+        "premise_corrections": [],
+        "required_source_types": [
+          "code"
+        ],
+        "resolved_aliases": {},
+        "resolved_versions": {
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        "routing_method": "rule",
+        "secondary_intents": [],
+        "source_budgets": {
+          "code": 0.55,
+          "documentation": 0.2,
+          "graph": 0.1,
+          "paper": 0.05,
+          "readme": 0.1
+        },
+        "symbols": [],
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "version_conflicts": []
+      },
+      "channel_rankings_artifact": "data/evaluation/runs/g4-r2-post-correction-exposed-target-v1/traces/n017.json#channel_candidates",
+      "legacy_rrf_base": [
+        {
+          "object_id": "object.4148db1e1efa940ddee0ee82",
+          "rank": 1,
+          "score": 0.02813852813852814
+        },
+        {
+          "object_id": "object.051a3e49d589400336c446db",
+          "rank": 2,
+          "score": 0.019672131147540982
+        },
+        {
+          "object_id": "object.07758324d812b3ee09797e10",
+          "rank": 3,
+          "score": 0.01935483870967742
+        },
+        {
+          "object_id": "object.0945ee1a59cd012067a29c88",
+          "rank": 4,
+          "score": 0.019047619047619046
+        },
+        {
+          "object_id": "object.0a2a46456436d7a564d1219d",
+          "rank": 5,
+          "score": 0.01875
+        },
+        {
+          "object_id": "object.0bfb2a14640a28f220577941",
+          "rank": 6,
+          "score": 0.01846153846153846
+        },
+        {
+          "object_id": "object.0c53bf9fc3e19be732859262",
+          "rank": 7,
+          "score": 0.01818181818181818
+        },
+        {
+          "object_id": "object.0e122426ede560dcc43d4330",
+          "rank": 8,
+          "score": 0.01791044776119403
+        },
+        {
+          "object_id": "object.0e4dd77fc14f3323392bce66",
+          "rank": 9,
+          "score": 0.01764705882352941
+        },
+        {
+          "object_id": "object.112af2438e48baee96dfdda0",
+          "rank": 10,
+          "score": 0.017391304347826087
+        },
+        {
+          "object_id": "object.11c2c6d44d143f72a07fb320",
+          "rank": 11,
+          "score": 0.017142857142857144
+        },
+        {
+          "object_id": "object.15636e4b9258a15ec93fc224",
+          "rank": 12,
+          "score": 0.016901408450704224
+        },
+        {
+          "object_id": "object.16e33b184b58c277135b1223",
+          "rank": 13,
+          "score": 0.016666666666666666
+        },
+        {
+          "object_id": "object.19dc3eba1eaaaeb7948e4db9",
+          "rank": 14,
+          "score": 0.01643835616438356
+        },
+        {
+          "object_id": "object.47f09fc5ef218cee6e0192e5",
+          "rank": 15,
+          "score": 0.01639344262295082
+        },
+        {
+          "object_id": "object.bacddb9853036550fbb53c55",
+          "rank": 16,
+          "score": 0.01639344262295082
+        },
+        {
+          "object_id": "object.1cc3ba3f3d1592620e4653e7",
+          "rank": 17,
+          "score": 0.016216216216216217
+        },
+        {
+          "object_id": "object.40ff0046a2a06593824dcf57",
+          "rank": 18,
+          "score": 0.016129032258064516
+        },
+        {
+          "object_id": "object.c6f5e328b9b4ec6ab125824f",
+          "rank": 19,
+          "score": 0.016129032258064516
+        },
+        {
+          "object_id": "object.1d222c61094030c56afeb1c3",
+          "rank": 20,
+          "score": 0.016
+        },
+        {
+          "object_id": "object.4cdf8dfd270bdbffdcf4da4c",
+          "rank": 21,
+          "score": 0.015873015873015872
+        },
+        {
+          "object_id": "object.0ca42cb9f02292f8df2d6796",
+          "rank": 22,
+          "score": 0.015873015873015872
+        },
+        {
+          "object_id": "object.217ad3bafb8350432ee82715",
+          "rank": 23,
+          "score": 0.015789473684210527
+        },
+        {
+          "object_id": "object.86514b4e204db84b408c66bf",
+          "rank": 24,
+          "score": 0.015625
+        },
+        {
+          "object_id": "object.a5d21ca542ba3f9d988d51d7",
+          "rank": 25,
+          "score": 0.015625
+        },
+        {
+          "object_id": "object.277d3e07efaa71fcbe0e75a4",
+          "rank": 26,
+          "score": 0.015584415584415584
+        },
+        {
+          "object_id": "object.468d27e66fec2e0882f6d424",
+          "rank": 27,
+          "score": 0.015384615384615385
+        },
+        {
+          "object_id": "object.65ea50418d0a75bba8dec609",
+          "rank": 28,
+          "score": 0.015384615384615385
+        },
+        {
+          "object_id": "object.290305bebae98ca036c2ca57",
+          "rank": 29,
+          "score": 0.015384615384615384
+        },
+        {
+          "object_id": "object.2b132c66eb92e34747f01b8f",
+          "rank": 30,
+          "score": 0.015189873417721518
+        }
+      ],
+      "rerank_pool_entries": [
+        {
+          "object_id": "object.4148db1e1efa940ddee0ee82",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.051a3e49d589400336c446db",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.07758324d812b3ee09797e10",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0945ee1a59cd012067a29c88",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0a2a46456436d7a564d1219d",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0bfb2a14640a28f220577941",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0c53bf9fc3e19be732859262",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0e122426ede560dcc43d4330",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0e4dd77fc14f3323392bce66",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.47f09fc5ef218cee6e0192e5",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.bacddb9853036550fbb53c55",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.40ff0046a2a06593824dcf57",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.c6f5e328b9b4ec6ab125824f",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.4cdf8dfd270bdbffdcf4da4c",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0ca42cb9f02292f8df2d6796",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.86514b4e204db84b408c66bf",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.a5d21ca542ba3f9d988d51d7",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.468d27e66fec2e0882f6d424",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.65ea50418d0a75bba8dec609",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "data_product.pandaroot.lumi_trks_qa",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.3d346ba6e80667c721cd6920",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.035b464a44fa998aea8037c8",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.040f1a368d71b0e9c1c1944c",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.79b75480980719256f8b7937",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.06a765002f130fb5481e64fa",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.462718f2b1ef7f92d71bc5f5",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.079456deec968e0ee3f75e55",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.3792be0ca87112491a999725",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.0a27612c8b1d2100a2d6839d",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.015bff352e03a5f5ee88c307",
+          "reason": "policy_role_frontier"
+        }
+      ],
+      "pool_reason_counts": {
+        "ordinary_rrf": 19,
+        "policy_role_frontier": 11
+      },
+      "specialized_origin_interpretation": "Relevant witnesses use regular dense/sparse channels; no specialized-origin inference is required. Aligned specialized-origin sidecars are not exposed in the public trace.",
+      "exchange_witness_interpretation": "Qualifying code/dense omitted witnesses are admitted through the current policy-role frontier; individual exchange vectors/victims are not logged.",
+      "final_evidence": [
+        {
+          "object_id": "object.015bff352e03a5f5ee88c307",
+          "evidence_id": "evidence.963bc9e530a7e4193d9df29f",
+          "path": "pnddata/TrackData/PndTrack.h",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        {
+          "object_id": "object.040f1a368d71b0e9c1c1944c",
+          "evidence_id": "evidence.a261d030ebff00ac8e8a6319",
+          "path": "pid/MatchBarrelForward/PndMatchBarrelForward.cxx",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        {
+          "object_id": "object.4148db1e1efa940ddee0ee82",
+          "evidence_id": "evidence.8629217598da4dc02a896b88",
+          "path": "tracking/PndFtsTrackFinder/PndFtsTrackFinderTask.h",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        {
+          "object_id": "object.47f09fc5ef218cee6e0192e5",
+          "evidence_id": "evidence.e2e8bc78fee2f010bb8c13ec",
+          "path": null,
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        {
+          "object_id": "object.0ca42cb9f02292f8df2d6796",
+          "evidence_id": "evidence.839df958d48de4d1c489902a",
+          "path": "raw_pdf/thesis.pdf",
+          "source_id": "li_2026",
+          "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a"
+        },
+        {
+          "object_id": "object.65ea50418d0a75bba8dec609",
+          "evidence_id": "evidence.856064e250bd70f41432824e",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_05_analysis_fitting.html",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+        },
+        {
+          "object_id": "data_product.pandaroot.lumi_trks_qa",
+          "evidence_id": "evidence.7a02e84f2c3abf3fc566f79f",
+          "path": null,
+          "source_id": "curated_panda_domain",
+          "source_version_id": "curated_panda_domain@1.0"
+        },
+        {
+          "object_id": "object.3d346ba6e80667c721cd6920",
+          "evidence_id": "evidence.43ac9b4dec8c905e55bb7ab8",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_05_analysis_fitting.html",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+        },
+        {
+          "object_id": "object.79b75480980719256f8b7937",
+          "evidence_id": "evidence.0c43f2fbd6a17ee21633878b",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running.html",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+        },
+        {
+          "object_id": "workflow.pandaroot.lmd_reconstruction",
+          "evidence_id": "evidence.6383e640abffb991ff3628a3",
+          "path": null,
+          "source_id": "curated_panda_domain",
+          "source_version_id": "curated_panda_domain@1.0"
+        },
+        {
+          "object_id": "object.06a765002f130fb5481e64fa",
+          "evidence_id": "evidence.6916434257231ab6717c613b",
+          "path": "tracking/CentralTracking/PndTrkTracking2.cxx",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        {
+          "object_id": "object.0a27612c8b1d2100a2d6839d",
+          "evidence_id": "evidence.72a3c23c125b245672b82cac",
+          "path": "tools/PndMCTrackAna/PndMCTrackInfoTask.cxx",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.015bff352e03a5f5ee88c307",
+          "evidence_id": "evidence.963bc9e530a7e4193d9df29f",
+          "path": "pnddata/TrackData/PndTrack.h"
+        }
+      ],
+      "answer_status": "answered",
+      "answer_classification": "ANSWERED_COMPLETE",
+      "answer_review_basis": "The PndTrack header is cited; the answer names first/last FairTrackParP endpoints and embedded PndTrackCand/TRef candidate links.",
+      "runtime_coverage_validation": "VALID",
+      "runtime_missing_answer_point_ids": [],
+      "causal_owner": null,
+      "secondary_non_r2_concern": null,
+      "scientific_usage": {
+        "model_calls": 6,
+        "token_usage": 129893,
+        "generation_calls": 5,
+        "embedding_calls": 1
+      },
+      "legacy_rrf_membership": {
+        "object.015bff352e03a5f5ee88c307": false
+      },
+      "corrected_pool_membership": {
+        "object.015bff352e03a5f5ee88c307": true
+      },
+      "pool_reason": {
+        "object.015bff352e03a5f5ee88c307": "policy_role_frontier"
+      },
+      "r2_opportunity_regression": false,
+      "live_benefit_preservation_observed": true
+    },
+    "n024": {
+      "current_r2_observability": "OBSERVABLE",
+      "relevant_evidence_ids_or_equivalents": [
+        "object.d6ef560b88c3926ecb32d3e1",
+        "object.b92e31dcb2ee34a46234ac0f"
+      ],
+      "qualifying_role_channel_geometry": [
+        {
+          "object_id": "object.d6ef560b88c3926ecb32d3e1",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "object_type": "class_chunk",
+          "locator": {
+            "end_line": 124,
+            "path": "tracking/PndHelixPropagator/PndHelixPropagator.h",
+            "pdf_page": null,
+            "printed_page": null,
+            "section_path": [],
+            "snapshot_date": null,
+            "start_line": 24,
+            "symbol": "PndHelixPropagator",
+            "url": null
+          },
+          "channel_occurrences": [
+            {
+              "channel": "dense",
+              "rank": 8
+            },
+            {
+              "channel": "sparse",
+              "rank": 19
+            }
+          ],
+          "role": "code",
+          "version_matches_resolved_plan": true,
+          "locator_present": true,
+          "text_validity_basis": "NONEMPTY_CURRENT_FINAL_EVIDENCE",
+          "legacy_rrf_rank": 18,
+          "legacy_rrf_score": 0.027364110201042444,
+          "corrected_pool_reason": "ordinary_rrf",
+          "semantic_rerank_rank": 2,
+          "final_evidence_id": "evidence.59e79b2eb223aa9dc25fca52",
+          "cited_evidence_id": "evidence.59e79b2eb223aa9dc25fca52"
+        },
+        {
+          "object_id": "object.b92e31dcb2ee34a46234ac0f",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357",
+          "object_type": "class_chunk",
+          "locator": {
+            "end_line": 88,
+            "path": "tracking/PndGeanePropagator/PndGeanePro.h",
+            "pdf_page": null,
+            "printed_page": null,
+            "section_path": [],
+            "snapshot_date": null,
+            "start_line": 18,
+            "symbol": "PndGeanePro",
+            "url": null
+          },
+          "channel_occurrences": [
+            {
+              "channel": "dense",
+              "rank": 5
+            },
+            {
+              "channel": "sparse",
+              "rank": 20
+            }
+          ],
+          "role": "code",
+          "version_matches_resolved_plan": true,
+          "locator_present": true,
+          "text_validity_basis": "NONEMPTY_CURRENT_FINAL_EVIDENCE",
+          "legacy_rrf_rank": 15,
+          "legacy_rrf_score": 0.027884615384615386,
+          "corrected_pool_reason": "ordinary_rrf",
+          "semantic_rerank_rank": 1,
+          "final_evidence_id": "evidence.919cacd44e240f61485a38cc",
+          "cited_evidence_id": "evidence.919cacd44e240f61485a38cc"
+        }
+      ],
+      "question_decomposition": {
+        "ambiguity": {
+          "reason": "",
+          "status": "clear"
+        },
+        "mode": "production_authoritative",
+        "points": [
+          {
+            "answer_point_id": "point.1",
+            "required_relations": [],
+            "support_spans": [
+              "GEANE",
+              "how does each determine the transported track state?"
+            ],
+            "text": "How GEANE determines the transported track state"
+          },
+          {
+            "answer_point_id": "point.2",
+            "required_relations": [],
+            "support_spans": [
+              "analytic helix",
+              "how does each determine the transported track state?"
+            ],
+            "text": "How the analytic helix determines the transported track state"
+          },
+          {
+            "answer_point_id": "point.3",
+            "required_relations": [],
+            "support_spans": [
+              "What are the two propagators behind these options"
+            ],
+            "text": "The two propagators behind the GEANE and analytic helix options in PandaRoot"
+          }
+        ],
+        "schema_version": "e1.question_decomposition.v3"
+      },
+      "retrieval_plan": {
+        "analysis_diagnostics": {
+          "analyzer_accepted_semantic_delta": {
+            "concept_scopes": [],
+            "concepts": [
+              {
+                "support_spans": [
+                  "transport tracks"
+                ],
+                "value": "transport tracks"
+              },
+              {
+                "support_spans": [
+                  "magnetic field"
+                ],
+                "value": "magnetic field"
+              },
+              {
+                "support_spans": [
+                  "GEANE"
+                ],
+                "value": "GEANE"
+              },
+              {
+                "support_spans": [
+                  "analytic helix"
+                ],
+                "value": "analytic helix"
+              },
+              {
+                "support_spans": [
+                  "propagators"
+                ],
+                "value": "propagators"
+              },
+              {
+                "support_spans": [
+                  "transported track state"
+                ],
+                "value": "transported track state"
+              }
+            ],
+            "intent": {
+              "support_spans": [
+                "What are the two propagators behind these options, and how does each determine the transported track state?"
+              ],
+              "value": "algorithm_implementation"
+            },
+            "repository_additions": [],
+            "symbols": [],
+            "version_mentions": []
+          },
+          "analyzer_final": {
+            "concept_scopes": {},
+            "concepts": [
+              "transport tracks",
+              "magnetic field",
+              "GEANE",
+              "analytic helix",
+              "propagators",
+              "transported track state"
+            ],
+            "intent": "algorithm_implementation",
+            "requested_versions": {},
+            "symbols": [],
+            "target_repositories": [
+              "pandaroot"
+            ]
+          },
+          "analyzer_item_support": {
+            "concept_scopes": [],
+            "concepts": [
+              {
+                "support_spans": [
+                  "transport tracks"
+                ],
+                "value": "transport tracks"
+              },
+              {
+                "support_spans": [
+                  "magnetic field"
+                ],
+                "value": "magnetic field"
+              },
+              {
+                "support_spans": [
+                  "GEANE"
+                ],
+                "value": "GEANE"
+              },
+              {
+                "support_spans": [
+                  "analytic helix"
+                ],
+                "value": "analytic helix"
+              },
+              {
+                "support_spans": [
+                  "propagators"
+                ],
+                "value": "propagators"
+              },
+              {
+                "support_spans": [
+                  "transported track state"
+                ],
+                "value": "transported track state"
+              }
+            ],
+            "intent": [
+              {
+                "support_spans": [
+                  "What are the two propagators behind these options, and how does each determine the transported track state?"
+                ],
+                "value": "algorithm_implementation"
+              }
+            ],
+            "repository_additions": [],
+            "symbols": [],
+            "version_mentions": []
+          },
+          "analyzer_llm_called": true,
+          "analyzer_raw_semantic_delta": {
+            "concept_scopes": [],
+            "concepts": [
+              {
+                "support_spans": [
+                  "transport tracks"
+                ],
+                "value": "transport tracks"
+              },
+              {
+                "support_spans": [
+                  "magnetic field"
+                ],
+                "value": "magnetic field"
+              },
+              {
+                "support_spans": [
+                  "GEANE"
+                ],
+                "value": "GEANE"
+              },
+              {
+                "support_spans": [
+                  "analytic helix"
+                ],
+                "value": "analytic helix"
+              },
+              {
+                "support_spans": [
+                  "propagators"
+                ],
+                "value": "propagators"
+              },
+              {
+                "support_spans": [
+                  "transported track state"
+                ],
+                "value": "transported track state"
+              }
+            ],
+            "intent": {
+              "support_spans": [
+                "What are the two propagators behind these options, and how does each determine the transported track state?"
+              ],
+              "value": "algorithm_implementation"
+            },
+            "repository_additions": [],
+            "symbols": [],
+            "version_mentions": []
+          },
+          "analyzer_rejected_items": [],
+          "analyzer_semantic_output_fields": [
+            "intent",
+            "repository_additions",
+            "concepts",
+            "symbols",
+            "version_mentions",
+            "concept_scopes"
+          ],
+          "deterministic_parse": {
+            "fallback": {
+              "concept_scopes": {}
+            },
+            "fixed": {},
+            "known_partial": {
+              "target_repositories": [
+                "pandaroot"
+              ]
+            },
+            "provenance": {
+              "target_repositories": [
+                {
+                  "ownership": "known_partial",
+                  "rule": "manifest_repo_id",
+                  "source": "explicit_query_reference",
+                  "value": "pandaroot"
+                }
+              ]
+            },
+            "semantic_output_fields": [
+              "intent",
+              "repository_additions",
+              "concepts",
+              "symbols",
+              "version_mentions",
+              "concept_scopes"
+            ],
+            "unresolved_semantics": {
+              "concept_scopes": "resolve",
+              "concepts": "resolve",
+              "intent": "resolve",
+              "repository_additions": "augment_known_partial",
+              "symbols": "resolve",
+              "target_repositories": "augment_known_partial",
+              "version_mentions": "resolve"
+            }
+          },
+          "matched_expansion_rules": [],
+          "source_obligations": {
+            "authority": "raw_question",
+            "matches": [],
+            "mode": "question_grounded_r01",
+            "required_source_types": []
+          },
+          "unbound_version_tokens": []
+        },
+        "concept_scopes": {},
+        "concepts": [
+          "transport tracks",
+          "magnetic field",
+          "GEANE",
+          "analytic helix",
+          "propagators",
+          "transported track state"
+        ],
+        "intent": "algorithm_implementation",
+        "paper_page_hints": {},
+        "premise_corrections": [],
+        "required_source_types": [],
+        "resolved_aliases": {},
+        "resolved_versions": {
+          "pandaroot": "18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        "routing_method": "llm",
+        "secondary_intents": [],
+        "source_budgets": {
+          "code": 0.4,
+          "documentation": 0.1,
+          "graph": 0.15,
+          "paper": 0.3,
+          "workflow": 0.05
+        },
+        "symbols": [],
+        "target_repositories": [
+          "pandaroot"
+        ],
+        "version_conflicts": []
+      },
+      "channel_rankings_artifact": "data/evaluation/runs/g4-r2-post-correction-exposed-target-v1/traces/n024.json#channel_candidates",
+      "legacy_rrf_base": [
+        {
+          "object_id": "object.009d11fb824e73dd5c8fe6eb",
+          "rank": 1,
+          "score": 0.03278688524590164
+        },
+        {
+          "object_id": "object.30cf42f607e2c228dfe125fd",
+          "rank": 2,
+          "score": 0.03252247488101534
+        },
+        {
+          "object_id": "object.0090ef9c8771cf520093b2e4",
+          "rank": 3,
+          "score": 0.03225806451612903
+        },
+        {
+          "object_id": "object.164c6dfc5088f339d869e342",
+          "rank": 4,
+          "score": 0.031746031746031744
+        },
+        {
+          "object_id": "object.021f447803075df4c69eed81",
+          "rank": 5,
+          "score": 0.03125
+        },
+        {
+          "object_id": "object.00a375f31e53e27d855091ee",
+          "rank": 6,
+          "score": 0.03076923076923077
+        },
+        {
+          "object_id": "object.7f5ec682c4bf96030a305341",
+          "rank": 7,
+          "score": 0.030303030303030304
+        },
+        {
+          "object_id": "object.79b75480980719256f8b7937",
+          "rank": 8,
+          "score": 0.03007688828584351
+        },
+        {
+          "object_id": "object.0283b9dde3bf9c1693d10093",
+          "rank": 9,
+          "score": 0.029850746268656716
+        },
+        {
+          "object_id": "object.0242d85c6a23fa607839b6b0",
+          "rank": 10,
+          "score": 0.029411764705882353
+        },
+        {
+          "object_id": "object.058904e96a09aa022b8002e3",
+          "rank": 11,
+          "score": 0.028985507246376812
+        },
+        {
+          "object_id": "object.029d837629185d58e8490237",
+          "rank": 12,
+          "score": 0.02857142857142857
+        },
+        {
+          "object_id": "object.0280a258351060213cc760a5",
+          "rank": 13,
+          "score": 0.028169014084507043
+        },
+        {
+          "object_id": "object.deeebf203a3e05a3f55df26d",
+          "rank": 14,
+          "score": 0.028169014084507043
+        },
+        {
+          "object_id": "object.b92e31dcb2ee34a46234ac0f",
+          "rank": 15,
+          "score": 0.027884615384615386
+        },
+        {
+          "object_id": "object.bfaa2adbba8edeff782836cf",
+          "rank": 16,
+          "score": 0.027777777777777776
+        },
+        {
+          "object_id": "object.03d488267d45503d17e0093d",
+          "rank": 17,
+          "score": 0.0273972602739726
+        },
+        {
+          "object_id": "object.d6ef560b88c3926ecb32d3e1",
+          "rank": 18,
+          "score": 0.027364110201042444
+        },
+        {
+          "object_id": "object.028dc74054a87b34ca0ef8f5",
+          "rank": 19,
+          "score": 0.02702702702702703
+        },
+        {
+          "object_id": "object.042e2cde21876a5c61d3e8fb",
+          "rank": 20,
+          "score": 0.02666666666666667
+        },
+        {
+          "object_id": "object.02af30d9f54fbd2326fa6ba1",
+          "rank": 21,
+          "score": 0.02631578947368421
+        },
+        {
+          "object_id": "object.b1739b9b6e502cda6a154406",
+          "rank": 22,
+          "score": 0.025978407557354925
+        },
+        {
+          "object_id": "object.051a3e49d589400336c446db",
+          "rank": 23,
+          "score": 0.019672131147540982
+        },
+        {
+          "object_id": "object.07758324d812b3ee09797e10",
+          "rank": 24,
+          "score": 0.01935483870967742
+        },
+        {
+          "object_id": "object.0945ee1a59cd012067a29c88",
+          "rank": 25,
+          "score": 0.019047619047619046
+        },
+        {
+          "object_id": "object.0a2a46456436d7a564d1219d",
+          "rank": 26,
+          "score": 0.01875
+        },
+        {
+          "object_id": "object.0bfb2a14640a28f220577941",
+          "rank": 27,
+          "score": 0.01846153846153846
+        },
+        {
+          "object_id": "object.0c53bf9fc3e19be732859262",
+          "rank": 28,
+          "score": 0.01818181818181818
+        },
+        {
+          "object_id": "object.0e122426ede560dcc43d4330",
+          "rank": 29,
+          "score": 0.01791044776119403
+        },
+        {
+          "object_id": "object.0e4dd77fc14f3323392bce66",
+          "rank": 30,
+          "score": 0.01764705882352941
+        }
+      ],
+      "rerank_pool_entries": [
+        {
+          "object_id": "object.009d11fb824e73dd5c8fe6eb",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.30cf42f607e2c228dfe125fd",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0090ef9c8771cf520093b2e4",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.164c6dfc5088f339d869e342",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.021f447803075df4c69eed81",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.00a375f31e53e27d855091ee",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.7f5ec682c4bf96030a305341",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.79b75480980719256f8b7937",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0283b9dde3bf9c1693d10093",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0242d85c6a23fa607839b6b0",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.058904e96a09aa022b8002e3",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.029d837629185d58e8490237",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.0280a258351060213cc760a5",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.deeebf203a3e05a3f55df26d",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.b92e31dcb2ee34a46234ac0f",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.bfaa2adbba8edeff782836cf",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.d6ef560b88c3926ecb32d3e1",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.b1739b9b6e502cda6a154406",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.051a3e49d589400336c446db",
+          "reason": "ordinary_rrf"
+        },
+        {
+          "object_id": "object.23407c5ae26f7ab01ffa80ae",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.4bf27cf5bb81b1424c695cb7",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.271880c2ec1ebcac7383aab8",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.72498a7b4b01f4432b19431a",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.2983c5a2f30e0124df413ef0",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.6e8c1f29f2419aa1d75dedd0",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.2ccdd3a30202b42bf636dea8",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.7cd1257841fc461a4e1e5390",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.5045b084453905095eeedca7",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.098a80f588d7cb6fc31926e4",
+          "reason": "policy_role_frontier"
+        },
+        {
+          "object_id": "object.2227ea507bf8df394f97e4a7",
+          "reason": "policy_role_frontier"
+        }
+      ],
+      "pool_reason_counts": {
+        "ordinary_rrf": 19,
+        "policy_role_frontier": 11
+      },
+      "specialized_origin_interpretation": "Relevant witnesses use regular dense/sparse channels; no specialized-origin inference is required. Aligned specialized-origin sidecars are not exposed in the public trace.",
+      "exchange_witness_interpretation": "Critical helix and GEANE code witnesses remain as ordinary RRF incumbents through eleven frontier admissions; individual exchange vectors/victims are not logged.",
+      "final_evidence": [
+        {
+          "object_id": "object.b92e31dcb2ee34a46234ac0f",
+          "evidence_id": "evidence.919cacd44e240f61485a38cc",
+          "path": "tracking/PndGeanePropagator/PndGeanePro.h",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        {
+          "object_id": "object.d6ef560b88c3926ecb32d3e1",
+          "evidence_id": "evidence.59e79b2eb223aa9dc25fca52",
+          "path": "tracking/PndHelixPropagator/PndHelixPropagator.h",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        {
+          "object_id": "object.4bf27cf5bb81b1424c695cb7",
+          "evidence_id": "evidence.194fcfbd3062b91ba8ee15f2",
+          "path": "raw_pdf/thesis.pdf",
+          "source_id": "li_2026",
+          "source_version_id": "li_2026@9930dfd79c74b9d1dadc6d1eb6c093ac10ccb45e12f641887bcdc8b823b8690a"
+        },
+        {
+          "object_id": "object.30cf42f607e2c228dfe125fd",
+          "evidence_id": "evidence.7b2223654828acbeb31020ca",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "source_id": "karavdina_2015",
+          "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+        },
+        {
+          "object_id": "object.6e8c1f29f2419aa1d75dedd0",
+          "evidence_id": "evidence.483d32714a37e8b43df231b2",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "source_id": "karavdina_2015",
+          "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+        },
+        {
+          "object_id": "object.b1739b9b6e502cda6a154406",
+          "evidence_id": "evidence.f2ebb8e0db1c0b0a0138d1a1",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf",
+          "source_id": "karavdina_2015",
+          "source_version_id": "karavdina_2015@422421852c5a046c24e894a77b9380988ec8172914e9b30b055a100145c07a2b"
+        },
+        {
+          "object_id": "object.164c6dfc5088f339d869e342",
+          "evidence_id": "evidence.0c4513a0a9a72e26b822b496",
+          "path": "macro/QA/helixPropagator/TestHelixPropagatorSetPCAPropagation.cxx",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        {
+          "object_id": "object.7f5ec682c4bf96030a305341",
+          "evidence_id": "evidence.7ab64b46c256b3ac2e43c885",
+          "path": "macro/QA/helixPropagator/TestHelixPropagatorSetPCAPropagation.cxx",
+          "source_id": "pandaroot",
+          "source_version_id": "pandaroot@18c09e91100db27867ded30e708b4dae95bd8357"
+        },
+        {
+          "object_id": "object.79b75480980719256f8b7937",
+          "evidence_id": "evidence.e375d12552eb0233e78d416b",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running.html",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+        },
+        {
+          "object_id": "object.deeebf203a3e05a3f55df26d",
+          "evidence_id": "evidence.330e30785581cb7f0d0408dc",
+          "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Running/Running.html",
+          "source_id": "pandaroot_sphinx_2023_08_25_dev",
+          "source_version_id": "pandaroot_sphinx_2023_08_25_dev@5bff86c0f3a1102c80f3466a8ca0a63db48c0c7d8f142a78a0849219d7844f87"
+        }
+      ],
+      "cited_evidence": [
+        {
+          "object_id": "object.b92e31dcb2ee34a46234ac0f",
+          "evidence_id": "evidence.919cacd44e240f61485a38cc",
+          "path": "tracking/PndGeanePropagator/PndGeanePro.h"
+        },
+        {
+          "object_id": "object.d6ef560b88c3926ecb32d3e1",
+          "evidence_id": "evidence.59e79b2eb223aa9dc25fca52",
+          "path": "tracking/PndHelixPropagator/PndHelixPropagator.h"
+        },
+        {
+          "object_id": "object.4bf27cf5bb81b1424c695cb7",
+          "evidence_id": "evidence.194fcfbd3062b91ba8ee15f2",
+          "path": "raw_pdf/thesis.pdf"
+        },
+        {
+          "object_id": "object.30cf42f607e2c228dfe125fd",
+          "evidence_id": "evidence.7b2223654828acbeb31020ca",
+          "path": "raw_pdf/Diss_2015_Karavdina_Anastasia.pdf"
+        }
+      ],
+      "answer_status": "answered",
+      "answer_classification": "ANSWERED_INCOMPLETE",
+      "answer_review_basis": "The two mechanisms and classes are answered, but the bounded Gold-detail review finds omitted error/transport-matrix handling, circle-center/backward-propagation details, and the shared PndPropagator interface. Those details occur in cited final headers. Runtime canonical coverage is VALID, but its narrower points do not establish full Gold-detail completeness.",
+      "runtime_coverage_validation": "VALID",
+      "runtime_missing_answer_point_ids": [],
+      "causal_owner": "GENERATION",
+      "secondary_non_r2_concern": "V1_G2_COMPLETENESS accepted narrower canonical points despite Gold-detail omissions",
+      "scientific_usage": {
+        "model_calls": 6,
+        "token_usage": 37997,
+        "generation_calls": 5,
+        "embedding_calls": 1
+      },
+      "legacy_rrf_membership": true,
+      "corrected_pool_membership": true,
+      "pool_reason": "ordinary_rrf",
+      "illegal_r2_opportunity_loss": false,
+      "historical_relevant_witness_same_object": true,
+      "historical_relevant_witness_same_rank_and_score": true
+    }
+  },
+  "scientific_accounting": {
+    "qa_runner_invocations": 1,
+    "qa_case_attempts": 3,
+    "supported_resumes": 0,
+    "scientific_calls": 18,
+    "scientific_tokens": 199797,
+    "generation_calls": 15,
+    "embedding_calls": 3,
+    "external_judge_calls": 0
+  },
+  "historical_boundary": {
+    "historical_exact_input_recoverable": false,
+    "exact_historical_counterfactual": "UNAVAILABLE",
+    "previous_inconclusive_result_preserved": true,
+    "previous_protocol_retroactively_relabeled": false,
+    "full_28_case_post_correction_regression": "NOT_RUN",
+    "fresh_generalization_evidence": false,
+    "novel_validation_evidence": false,
+    "release_evidence": false,
+    "novel_validation": "NOT_RUN",
+    "fresh_generalization": "NOT_ESTABLISHED",
+    "release_readiness": "NOT_ESTABLISHED"
+  },
+  "protected_boundary": {
+    "novel_validation_content_access": 0,
+    "novel_validation_outcome_access": 0,
+    "holdout_content_access": 0,
+    "holdout_outcome_access": 0,
+    "protected_leakage": 0
+  },
+  "materiality": {
+    "product_source_change": false,
+    "product_behavior_change": false,
+    "test_change": false,
+    "prompt_change": false,
+    "config_change": false,
+    "schema_change": false,
+    "dataset_change": false,
+    "gold_change": false,
+    "calibration_change": false
+  },
+  "lifecycle": {
+    "phase_g": "IN_PROGRESS / G4_COMPLETE_POST_CORRECTION_TARGETED_LIVE_VERIFIED",
+    "g4": "DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / HISTORICAL EXACT REPLAY UNAVAILABLE / CURRENT-LINEAGE EXPOSED R2 CORRECTION SUPPORTED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED",
+    "g5_entry_after_targeted_live_pass": true,
+    "g5_executed": false,
+    "next_task_recommendation": "G5 INTEGRATED CANDIDATE DESIGN",
+    "next_task_execution_authorized": false
+  }
+}

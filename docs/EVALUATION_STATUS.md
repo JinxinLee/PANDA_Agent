@@ -18,7 +18,7 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 post-correction evidence-boundary review commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G4 post-correction targeted live verification result commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -46,12 +46,12 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_POST_CORRECTION_EVIDENCE_BOUNDARY_RECONCILED
+PHASE_G = IN_PROGRESS / G4_COMPLETE_POST_CORRECTION_TARGETED_LIVE_VERIFIED
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / HISTORICAL EXACT REPLAY UNAVAILABLE / EXACT REPLAY NON_BLOCKING / TARGETED CURRENT-LINEAGE LIVE VERIFICATION REQUIRED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION
+G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / HISTORICAL EXACT REPLAY UNAVAILABLE / CURRENT-LINEAGE EXPOSED R2 CORRECTION SUPPORTED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G5 INTEGRATED CANDIDATE DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -100,6 +100,8 @@ The [G4 post-correction exposed verification design](../evaluation/G4_R2_POST_CO
 The separately authorized [G4 post-correction verification execution result](../evaluation/G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION.md) stops at the frozen Layer A reproducibility prerequisite. All four selected historical records/traces are present, but channel rows contain no candidate text, selected-output text covers only a subset, and aligned workflow/graph origin sidecars are absent. These fields affect current `valid_challenger` and rank-witness decisions; historical offered receipts and conditional provenance reconstruction cannot replace exact constructor inputs. All four cases are `NOT_REPRODUCIBLE`; no old-pool reconstruction or corrected constructor replay was attempted. Consequently Layer A is `INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE`, Layer B was not authorized or run, and the proposed live run ID was not created. QA/retrieval/model/judge calls and protected access are zero. Product lineage and historical exposed FAIL remain unchanged; neither post-correction empirical benefit nor G4 closeout/G5 entry is established. The next recommendation is the bounded **G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW**, under separate authorization.
 
 The separately authorized [G4 post-correction evidence-boundary review](../evaluation/G4_POST_CORRECTION_VERIFICATION_EVIDENCE_BOUNDARY_REVIEW.md) found no immutable receipt proving the missing candidate payloads and aligned origins actually consumed by the historical runs. Corpus/object/index identities do not bind every historical selected row. The previous exact Layer A prerequisite was correctly executed and its `INCONCLUSIVE` result remains unchanged, but exact replay is now non-blocking historical corroboration under a forward-only Model B protocol: established causal diagnosis and deterministic RED→GREEN/bidirectional controls plus one separately authorized current-lineage targeted `qa` run on n002/n017/n024. Current R2 opportunity is assessed under actual qualifying role/channel geometry without demanding identical historical ranks; n024 must be observable for scoped PASS, and upstream absence or non-R2 failures are attributed separately. n006 is not a live gate; no full 28-case rerun is selected. No live run, product edit, scientific call, protected access, G4 closeout, fresh generalization result, or G5 entry occurred in this review. The next recommendation is **G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION**, under separate authorization.
+
+The separately authorized [G4 post-correction targeted live verification](../evaluation/G4_POST_CORRECTION_TARGETED_LIVE_VERIFICATION.md) passed the forward Model B **scoped R2 causal gate** on one current-lineage draft `qa` run, n002/n017/n024, with identity preflight PASS, 3/3 cases scored, and no resume. The historical n024 helix header again appears at dense 8/sparse 19 and RRF 18, but now remains `ordinary_rrf` through an 11-frontier pool, then reaches final and cited evidence. n002's two requirements objects and n017's `PndTrack` object enter through the frontier and preserve observable benefit opportunities. The targeted runner's own verdict remains `COMPLETE / FAIL`, not a full development pass. Conservative Gold-detail review classifies n002/n017 answered-complete and n024 answered-incomplete for details omitted by generation despite final/cited source support; runtime coverage was VALID for all three. The n024 answer limitation is distinct from R2 pool retention. Usage was 18 calls / 199,797 tokens (15 generation, 3 embedding), no judge or protected access. Historical exposed FAIL and exact replay `INCONCLUSIVE` are unchanged; full 28-case post-correction regression, fresh generalization, `novel_validation`, and release evidence remain unestablished. G4 is complete only at this scoped exposed R2 correction boundary. G5 integration design is the next recommendation under separate authorization; no G5 execution occurred.
 
 The current project decision supersedes the historical mandatory Lane B proposal: **fresh Lane B is OPTIONAL / DEFERRED, not a mandatory G4 gate**. G3 admission `NO_CHANGE` remains unchanged; novel_validation and release evidence remain false. The implementation grants no next-task execution, exposed rerun, G5, or protected-data authorization.
 

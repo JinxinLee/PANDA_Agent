@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G4 post-correction evidence-boundary review commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G4 post-correction targeted live verification result commit (resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -53,12 +53,12 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G4_POST_CORRECTION_EVIDENCE_BOUNDARY_RECONCILED
+PHASE_G = IN_PROGRESS / G4_COMPLETE_POST_CORRECTION_TARGETED_LIVE_VERIFIED
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
-G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / HISTORICAL EXACT REPLAY UNAVAILABLE / EXACT REPLAY NON_BLOCKING / TARGETED CURRENT-LINEAGE LIVE VERIFICATION REQUIRED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
-NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION
+G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABLISHED / HISTORICAL EXACT REPLAY UNAVAILABLE / CURRENT-LINEAGE EXPOSED R2 CORRECTION SUPPORTED / FRESH GENERALIZATION BENEFIT NOT_ESTABLISHED
+NEXT_TASK_RECOMMENDATION = G5 INTEGRATED CANDIDATE DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -1093,7 +1093,9 @@ Phase G is not an F6-A continuation, Attempt 6, T2-R1, benchmark repair cycle, o
 - **Post-correction execution boundary:** The [execution result](../evaluation/G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION.md) establishes that saved channel rows omit text for many candidates, including the n024 critical incumbent and n006 residual target, and that aligned workflow/graph normal/fallback origins are absent. Four selected successful records/traces exist, but none supplies a lossless corrected-constructor input. Layer A is `INCONCLUSIVE / SAVED INPUT NOT_REPRODUCIBLE`; the corrected pool constructor and Layer B live QA were not invoked. No new empirical correction verdict, fresh generalization, product change, scientific call or protected access follows. Historical exposed FAIL and G3 `NO_CHANGE` remain; G5 stays blocked.
 - **Next recommended step:** Exactly **G4 POST-CORRECTION VERIFICATION EVIDENCE BOUNDARY REVIEW**, under separate authorization. Decide whether authorized immutable evidence can establish the missing input fields or whether the exact-replay prerequisite needs forward revision. Do not start live QA or G5 from this inconclusive result.
 - **Forward evidence-boundary review:** The [review](../evaluation/G4_POST_CORRECTION_VERIFICATION_EVIDENCE_BOUNDARY_REVIEW.md) found no immutable source proving the missing text and provenance actually consumed by the historical runs; object/corpus/index identity does not supply per-row historical payload attestation. The old Layer A `INCONCLUSIVE` and historical exposed `FAIL` are preserved. Exact replay is non-blocking corroboration under selected Model B: generic deterministic RED→GREEN and bidirectional safeguards remain mechanism authority; one separately authorized targeted current-lineage live `qa` run on n002/n017/n024 is still required. Causal comparability depends on relevant qualified evidence reaching an observable R2 decision, not exact historical rank or whole-pool equality. n024 must be mechanistically observable for a scoped PASS; n006 is not a live gate. No live QA, G4 closeout, fresh generalization, product change, protected access, or G5 entry occurred.
-- **Next recommended step (current):** Exactly **G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION**, under separate authorization. A later targeted scoped PASS may permit separately authorized G5 integration; `FAIL` or `INCONCLUSIVE` keeps G5 blocked.
+- **Next recommended step at the evidence-boundary checkpoint:** Exactly **G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION**, under separate authorization. A later targeted scoped PASS could permit separately authorized G5 integration; `FAIL` or `INCONCLUSIVE` would keep G5 blocked.
+- **Targeted current-lineage result:** The [G4 targeted live verification](../evaluation/G4_POST_CORRECTION_TARGETED_LIVE_VERIFICATION.md) passes the scoped Model B R2 gate after one identity-matched draft `qa` run of n002/n017/n024. The n024 helix witness, dense 8/sparse 19 and RRF 18, remains `ordinary_rrf` through 11 frontier admissions and reaches final/cited evidence; n002's requirements witnesses and n017's `PndTrack` witness enter via frontier. All three R2 decisions are observable; no R2 opportunity regression is observed. The runner separately reports `COMPLETE / FAIL` for the focused cohort, not a full development pass. Conservative Gold-detail review records n024 answered-incomplete because generation omitted details available in cited headers; this is separate from R2 retention. Usage is 18 calls / 199,797 tokens (15 generation, 3 embedding), with no judge or protected access. Historical exact replay remains unavailable and its `INCONCLUSIVE` artifact unchanged. No full 28-case post-correction regression, fresh generalization, `novel_validation`, or release conclusion follows.
+- **Next recommended step (current):** Exactly **G5 INTEGRATED CANDIDATE DESIGN**, under separate authorization. G4 is complete at the scoped exposed R2 correction boundary; G5 has not begun.
 
 ### G5 — Integrated Candidate
 
@@ -1116,7 +1118,7 @@ Only after generic deterministic/adversarial checks are satisfactory, fresh nove
 Only after material future product development and phase-level validation should the project consider a separately authorized Release Candidate Evaluation, which may eventually include protected novel_holdout under the release/T5 policy. It is not pre-named F6-A Attempt 6. No release evaluation or protected-data access is authorized now.
 
 ```text
-NEXT_TASK_RECOMMENDATION = G4 POST-CORRECTION TARGETED LIVE VERIFICATION EXECUTION
+NEXT_TASK_RECOMMENDATION = G5 INTEGRATED CANDIDATE DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
