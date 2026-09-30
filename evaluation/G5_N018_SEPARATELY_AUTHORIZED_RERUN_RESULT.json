@@ -1,0 +1,417 @@
+{
+  "schema_version": "g5-n018-authorized-rerun-result-v1",
+  "scope": "one separately authorized exposed-development qa rerun of n018 only",
+  "original_g5": {
+    "run_id": "g5-integrated-candidate-novel-dev-v1",
+    "evaluated_head": "52c9fc6b2fc2c8e021973aefe8a6d92ceb616e1b",
+    "raw_status": {
+      "status": "inconclusive",
+      "cohort_status": "INCOMPLETE",
+      "official_decision": "INCONCLUSIVE",
+      "cohort_decision": {
+        "status": "INCOMPLETE",
+        "verdict": "INCONCLUSIVE",
+        "decision_reason": "PRE_RELEASE_EXECUTION_INCOMPLETE",
+        "passed": null,
+        "reason": "incomplete cohort (27/28 scored) cannot be recovered under verified frozen candidate identity",
+        "scored_case_count": 27,
+        "expected_case_count": 28,
+        "retryable_case_ids": [],
+        "missing_case_ids": [],
+        "terminal_exception_case_ids": [
+          "n018"
+        ],
+        "extra_case_ids": []
+      },
+      "stop_reason": null,
+      "attempt_started_at": "2026-09-29T22:43:17.829935+00:00",
+      "attempt_completed_at": "2026-09-29T23:22:25.251023+00:00",
+      "attempt_model_calls": 164,
+      "attempt_token_usage": 1126264,
+      "completed_ids": [
+        "n001",
+        "n002",
+        "n003",
+        "n004",
+        "n005",
+        "n006",
+        "n007",
+        "n008",
+        "n009",
+        "n010",
+        "n014",
+        "n015",
+        "n016",
+        "n017",
+        "n018",
+        "n019",
+        "n020",
+        "n021",
+        "n022",
+        "n023",
+        "n024",
+        "n025",
+        "n026",
+        "n027",
+        "n028",
+        "n029",
+        "n030",
+        "n031"
+      ],
+      "cumulative_model_calls": 164,
+      "cumulative_token_usage": 1126264,
+      "model_calls": 164,
+      "token_usage": 1126264
+    },
+    "n018_original_exception": {
+      "category": null,
+      "message": "1 validation error for _Ambiguity\nstatus\n  Input should be 'clear' or 'ambiguous' [type=literal_error, input_value='none', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/literal_error",
+      "retryable": false,
+      "type": "ValidationError"
+    },
+    "original_result_artifact": "evaluation/G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION_RESULT.json",
+    "original_record_replaced": false,
+    "g5_integrated_run_complete": false,
+    "g5_decision": "INCOMPLETE / PRODUCT ERROR"
+  },
+  "new_run": {
+    "run_id": "g5-n018-separately-authorized-rerun-v1",
+    "evaluated_head": "0b8e4c6605ebfeb1a1245319289e6b480763a23b",
+    "run_store": "data/evaluation/runs/g5-n018-separately-authorized-rerun-v1",
+    "mode": "qa",
+    "split": "novel_dev",
+    "case_ids": [
+      "n018"
+    ],
+    "limit": null,
+    "allow_draft": true,
+    "capture_stage_trace": true,
+    "candidate_id": null,
+    "dataset_path": "evaluation/novel/v1/novel_dev.yaml",
+    "dataset_version": "novel-v1-dev-0.3.0",
+    "dataset_sha256": "25ad18fcf76ab2796aa18ae961bdc4faf076f0c98a8a5226413ec95e58252223",
+    "product_behavior_lineage": "047201166057edd9859292a1760bc2e9bbf173a2",
+    "preflight": {
+      "result": "PASS",
+      "matched_original_g5_manifest_keys": [
+        "source_manifest_hash",
+        "normalized_manifest_hash",
+        "normalized_output_hashes",
+        "index_identity",
+        "index_identity_payload",
+        "generation_model_id",
+        "runtime_generation_model_id",
+        "evaluation_judge_model_id",
+        "embedding_model_id",
+        "embedding_dimensions",
+        "prompt_version",
+        "prompt_hash",
+        "retrieval_policy_hash",
+        "query_expansion_hash",
+        "gold_benchmark_version",
+        "gold_dataset_hash",
+        "gold_dataset_path",
+        "gold_release_eligible",
+        "gold_acceptance_exposed",
+        "gold_expected_split_counts",
+        "audit_resolution_hash",
+        "package_versions"
+      ],
+      "run_id_unused_at_start": true,
+      "new_evaluated_head_clean": true,
+      "product_source_diff_from_lineage": false,
+      "runtime_package_versions_match_original_g5": true
+    },
+    "runner_verbatim": {
+      "run_status": {
+        "status": "complete",
+        "cohort_status": "COMPLETE",
+        "official_decision": "FAIL",
+        "cohort_decision": {
+          "status": "COMPLETE",
+          "verdict": "FAIL",
+          "passed": false,
+          "reason": "complete cohort (1/1 scored); quality gates failed",
+          "scored_case_count": 1,
+          "expected_case_count": 1,
+          "retryable_case_ids": [],
+          "missing_case_ids": [],
+          "terminal_exception_case_ids": [],
+          "extra_case_ids": []
+        },
+        "stop_reason": null,
+        "attempt_started_at": "2026-09-30T00:17:53.937543+00:00",
+        "attempt_completed_at": "2026-09-30T00:19:13.772548+00:00",
+        "attempt_model_calls": 5,
+        "attempt_token_usage": 40696,
+        "completed_ids": [
+          "n018"
+        ],
+        "cumulative_model_calls": 5,
+        "cumulative_token_usage": 40696,
+        "model_calls": 5,
+        "token_usage": 40696
+      },
+      "quality_gate": {
+        "checks": {
+          "all_questions_approved": true,
+          "all_version_conflicts_rejected": false,
+          "answer_point_coverage": false,
+          "citation_integrity": true,
+          "critical_answer_points": false,
+          "critical_evidence_coverage": true,
+          "expected_status_accuracy": false,
+          "final_evidence_recall": true,
+          "forbidden_evidence": true,
+          "gold_recall_at_10": true,
+          "identifier_hallucination_rate": true,
+          "intent_accuracy": true,
+          "no_contradictions": false,
+          "no_major_unsupported_claims": false,
+          "official_run": false,
+          "paper_code_dual_source": true,
+          "per_intent_accuracy": true,
+          "per_intent_recall": true,
+          "required_identifiers": true,
+          "required_source_coverage": true,
+          "unhandled_exceptions": true,
+          "wrong_version_evidence": true
+        },
+        "note": "Formal M6 release requires one complete approved hidden acceptance run; dev, focused, draft, regression, and partial runs cannot pass it.",
+        "passed": false
+      },
+      "development_gate": {
+        "checks": {
+          "all_questions_approved": true,
+          "citation_integrity": true,
+          "complete_full_dev": false,
+          "critical_evidence_coverage": true,
+          "dev_version_conflicts_rejected": false,
+          "expected_status_accuracy": false,
+          "final_evidence_recall": true,
+          "forbidden_evidence": true,
+          "gold_recall_at_10": true,
+          "identifier_hallucination_rate": true,
+          "intent_accuracy": true,
+          "paper_code_dual_source": true,
+          "per_intent_accuracy": true,
+          "per_intent_recall": true,
+          "required_identifiers": true,
+          "required_source_coverage": true,
+          "unhandled_exceptions": true,
+          "wrong_version_evidence": true
+        },
+        "note": "Focused or incomplete run: it can diagnose a layer but cannot pass the development gate.",
+        "passed": false
+      },
+      "product_development_gate": {
+        "compatible": false,
+        "passed": null,
+        "reason": "incompatible product-language calibration: calibration Gold version does not match active dataset"
+      }
+    },
+    "usage": {
+      "runner_invocations": 1,
+      "case_attempts": 1,
+      "scored_qa_results": 1,
+      "supported_resumes": 0,
+      "scientific_calls": 5,
+      "scientific_tokens": 40696,
+      "generation_calls": 4,
+      "embedding_calls": 1,
+      "external_judge_calls": 0
+    },
+    "exception_count": 0
+  },
+  "n018_review": {
+    "expected_status": "answered",
+    "actual_status": "insufficient_evidence",
+    "answer_classification": "INSUFFICIENT_EVIDENCE",
+    "independent_answerability": "answerable from allowed locked tutorial and source RST",
+    "false_insufficiency": true,
+    "semantic_completeness": false,
+    "supported_content": [
+      "RhoCandidate::GetMcTruth() for a reconstructed final-state candidate with pointer/null check",
+      "PndAnalysis::McTruthMatch(candidate) for full arbitrary decay-tree matching",
+      "assign intended particle types to composite candidates"
+    ],
+    "missing_critical_content": [
+      "initialize TDatabasePDG from the EvtGen properties/table before matching so particle type codes agree"
+    ],
+    "evidence_availability": "The permitted locked tutorial object object.9177635263b46e8bee8b775a contains GetMcTruth, McTruthMatch, composite SetType and the EvtGen/TDatabasePDG recommendation; it reached rerank pool, final evidence and citation.",
+    "r2_status": "Critical tutorial source retained through pool, rerank, final and citation; no observed R2 retention-contract regression.",
+    "runtime_coverage": {
+      "errors": [
+        {
+          "answer_point_id": "point.2",
+          "reason_code": "INVALID_SUPPORTER",
+          "relation_id": "point.2.rel.1",
+          "scope": "RELATION"
+        },
+        {
+          "reason_code": "MISSING_COMPLEMENT_MISMATCH",
+          "scope": "AGGREGATE"
+        }
+      ],
+      "point_results": [
+        {
+          "answer_point_id": "point.1",
+          "complete": true,
+          "relations": [],
+          "scope_status": "ESTABLISHED",
+          "state": "VALID"
+        },
+        {
+          "answer_point_id": "point.2",
+          "complete": false,
+          "relations": [
+            {
+              "relation_id": "point.2.rel.1",
+              "state": "LOCAL_INVALID"
+            }
+          ],
+          "scope_status": null,
+          "state": "LOCAL_INVALID"
+        }
+      ],
+      "status": "PARTIAL",
+      "whole_review_rejected": false
+    },
+    "verification_errors": [
+      "invalid answer-point coverage review: INVALID_SUPPORTER",
+      "missing answer point point.2"
+    ],
+    "primary_owner": "GENERATION for omitted EvtGen/PDG preparation",
+    "secondary_owner": "V1 local INVALID_SUPPORTER drives insufficient finalization; the visible receipt alone does not prove a validator defect",
+    "confidence": "high for source availability, omission and false insufficiency; bounded for exact cause of V1 invalid supporter",
+    "raw_record": "data/evaluation/runs/g5-n018-separately-authorized-rerun-v1/records/n018.json",
+    "raw_trace": "data/evaluation/runs/g5-n018-separately-authorized-rerun-v1/traces/n018.json",
+    "final_evidence": [
+      {
+        "object_id": "object.9177635263b46e8bee8b775a",
+        "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html"
+      },
+      {
+        "object_id": "object.48d85404e7a3260dd76b2e99",
+        "path": "analysis/AnalysisTools/PndSimpleCombiner.cxx"
+      },
+      {
+        "object_id": "object.b01af63fa4bb2846dd4904d3",
+        "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html"
+      },
+      {
+        "object_id": "object.d0e0bbf7c1eeae3b4a7548b7",
+        "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html"
+      },
+      {
+        "object_id": "object.c7120c2d18310a63402d27c0",
+        "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html"
+      },
+      {
+        "object_id": "object.bb60ac1f1133603c8fa92f53",
+        "path": "raw_pdf/thesis.pdf"
+      },
+      {
+        "object_id": "object.40d0cc699a773d9f0493a15e",
+        "path": "scripts/ci_scripts/generateDartConfig.sh"
+      },
+      {
+        "object_id": "object.52f2228868e0d2bcdb350b92",
+        "path": "analysis/rho/DecayTreeFitter/RecoPhoton.cxx"
+      },
+      {
+        "object_id": "object.6cd685039a52449d8d769ed2",
+        "path": "pgenerators/EvtGen/EvtGen/R01-03-00/src/EvtGen.cpp"
+      },
+      {
+        "object_id": "object.0fb73a440793e2a648c533a0",
+        "path": "docs/Tutorials/tut_02_04_analysis_mctruth.rst"
+      },
+      {
+        "object_id": "object.a4c33ca41b8d18a846d7c367",
+        "path": "docs/Tutorials/tut_02_04_analysis_mctruth.rst"
+      },
+      {
+        "object_id": "object.d945491cbd97a8df823565fb",
+        "path": "docs/Tutorials/tut_02_04_analysis_mctruth.rst"
+      }
+    ],
+    "cited_evidence": [
+      {
+        "object_id": "object.9177635263b46e8bee8b775a",
+        "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html"
+      },
+      {
+        "object_id": "object.b01af63fa4bb2846dd4904d3",
+        "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html"
+      },
+      {
+        "object_id": "object.d0e0bbf7c1eeae3b4a7548b7",
+        "path": "pandaroot_sphinx_2023_08_25_dev/raw/~pandacc/documentation/2023-08-25-dev/sphinx/Tutorials/tut_02_04_analysis_mctruth.html"
+      },
+      {
+        "object_id": "object.0fb73a440793e2a648c533a0",
+        "path": "docs/Tutorials/tut_02_04_analysis_mctruth.rst"
+      },
+      {
+        "object_id": "object.a4c33ca41b8d18a846d7c367",
+        "path": "docs/Tutorials/tut_02_04_analysis_mctruth.rst"
+      }
+    ],
+    "citation_integrity": true,
+    "wrong_version_evidence_count": 0,
+    "forbidden_evidence_count": 0
+  },
+  "mixed_provenance_diagnostic_only": {
+    "source_runs": [
+      "g5-integrated-candidate-novel-dev-v1",
+      "g5-n018-separately-authorized-rerun-v1"
+    ],
+    "distinct_case_ids_with_usable_qa_result": 28,
+    "not_a_single_run_cohort": true,
+    "not_g5_gate_authority": true,
+    "classification_counts": {
+      "ANSWERED_COMPLETE": 7,
+      "ANSWERED_INCOMPLETE": 12,
+      "INSUFFICIENT_EVIDENCE": 9,
+      "ERROR": 0
+    },
+    "false_insufficiency_count": 8,
+    "correct_abstention_count": 1,
+    "observed_r2_contract_regressions": 0,
+    "total_runner_invocations": 2,
+    "total_case_attempts": 29,
+    "total_scientific_calls": 169,
+    "total_scientific_tokens": 1166960,
+    "total_generation_calls": 140,
+    "total_embedding_calls": 29,
+    "external_judge_calls": 0
+  },
+  "decision": {
+    "targeted_rerun": "COMPLETE / FALSE INSUFFICIENCY",
+    "original_g5": "INCOMPLETE / PRODUCT ERROR",
+    "g5_integrated_candidate_ready_for_g6": false,
+    "nonretryable_d1_error": "not reproduced in one later n018 realization; historical error remains",
+    "next_task_recommendation": "G5 D1 NONRETRYABLE PRODUCT ERROR FAILURE REVIEW",
+    "next_task_execution_authorized": false
+  },
+  "boundaries": {
+    "product_source_change": false,
+    "product_behavior_change": false,
+    "test_change": false,
+    "prompt_change": false,
+    "config_change": false,
+    "schema_change": false,
+    "dataset_change": false,
+    "gold_change": false,
+    "calibration_change": false,
+    "new_runtime_mode": false,
+    "novel_validation_content_access": 0,
+    "novel_validation_outcome_access": 0,
+    "holdout_content_access": 0,
+    "holdout_outcome_access": 0,
+    "protected_leakage": 0,
+    "fresh_generalization_evidence": false,
+    "release_evidence": false
+  }
+}
