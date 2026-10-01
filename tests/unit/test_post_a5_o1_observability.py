@@ -9,7 +9,7 @@ from panda_agent.evaluation_runner import prompt_fingerprint
 from test_e2_a1_answer_point_coverage import Vertex, agent, claim, review, QUESTION
 
 
-FINGERPRINT = "5147f85c09a933609d91f4fa4e7bf3d8fbfa530684a3ecea4d3aaed72c3e04ce"
+FINGERPRINT = "08083fffd968f5903293e927759cf0d2de72871bbadc66741af87f1d0de49abc"
 
 
 class RecordingVertex(Vertex):

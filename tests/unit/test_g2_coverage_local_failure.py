@@ -10,6 +10,143 @@ from test_g1_relationship_obligations import named_check, named_point
 from test_e2_a1_answer_point_coverage import agent, claim, state
 from test_post_a5_c1_coverage_completeness import c1_review, check, fixture, point
 from test_post_a5_o1_observability import RecordingVertex, event
+from test_qa import bundle_for, code_evidence
+
+
+def _v1_proof_fixture(named, basis_ids, supporter_ids):
+    text = "Cedar prepares Maple; Birch consumes Maple. Cedar uses Maple."
+    evidence = {eid: code_evidence(evidence_id=eid, text=text, path="neutral.h")
+                for eid in ("A", "B")}
+    claims = [claim("c1", text="Cedar prepares Maple.", evidence="A"),
+              claim("c2", text="Birch consumes Maple.", evidence="A"),
+              claim("c3", "point.2", "Cedar uses Maple.", evidence="A")]
+    for c in claims[:2]:
+        c["evidence_ids"] = list(basis_ids)
+    row = check(text="Cedar prepares Maple; Birch consumes Maple.", supporters=supporter_ids, eid="A")
+    row["basis"] = [{"evidence_id": eid, "quote": row["relationship_text"]} for eid in basis_ids]
+    if named:
+        row.pop("relationship_text")
+        row.pop("necessity_reason")
+        row["relation_id"] = "point.1.rel.1"
+    first = named_point([row]) if named else point("point.1", [row])
+    value = c1_review([first, point("point.2", [check("Cedar uses Maple.", ["c3"], eid="A")])],
+                      {"c1": ["point.1"], "c2": ["point.1"], "c3": ["point.2"]})
+    canonical = [{"answer_point_id": "point.1", "required_relations": [
+        {"relation_id": "point.1.rel.1", "text": "Explain preparation and consumption of Maple."}
+    ] if named else []}, {"answer_point_id": "point.2", "required_relations": []}]
+    return value, claims, evidence, canonical, row
+
+
+@pytest.mark.parametrize("named", [False, True], ids=["ordinary", "named"])
+@pytest.mark.parametrize("basis_ids,supporters", [(["A"], ["c1"]),
+    (["A"], ["c1", "c2"]), (["A", "B"], ["c1", "c2"])])
+def test_v1_existing_all_to_all_valid_cases(named, basis_ids, supporters):
+    value, claims, evidence, canonical, _ = _v1_proof_fixture(named, basis_ids, supporters)
+    if len(supporters) == 1:
+        claims[0]["claim_text"] = "Cedar prepares Maple; Birch consumes Maple."
+    before = deepcopy(value)
+    receipt = qa._build_coverage_receipt(value, claims, {"point.1", "point.2"}, set(),
+        evidence, {"A", "B"}, canonical_points=canonical)
+    assert receipt["status"] == "VALID"
+    assert all(p["complete"] for p in receipt["point_results"])
+    assert receipt["accepted_coverage"] == before["answer_point_coverage"] and value == before
+
+
+@pytest.mark.parametrize("named", [False, True], ids=["ordinary", "named"])
+@pytest.mark.parametrize("damage", ["nonciting", "wrong_parent", "unsupported", "irrelevant",
+    "unknown", "union_only", "extra_malformed_supporter", "uncited_extra_basis"])
+def test_v1_existing_all_to_all_invalid_cases(named, damage):
+    basis_ids = ["A", "B"] if damage in {"union_only", "uncited_extra_basis"} else ["A"]
+    supporters = ["c1", "c2"] if damage in {"union_only", "extra_malformed_supporter"} else ["c1"]
+    value, claims, evidence, canonical, row = _v1_proof_fixture(named, basis_ids, supporters)
+    if damage == "nonciting":
+        claims[0]["evidence_ids"] = ["B"]
+    elif damage == "wrong_parent":
+        value["claim_answer_point_mappings"][0]["answer_point_ids"] = ["point.2"]
+    elif damage in {"unsupported", "irrelevant"}:
+        value[f"{damage}_claim_ids"] = ["c1"]
+        value["claim_answer_point_mappings"][0]["answer_point_ids"] = []
+    elif damage == "unknown":
+        row["supporting_claim_ids"] = ["unknown"]
+    elif damage == "union_only":
+        claims[0]["evidence_ids"], claims[1]["evidence_ids"] = ["A"], ["B"]
+    elif damage == "extra_malformed_supporter":
+        claims[0]["claim_text"] = "Cedar prepares Maple; Birch consumes Maple."
+        claims[1]["evidence_ids"] = ["B"]
+    elif damage == "uncited_extra_basis":
+        claims[0]["evidence_ids"] = ["A"]
+    before = deepcopy(value)
+    receipt = qa._build_coverage_receipt(value, claims, {"point.1", "point.2"}, set(),
+        evidence, {"A", "B"}, canonical_points=canonical)
+    assert receipt["status"] == "PARTIAL"
+    assert receipt["point_results"][0]["complete"] is False
+    assert receipt["point_results"][1]["complete"] is True
+    owner = receipt["point_results"][0]
+    assert (owner["relations"][0] if named else owner)["state"] == "LOCAL_INVALID"
+    assert "INVALID_SUPPORTER" in [e["reason_code"] for e in receipt["errors"]]
+    assert receipt["revisionable_relationships"] == []
+    assert receipt["accepted_coverage"] is None and value == before
+
+
+@pytest.mark.parametrize("quote,valid", [
+    ("`Maple::Run()`", True), ("Maple::Run()", True),
+    ("Cedar invokes `Maple::Run()` before Birch.", True),
+    ("Cedar invokes Maple::Run() before Birch.", False),
+    ("cedar invokes `Maple::Run()` before Birch.", False),
+    ("Cedar  invokes `Maple::Run()` before Birch.", False),
+])
+def test_v1_exact_quote_formatting(quote, valid):
+    value, claims, evidence, canonical, row = _v1_proof_fixture(True, ["A"], ["c1"])
+    evidence["A"]["text"] = "Cedar invokes `Maple::Run()` before Birch."
+    claims[0]["claim_text"] = evidence["A"]["text"]
+    claims[2]["evidence_ids"] = ["B"]
+    value["answer_point_coverage"][1]["relationship_checks"][0]["basis"][0]["evidence_id"] = "B"
+    # JSON decoding must retain the exact text, without host normalization.
+    row["basis"][0]["quote"] = json.loads(json.dumps(quote))
+    receipt = qa._build_coverage_receipt(value, claims, {"point.1", "point.2"}, set(),
+        evidence, {"A", "B"}, canonical_points=canonical)
+    relation = receipt["point_results"][0]["relations"][0]
+    assert relation["state"] == ("VALID" if valid else "LOCAL_INVALID")
+    assert receipt["point_results"][1]["complete"] is True
+    codes = [e["reason_code"] for e in receipt["errors"]]
+    assert ("BAD_QUOTE" in codes) is not valid
+
+
+@pytest.mark.parametrize("malformed", [True, False], ids=["raw_malformed", "separate_compliant"])
+def test_v1_first_pass_fake_provenance_integration(tmp_path, malformed):
+    from panda_agent.prompts import PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT
+
+    question = "Explain how Cedar prepares Maple and Birch consumes it."
+    proposal = {"points": [{"text": "Explain preparation and consumption.", "support_spans": [question],
+        "required_relations": [{"text": question, "support_spans": [question]}]}],
+        "ambiguity": {"status": "clear", "reason": ""}}
+    value, claims, evidence, _, row = _v1_proof_fixture(True,
+        ["A", "B"] if malformed else ["A"], ["c1", "c2"] if malformed else ["c2"])
+    claims = claims[:2]
+    claims[0]["evidence_ids"] = ["A"]
+    claims[1].update(evidence_ids=["A", "B"], claim_text="Cedar prepares Maple; Birch consumes Maple.")
+    scripted = c1_review([named_point([row])], {"c1": ["point.1"], "c2": ["point.1"]})
+    vertex = RecordingVertex(decomposition=proposal, answers=claims, reviews=[scripted], composer_mode="success")
+    runner = agent(tmp_path, vertex, bundle_for(list(evidence.values())))
+    out = runner._run_detailed(question, mode=qa.DEFAULT_ANSWER_POINT_MODE, capture_stage_trace=True)
+    payloads = [json.loads(p) for p, _, _ in vertex.exact_calls]
+    reviews = [(p, kw) for p, (_, _, kw) in zip(payloads, vertex.exact_calls)
+               if p["task"] == "review_claim_support_and_relevance"]
+    assert len(reviews) == 1
+    assert reviews[0][1]["system_instruction"] == PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT
+    assert event(out, "V1_OUTPUT")["payload"]["response"] == scripted
+    validation = event(out, "V1_OUTPUT")["payload"]["validation"]
+    assert validation["status"] == ("PARTIAL" if malformed else "ACCEPTED")
+    audit = out["diagnostics"]["answer_point_audit"]
+    assert audit["coverage_complete"] is not malformed
+    assert out["result"]["status"] == ("insufficient_evidence" if malformed else "answered")
+    assert [c["claim_id"] for c in out["result"]["claims"]] == ["c1", "c2"]
+    assert out["diagnostics"]["revision_count"] == 0
+    assert not any(p["task"] == "revise_unsupported_claims_once" for p in payloads)
+    assert event(out, "V2_OUTPUT")["status"] == "NOT_EXECUTED"
+    assert len(vertex.exact_calls) == (3 if malformed else 5)
+    if malformed:
+        assert "INVALID_SUPPORTER" in [e["reason_code"] for e in audit["coverage_validation"]["errors"]]
 
 
 def _named_fixture(tmp_path):

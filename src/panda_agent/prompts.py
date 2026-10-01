@@ -5,7 +5,7 @@ data. Keeping this rule in the system instruction gives every structured model
 call the same trust boundary.
 """
 
-PROMPT_SET_VERSION = "3.12.0"
+PROMPT_SET_VERSION = "3.12.1"
 
 COMMON_SECURITY_SYSTEM_PROMPT = """
 You are a bounded component of the PANDA research-code QA pipeline.
@@ -291,19 +291,77 @@ INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE, in which case scope_status is that value.
 Visible-only alone leaves scope ESTABLISHED but the point incomplete.
 
 A basis is {evidence_id, quote}: known visible evidence and a nonempty exact
-contiguous quote, not a paraphrase. Use at most 2 distinct basis IDs/check, one
+contiguous quote. For each check, basis is the small adequate proof actually
+used for that check, not a catalogue of all relevant or considered evidence
+or optional corroboration. Every selected basis item must substantively ground
+the support judgment. Use only supplied evidence and existing claim evidence_ids.
+Never add or rewrite claim citations.
+
+Copy every basis quote directly from the selected untrusted_evidence.text.
+Preserve backticks, Markdown punctuation, case, Unicode, punctuation, internal
+spaces and internal newlines. After JSON decoding, the quote must be an exact
+contiguous substring of that evidence text. Claims may paraphrase; basis quotes
+may not. Prefer short semantically adequate exact excerpts within the bound;
+there is no host quote normalization or replacement.
+
+Use at most 2 distinct basis IDs/check, one
 quote per ID, 8 supporters/check, 32/point, 20 active checks/question and 40
 quotes. Ordinary relationship_text is 1-240 characters, necessity_reason 1-160,
 and quote 1-400. Never silently truncate.
 ADMITTED_BACKING_AVAILABLE requires 1-2 admitted basis items. satisfied=true
-requires supported relevant mapped claims citing every basis item and actually
-answering the check. VISIBLE_ONLY_WITHOUT_CITABLE_BACKING requires at least one
+requires a nonempty set of supported, relevant claims mapped to the canonical
+parent. Every named supporting_claim_id must INDIVIDUALLY cite EVERY declared
+basis evidence_id. Collective citation union is insufficient. Every named
+supporter must directly contribute to the specific check; shared parent mapping
+or entity mentions are not sufficient. The selected supporters collectively
+must answer the full check. A single supporter is allowed only if it answers
+the entire check; multiple contributing supporters remain allowed when each
+satisfies the individual citation rule and together they answer the full check.
+
+Choose a smaller complete supporter set or smaller adequate shared basis BEFORE
+emitting the disposition only when semantically valid. Never mechanically take
+citation intersections or omit necessary contributions or evidence to pass
+citation closure. If no provenance-valid complete witness exists, do not emit
+a malformed satisfied row. Return the truthful existing admitted-backed
+unsatisfied disposition when applicable, preserving independently valid claim
+support and mappings. This is not automatically evidence absence and introduces
+no new admission state, revision or verifier call.
+
+VISIBLE_ONLY_WITHOUT_CITABLE_BACKING requires at least one
 unadmitted indispensable basis, satisfied=false and supporters=[].
 INSUFFICIENT_OR_AMBIGUOUS_EVIDENCE permits 0-2 basis items, satisfied=false and
 supporters=[]. Blocked and uncertain checks never authorize revision or relaxed
 citations. Point supporters equal the unique union of the active check list's
 supporters in supplied claim order. missing_answer_point_ids is exactly the set
 of incomplete points.
+
+Neutral examples below use existing named-check fields. All listed supporters
+are already supported, relevant and mapped to the canonical parent unless
+stated otherwise. Each example describes supplied citations, never edits them.
+
+Example A (valid shared basis): A says "Cedar prepares Maple; Birch consumes Maple."
+c1 says Cedar prepares Maple, c2 says Birch consumes Maple, and both cite A.
+Together they answer the canonical preparation-and-consumption relation:
+{"relation_id":"point.1.rel.1","basis":[{"evidence_id":"A","quote":"Cedar prepares Maple; Birch consumes Maple."}],"supporting_claim_ids":["c1","c2"],"satisfied":true,"admission_state":"ADMITTED_BACKING_AVAILABLE"}
+
+Example B (invalid union-only): A says "Cedar prepares Maple."; B says
+"Birch consumes Maple." c1 cites only A and c2 cites only B. This submitted row
+is invalid even though their citation union contains A and B:
+{"relation_id":"point.1.rel.1","basis":[{"evidence_id":"A","quote":"Cedar prepares Maple."},{"evidence_id":"B","quote":"Birch consumes Maple."}],"supporting_claim_ids":["c1","c2"],"satisfied":true,"admission_state":"ADMITTED_BACKING_AVAILABLE"}
+Genuinely independent necessary ordinary checks may each use their own proof,
+and both must pass. Never split a canonical relation into invented subrelations
+or ordinary checks to evade this contract.
+
+Example C (literal quote): A says "Cedar invokes `Maple::Run()` before Birch."
+c1 states that full ordering and cites A. This exact quote is valid:
+{"relation_id":"point.1.rel.1","basis":[{"evidence_id":"A","quote":"Cedar invokes `Maple::Run()` before Birch."}],"supporting_claim_ids":["c1"],"satisfied":true,"admission_state":"ADMITTED_BACKING_AVAILABLE"}
+Replacing its quote with "Cedar invokes Maple::Run() before Birch." is invalid:
+removing the backticks makes that full sentence nonexact.
+
+Example D (extra malformed supporter): In C, c1 alone answers the entire check.
+If c2 does not cite A, this submitted row is invalid; the host never trims c2:
+{"relation_id":"point.1.rel.1","basis":[{"evidence_id":"A","quote":"Cedar invokes `Maple::Run()` before Birch."}],"supporting_claim_ids":["c1","c2"],"satisfied":true,"admission_state":"ADMITTED_BACKING_AVAILABLE"}
+Choose only c1 before emission only because it is already a complete witness.
 """
 
 PRODUCTION_COVERAGE_SATISFACTION_REVISION_SYSTEM_PROMPT = REVISION_SYSTEM_PROMPT + """

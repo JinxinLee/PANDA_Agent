@@ -25,15 +25,15 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G5 V1 disposition provenance repair design commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = cd0a65df7576a736e83fdfe3da5998b766173ffc
-PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
+CURRENT_REPOSITORY_HEAD = G5 V1 provenance implementation commit (Clarify V1 proof-basis provenance contract; resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = G5 V1 provenance implementation commit (Clarify V1 proof-basis provenance contract; resolve from Git history; exact SHA reported on delivery).
+PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = cd0a65df7576a736e83fdfe3da5998b766173ffc
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
 QUESTION_DECOMPOSITION_SCHEMA_VERSION = e1.question_decomposition.v3
 COVERAGE_SATISFACTION_SCHEMA_VERSION = coverage-satisfaction-v2
-PROMPT_SET_VERSION = 3.12.0
-PROMPT_FINGERPRINT = 5147f85c09a933609d91f4fa4e7bf3d8fbfa530684a3ecea4d3aaed72c3e04ce
+PROMPT_SET_VERSION = 3.12.1
+PROMPT_FINGERPRINT = 08083fffd968f5903293e927759cf0d2de72871bbadc66741af87f1d0de49abc
 ACTIVE_GOLD = m6-benchmark-v2.11
 ACTIVE_CALIBRATION = phase_b_t3_product_language_scope_v8
 
@@ -68,12 +68,17 @@ ORIGINAL_N018_EMPIRICAL_RECOVERY = NOT_ESTABLISHED
 G5_V1_PROVENANCE_REPAIR_DESIGN = COMPLETE / IMPLEMENTATION_READY
 SELECTED_V1_PROVENANCE_CONTRACT = ALL_TO_ALL_CHECK_PROOF_BASIS
 SELECTED_V1_REPAIR = PROMPT_CLARIFICATION_WITH_NEUTRAL_EXAMPLES
+G5_V1_PROVENANCE_REPAIR_IMPLEMENTATION = COMPLETE / DETERMINISTIC VERIFICATION PASS
+V1_PROVENANCE_PROMPT_ALIGNMENT = VERIFIED
+HOST_ACCEPTANCE_RULE_CHANGE = false
+PROVIDER_COMPLIANCE = NOT_EMPIRICALLY_ESTABLISHED
+FALSE_INSUFFICIENCY_RECOVERY = NOT_EMPIRICALLY_ESTABLISHED
 G5_ORIGINAL_VERDICT = INCOMPLETE / PRODUCT ERROR
 G5_INTEGRATED_RUN_COMPLETE = false
 G5_INTEGRATED_CANDIDATE_READY_FOR_G6 = false
 FRESH_GENERALIZATION_EVIDENCE = false
 RELEASE_EVIDENCE = false
-NEXT_TASK_RECOMMENDATION = G5 V1 DISPOSITION-PROVENANCE FALSE-INSUFFICIENCY REPAIR IMPLEMENTATION
+NEXT_TASK_RECOMMENDATION = G5 POST-V1-REPAIR TARGETED LIVE VERIFICATION DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -90,6 +95,8 @@ The [G5 integrated failure-family review](../evaluation/G5_INTEGRATED_FAILURE_FA
 The separately authorized [G5 D1 diagnostic isolation implementation](../evaluation/G5_D1_DIAGNOSTIC_METADATA_ROBUSTNESS_REPAIR_IMPLEMENTATION.md) completes the immediate D1 task: one neutral RED before source editing, followed by 124 passing focused deterministic checks. The production envelope requires points and rejects foreign fields while tolerating unusable/missing ambiguity; the local fallback runs only after strict semantic canonicalization and emits host diagnostic `unavailable`. Shadow/provider contracts, semantic authority, call geometry, legacy behavior, retrieval/admission/coverage/revision/finalization and all prompts/schemas/versions/config/data/Gold/calibration/dependencies remain unchanged. This is a material source/behavior change: the implementation commit is current product lineage, with `047201...` preserved as previous lineage. No scientific or protected execution occurred. Original G5 remains incomplete, original n018 empirical recovery and false-insufficiency recovery remain unestablished, and G6 remains blocked. The forward next recommendation is now **G5 V1 DISPOSITION-PROVENANCE FALSE-INSUFFICIENCY REPAIR DESIGN**, carried forward from the review and requiring separate authorization; it is not designed or executed in this task. Earlier immediate D1 scheduling recommendations are superseded by this completed implementation.
 
 The [G5 V1 provenance design](../evaluation/G5_V1_DISPOSITION_PROVENANCE_FALSE_INSUFFICIENCY_REPAIR_DESIGN.md) is complete at review/design scope. Select production review clarification plus neutral examples under `ALL_TO_ALL_CHECK_PROOF_BASIS`: each named supporter individually cites every declared proof basis, contributes to its check, and a satisfied supporter set collectively answers the entire target; quotes remain exact. Historical all-to-all closure is preserved deliberately, not claimed as a uniquely necessary logical proof model. A legitimate disjoint-source named proof exposes a retained expressiveness ceiling; ordinary necessary checks may represent independent subparts, but canonical relations may not be split or weakened. The four motivating traces do not require a new edge schema to express their available common-basis/full-witness opportunities. Proposed future changes are review prompt prose, prompt-set patch/fingerprint and focused deterministic tests only; host acceptance, G1/G2 locality, A1/V2, schema and call-stage geometry remain. No implementation, tests, scientific calls/tokens/reruns or protected access occurred; lineage stays `cd0a65...`, G5 remains incomplete and G6 blocked. The forward next recommendation is **G5 V1 DISPOSITION-PROVENANCE FALSE-INSUFFICIENCY REPAIR IMPLEMENTATION**, not authorized or started here.
+
+The separately authorized [G5 V1 provenance implementation](../evaluation/G5_V1_DISPOSITION_PROVENANCE_FALSE_INSUFFICIENCY_REPAIR_IMPLEMENTATION.md) is complete with deterministic verification PASS: one pre-edit prompt-contract RED becomes GREEN, and 213 distinct post-edit focused tests pass. The production review explicitly defines adequate proof basis, individual all-to-all citation closure, per-check contribution, collective full-check completeness, semantically adequate pre-emission selection, truthful existing unsatisfied dispositions and exact quote formatting, with four neutral structured examples. Source changes only that review prompt and patch version 3.12.1; the computed active fingerprint is updated above. Validator/schema, G1 single completeness path, G2 locality, target-local one A1 and full V2 remain unchanged. A bare inner token remains an exact substring; the altered full sentence is the formatting-negative fixture, resolving the attachment contradiction without changing quote acceptance. Six initial host-test assertion-shape mistakes were corrected without product changes. Separate malformed/compliant fake first passes verify host behavior and active prompt delivery, not real-provider improvement. This commit is current product lineage, with `cd0a65...` previous. Scientific calls/tokens, new G5/n018 runs and protected access are zero; historical records retain their identities and verdicts. Disjoint-source canonical proofs remain potentially overconstrained, empirical provider compliance/recovery are unestablished, original G5 remains incomplete and G6 blocked. The next recommendation is **G5 POST-V1-REPAIR TARGETED LIVE VERIFICATION DESIGN**, not authorized or executed; earlier implementation scheduling is superseded by this completed task.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 

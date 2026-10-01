@@ -9,6 +9,47 @@ from test_e2_a1_answer_point_coverage import agent, claim, review, state, POINTS
 from test_post_a5_o1_observability import RecordingVertex, assert_neutral, event
 
 
+def test_v1_proof_basis_prompt_contract():
+    from panda_agent.prompts import PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT
+
+    prompt = " ".join(PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT.split())
+    for clause in (
+        "small adequate proof actually used for that check, not a catalogue",
+        "INDIVIDUALLY cite EVERY declared basis evidence_id",
+        "Collective citation union is insufficient",
+        "Every named supporter must directly contribute to the specific check",
+        "supporters collectively must answer the full check",
+        "BEFORE emitting the disposition",
+        "Never mechanically take citation intersections",
+        "Never add or rewrite claim citations",
+        "truthful existing admitted-backed unsatisfied disposition",
+        "Copy every basis quote directly from the selected untrusted_evidence.text",
+        "backticks, Markdown punctuation, case, Unicode, punctuation, internal spaces and internal newlines",
+        "After JSON decoding",
+        "Claims may paraphrase; basis quotes may not",
+    ):
+        assert clause in prompt, clause
+
+
+def test_v1_neutral_examples_keep_existing_check_shape():
+    from panda_agent.prompts import PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT
+
+    examples = PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT.split("Neutral examples below", 1)[1]
+    rows = [json.loads(line) for line in examples.splitlines() if line.startswith('{"relation_id"')]
+    assert len(rows) == 4
+    for row in rows:
+        assert set(row) == {"relation_id", "basis", "supporting_claim_ids", "satisfied", "admission_state"}
+        assert all(set(b) == {"evidence_id", "quote"} and 1 <= len(b["quote"]) <= 400 for b in row["basis"])
+    assert rows[0]["supporting_claim_ids"] == ["c1", "c2"] and len(rows[0]["basis"]) == 1
+    assert len(rows[1]["basis"]) == 2
+    assert "`Maple::Run()`" in rows[2]["basis"][0]["quote"]
+    assert rows[3]["supporting_claim_ids"] == ["c1", "c2"]
+    normalized = " ".join(examples.split())
+    assert "Never split a canonical relation into invented subrelations or ordinary checks" in normalized
+    assert "the host never trims c2" in normalized
+    assert not any(marker in examples for marker in ("n022", "n025", "n028", "n018", "PANDA", "Gold"))
+
+
 def test_production_schema_exists_and_is_distinct():
     assert qa.COVERAGE_SATISFACTION_SCHEMA_VERSION == "coverage-satisfaction-v2"
     schema = qa.PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA
@@ -235,7 +276,7 @@ def test_fingerprint_binds_production_prompts_schema_and_version(monkeypatch):
     before = "0a5b2909ef586671d533148979fc681c64e37528ad53781a4566cb9044835ba2"
     value = er.prompt_fingerprint()
     assert value != before and value == er.prompt_fingerprint()
-    assert prompts.PROMPT_SET_VERSION == "3.12.0"
+    assert prompts.PROMPT_SET_VERSION == "3.12.1"
     for name in ("PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT",
                  "PRODUCTION_COVERAGE_SATISFACTION_REVISION_SYSTEM_PROMPT", "COVERAGE_SATISFACTION_SCHEMA_VERSION"):
         with monkeypatch.context() as patch:
