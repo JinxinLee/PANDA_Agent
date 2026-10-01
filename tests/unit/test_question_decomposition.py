@@ -207,3 +207,206 @@ def test_normalizer_does_not_invent_semantic_splits_from_cue_words():
     result = decompose(question, proposal(raw))
     # Structural validity cannot prove semantic atomicity; E1-R2 must measure it.
     assert len(result["points"]) == 1
+
+
+PRODUCTION_QUESTION = "Does Cedar run before Birch and feed Maple? Where is Birch defined?"
+
+
+def production_proposal():
+    return proposal(
+        {"text": "Locate Birch", "support_spans": ["Where is Birch defined?"],
+         "required_relations": []},
+        {"text": "Explain Cedar's order and output", "facet_type": "workflow",
+         "support_spans": ["Does Cedar run before Birch and feed Maple?"],
+         "required_relations": [
+             {"text": "Whether Cedar feeds Maple", "support_spans": ["feed Maple", "feed Maple"],
+              "relation_type": "input_output"},
+             {"text": "Whether Cedar runs before Birch", "support_spans": ["run before Birch"],
+              "relation_type": "ordering"},
+         ]},
+    )
+
+
+def test_production_none_ambiguity_preserves_canonical_semantics():
+    raw = production_proposal()
+    baseline = QuestionDecomposer(ProposalVertex(raw)).decompose(PRODUCTION_QUESTION, relation_aware=True)
+    raw["ambiguity"] = {"status": "none", "reason": "Unusable provider diagnostic"}
+    original = copy.deepcopy(raw)
+    vertex = ProposalVertex(raw)
+    result = QuestionDecomposer(vertex).decompose(PRODUCTION_QUESTION, relation_aware=True)
+    assert result == {**baseline, "ambiguity": {"status": "unavailable", "reason": ""}}
+    assert [p["answer_point_id"] for p in result["points"]] == ["point.1", "point.2"]
+    assert [r["relation_id"] for r in result["points"][0]["required_relations"]] == [
+        "point.1.rel.1", "point.1.rel.2"]
+    assert raw == original == vertex.response
+    assert len(vertex.calls) == 1
+
+
+@pytest.mark.parametrize("status", ["clear", "ambiguous"])
+def test_production_valid_ambiguity_is_preserved(status):
+    raw = production_proposal()
+    raw["ambiguity"] = {"status": status, "reason": "Original diagnostic reason"}
+    result = QuestionDecomposer(ProposalVertex(raw)).decompose(PRODUCTION_QUESTION, relation_aware=True)
+    assert result["ambiguity"] == raw["ambiguity"]
+
+
+@pytest.mark.parametrize("diagnostic", [
+    None, [], "clear", 42, {}, {"status": "clear"}, {"reason": ""},
+    {"status": 42, "reason": ""}, {"status": "clear", "reason": 42},
+    {"status": "clarification_required", "reason": "Unusable"},
+    {"status": "clear", "reason": "", "extra": True},
+])
+def test_production_unusable_ambiguity_is_only_diagnostic(diagnostic):
+    raw = production_proposal()
+    baseline = QuestionDecomposer(ProposalVertex(raw)).decompose(PRODUCTION_QUESTION, relation_aware=True)
+    raw["ambiguity"] = diagnostic
+    original = copy.deepcopy(raw)
+    vertex = ProposalVertex(raw)
+    result = QuestionDecomposer(vertex).decompose(PRODUCTION_QUESTION, relation_aware=True)
+    assert result == {**baseline, "ambiguity": {"status": "unavailable", "reason": ""}}
+    assert raw == original == vertex.response
+    assert len(vertex.calls) == 1
+
+
+def test_production_missing_ambiguity_and_provider_order_preserve_identity():
+    raw = production_proposal()
+    baseline = QuestionDecomposer(ProposalVertex(raw)).decompose(PRODUCTION_QUESTION, relation_aware=True)
+    raw.pop("ambiguity")
+    raw["points"].reverse()
+    raw["points"][0]["required_relations"].reverse()
+    original = copy.deepcopy(raw)
+    result = QuestionDecomposer(ProposalVertex(raw)).decompose(PRODUCTION_QUESTION, relation_aware=True)
+    assert result == {**baseline, "ambiguity": {"status": "unavailable", "reason": ""}}
+    assert raw == original
+
+
+@pytest.mark.parametrize("invalid", ["missing", "empty", "six", "nonlist", "nonobject", "foreign"])
+def test_production_envelope_still_fails_before_diagnostic(invalid):
+    raw = production_proposal()
+    raw["ambiguity"]["status"] = "none"
+    if invalid == "missing":
+        raw.pop("points")
+    elif invalid == "empty":
+        raw["points"] = []
+    elif invalid == "six":
+        raw["points"] *= 3
+    elif invalid == "nonlist":
+        raw["points"] = {}
+    elif invalid == "nonobject":
+        raw = []
+    else:
+        raw["foreign"] = True
+    with patch("panda_agent.question_decomposition._production_diagnostic_ambiguity") as diagnostic:
+        with pytest.raises(ValueError):
+            QuestionDecomposer(ProposalVertex(raw)).decompose(PRODUCTION_QUESTION, relation_aware=True)
+        diagnostic.assert_not_called()
+
+
+@pytest.mark.parametrize("field,value", [
+    ("text", 42), ("text", " "), ("support_spans", []), ("support_spans", "Cedar"),
+    ("support_spans", ["cedar"]), ("foreign", True), ("answer_point_id", "model.1"),
+    ("text", " EXPLAIN   Cedar's order and OUTPUT "),
+])
+def test_production_bad_point_with_bad_diagnostic_still_fails(field, value):
+    raw = production_proposal()
+    raw["points"][0][field] = value
+    raw["ambiguity"]["status"] = "none"
+    with patch("panda_agent.question_decomposition._production_diagnostic_ambiguity") as diagnostic:
+        with pytest.raises(ValueError):
+            QuestionDecomposer(ProposalVertex(raw)).decompose(PRODUCTION_QUESTION, relation_aware=True)
+        diagnostic.assert_not_called()
+
+
+@pytest.mark.parametrize("invalid", [
+    "missing", "nonlist", "nonobject", "text_type", "blank_text", "long_text",
+    "nonliteral_support", "empty_support", "four_spans", "four_relations",
+    "foreign", "model_id", "duplicate", "duplicate_across_parents",
+])
+def test_production_bad_relation_with_bad_diagnostic_still_fails(invalid):
+    raw = production_proposal()
+    parent = raw["points"][1]
+    relation = parent["required_relations"][0]
+    if invalid == "missing":
+        parent.pop("required_relations")
+    elif invalid == "nonlist":
+        parent["required_relations"] = {}
+    elif invalid == "nonobject":
+        parent["required_relations"][0] = "relation"
+    elif invalid == "text_type":
+        relation["text"] = 42
+    elif invalid == "blank_text":
+        relation["text"] = " "
+    elif invalid == "long_text":
+        relation["text"] = "x" * 241
+    elif invalid == "nonliteral_support":
+        relation["support_spans"] = ["feed maple"]
+    elif invalid == "empty_support":
+        relation["support_spans"] = []
+    elif invalid == "four_spans":
+        relation["support_spans"] *= 2
+    elif invalid == "four_relations":
+        parent["required_relations"] *= 2
+    elif invalid == "foreign":
+        relation["foreign"] = True
+    elif invalid == "model_id":
+        relation["relation_id"] = "model.1"
+    else:
+        duplicate = copy.deepcopy(relation)
+        duplicate["text"] = " WHETHER   Cedar feeds MAPLE "
+        target = parent if invalid == "duplicate" else raw["points"][0]
+        target["required_relations"].append(duplicate)
+    raw["ambiguity"]["status"] = "none"
+    with patch("panda_agent.question_decomposition._production_diagnostic_ambiguity") as diagnostic:
+        with pytest.raises(ValueError):
+            QuestionDecomposer(ProposalVertex(raw)).decompose(PRODUCTION_QUESTION, relation_aware=True)
+        diagnostic.assert_not_called()
+
+
+def test_production_total_relation_bound_with_unavailable_diagnostic():
+    raw = proposal(*[
+        {"text": f"Request {i}", "support_spans": [PRODUCTION_QUESTION],
+         "required_relations": [
+             {"text": f"Relation {i}-{j}", "support_spans": [PRODUCTION_QUESTION]}
+             for j in range(count)]}
+        for i, count in enumerate([3, 3, 3, 1])])
+    raw["ambiguity"]["status"] = "none"
+    result = QuestionDecomposer(ProposalVertex(raw)).decompose(PRODUCTION_QUESTION, relation_aware=True)
+    assert sum(len(p["required_relations"]) for p in result["points"]) == 10
+    raw["points"][-1]["required_relations"].append(
+        {"text": "Eleventh relation", "support_spans": [PRODUCTION_QUESTION]})
+    with pytest.raises(ValueError, match="question bound"):
+        QuestionDecomposer(ProposalVertex(raw)).decompose(PRODUCTION_QUESTION, relation_aware=True)
+
+
+def test_shadow_none_ambiguity_remains_invalid():
+    raw = proposal(point())
+    raw["ambiguity"]["status"] = "none"
+    with pytest.raises(ValueError, match="literal_error"):
+        decompose("How does X work?", raw)
+
+
+@pytest.mark.parametrize("error", [RuntimeError("Provider transport failed"),
+                                    json.JSONDecodeError("Invalid provider JSON", "?", 0)])
+def test_production_provider_failure_propagates_before_graph(tmp_path, error):
+    vertex = ProposalVertex(production_proposal())
+    agent = QAAgent(tmp_path, vertex=vertex, retriever=FakeRetriever({}))
+    with patch.object(vertex, "generate_json", side_effect=error) as generate, \
+            patch.object(agent.graph, "invoke") as invoke:
+        with pytest.raises(type(error)) as caught:
+            agent._run_detailed(PRODUCTION_QUESTION, mode="production_answer_obligations_v1")
+        assert caught.value is error
+        generate.assert_called_once()
+        invoke.assert_not_called()
+
+
+def test_production_semantic_failure_prevents_graph(tmp_path):
+    raw = production_proposal()
+    raw["ambiguity"]["status"] = "none"
+    raw["points"][1].pop("required_relations")
+    vertex = ProposalVertex(raw)
+    agent = QAAgent(tmp_path, vertex=vertex, retriever=FakeRetriever({}))
+    with patch.object(agent.graph, "invoke") as invoke:
+        with pytest.raises(ValueError, match="production point fields"):
+            agent._run_detailed(PRODUCTION_QUESTION, mode="production_answer_obligations_v1")
+        invoke.assert_not_called()
+    assert len(vertex.calls) == 1

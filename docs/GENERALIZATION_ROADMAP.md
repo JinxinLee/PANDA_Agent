@@ -25,9 +25,9 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G5 integrated failure-family review and D1 repair design commit (resolve from Git history; exact SHA reported on delivery).
-CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
-PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = a22c8f70eeebe4a53490e11a4b6852561ca8afa6
+CURRENT_REPOSITORY_HEAD = G5 D1 diagnostic isolation implementation commit (resolve from Git history; exact SHA reported on delivery).
+CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = G5 D1 diagnostic isolation implementation commit (resolve from Git history by message "Isolate production ambiguity diagnostics from D1 semantics"; exact SHA reported on delivery).
+PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 047201166057edd9859292a1760bc2e9bbf173a2
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
 QUESTION_DECOMPOSITION_PROMPT_VERSION = 3.0.0
 QUESTION_DECOMPOSITION_SCHEMA_VERSION = e1.question_decomposition.v3
@@ -61,12 +61,16 @@ G4 = DETERMINISTIC CORRECTION VERIFIED / HISTORICAL COLLATERAL REGRESSION ESTABL
 G5 = INTEGRATED CANDIDATE DEFINED / ORIGINAL EXPOSED RUN 27 OF 28 QA RESULTS WITH NONRETRYABLE D1 PRODUCT ERROR / SEPARATE N018 RERUN FALSE_INSUFFICIENCY / INTEGRATED CANDIDATE NOT_READY_FOR_G6 / FRESH GENERALIZATION NOT_ESTABLISHED
 G5_FAILURE_FAMILY_REVIEW = COMPLETE / PASS
 G5_D1_REPAIR_DESIGN = COMPLETE / IMPLEMENTATION_READY
+G5_D1_REPAIR_IMPLEMENTATION = COMPLETE / DETERMINISTIC VERIFICATION PASS
+D1_DIAGNOSTIC_ISOLATION = VERIFIED
+SEMANTIC_FAIL_CLOSED_CONTROLS = PASS
+ORIGINAL_N018_EMPIRICAL_RECOVERY = NOT_ESTABLISHED
 G5_ORIGINAL_VERDICT = INCOMPLETE / PRODUCT ERROR
 G5_INTEGRATED_RUN_COMPLETE = false
 G5_INTEGRATED_CANDIDATE_READY_FOR_G6 = false
 FRESH_GENERALIZATION_EVIDENCE = false
 RELEASE_EVIDENCE = false
-NEXT_TASK_RECOMMENDATION = G5 D1 DIAGNOSTIC-METADATA ROBUSTNESS REPAIR IMPLEMENTATION
+NEXT_TASK_RECOMMENDATION = G5 V1 DISPOSITION-PROVENANCE FALSE-INSUFFICIENCY REPAIR DESIGN
 POST_D1_REPAIR_DESIGN_RECOMMENDATION = G5 V1 DISPOSITION-PROVENANCE FALSE-INSUFFICIENCY REPAIR DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
@@ -80,6 +84,8 @@ Phase G is ordinary product development for answer semantics and robustness. The
 G1 implements [the selected design](../evaluation/G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md): question-only canonical relations, ordinary C1 checks for relation-free points, required-relation dispositions for relation-bearing points, target-local A1 authorization, and full-contract V2 recheck. Focused deterministic and fake-provider regression tests passed. This is a material product/prompt/schema change within `production_answer_obligations_v1`; scientific calls/tokens are 0/0. Real-model extraction quality, provider runtime acceptance, and empirical completeness benefit remain unverified.
 
 The [G5 integrated failure-family review](../evaluation/G5_INTEGRATED_FAILURE_FAMILY_REVIEW.md) and [D1 diagnostic isolation design](../evaluation/G5_D1_DIAGNOSTIC_METADATA_ROBUSTNESS_REPAIR_DESIGN.md) are complete at review/design scope. The selected production-only design validates authoritative semantics first and tolerates unusable optional ambiguity solely as an unavailable diagnostic; shadow/provider contracts and semantic fail-closed rules remain unchanged. No implementation or test execution occurred. Review finds one original diagnostic exception opportunity, no proven common D1 inventory-loss defect, three original PARTIAL provenance refusals plus supplemental n018 with supported claims preserved, and eleven residual retrieval availability/opportunity cases with scope qualifications. G4 scoped R2 authority and all original G5 verdicts remain unchanged. Immediate next task is separately authorized D1 implementation; the single design task recommended after D1 is **G5 V1 DISPOSITION-PROVENANCE FALSE-INSUFFICIENCY REPAIR DESIGN**, preserving exact quotes, individual supporter-to-basis citation edges, target-local revision, and unsupported-claim exclusion. Neither recommendation authorizes execution, G5 rerun, G6, or protected evaluation. Source/behavior/test/prompt/schema/config/data/Gold/calibration/dependency changes and scientific calls/tokens/protected access are zero.
+
+The separately authorized [G5 D1 diagnostic isolation implementation](../evaluation/G5_D1_DIAGNOSTIC_METADATA_ROBUSTNESS_REPAIR_IMPLEMENTATION.md) completes the immediate D1 task: one neutral RED before source editing, followed by 124 passing focused deterministic checks. The production envelope requires points and rejects foreign fields while tolerating unusable/missing ambiguity; the local fallback runs only after strict semantic canonicalization and emits host diagnostic `unavailable`. Shadow/provider contracts, semantic authority, call geometry, legacy behavior, retrieval/admission/coverage/revision/finalization and all prompts/schemas/versions/config/data/Gold/calibration/dependencies remain unchanged. This is a material source/behavior change: the implementation commit is current product lineage, with `047201...` preserved as previous lineage. No scientific or protected execution occurred. Original G5 remains incomplete, original n018 empirical recovery and false-insufficiency recovery remain unestablished, and G6 remains blocked. The forward next recommendation is now **G5 V1 DISPOSITION-PROVENANCE FALSE-INSUFFICIENCY REPAIR DESIGN**, carried forward from the review and requiring separate authorization; it is not designed or executed in this task. Earlier immediate D1 scheduling recommendations are superseded by this completed implementation.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 

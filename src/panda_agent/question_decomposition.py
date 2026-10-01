@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import Annotated, Any, Literal, get_args
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from panda_agent.llm.vertex import VertexAIClient
 from panda_agent.prompts import COMMON_SECURITY_SYSTEM_PROMPT
@@ -99,6 +99,14 @@ class _Ambiguity(BaseModel):
     reason: str
 
 
+def _production_diagnostic_ambiguity(value: Any) -> dict[str, str]:
+    try:
+        validated = _Ambiguity.model_validate(value)
+    except ValidationError:
+        return {"status": "unavailable", "reason": ""}
+    return validated.model_dump()
+
+
 class _Proposal(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
 
@@ -142,11 +150,10 @@ class QuestionDecomposer:
                                 else QUESTION_DECOMPOSITION_V2_SYSTEM_PROMPT),
         )
         if relation_aware:
-            if not isinstance(raw, dict) or set(raw) != {"points", "ambiguity"}:
+            if not isinstance(raw, dict) or "points" not in raw or set(raw) - {"points", "ambiguity"}:
                 raise ValueError("invalid decomposition fields")
             if not isinstance(raw["points"], list) or not 1 <= len(raw["points"]) <= 5:
                 raise ValueError("invalid point count")
-            ambiguity = _Ambiguity.model_validate(raw["ambiguity"])
             proposals = raw["points"]
         else:
             proposal = _Proposal.model_validate(raw)
@@ -214,5 +221,6 @@ class QuestionDecomposer:
             "schema_version": QUESTION_DECOMPOSITION_SCHEMA_VERSION if relation_aware else QUESTION_DECOMPOSITION_V2_SCHEMA_VERSION,
             "mode": "production_authoritative" if relation_aware else "shadow_diagnostic",
             "points": points,
-            "ambiguity": ambiguity.model_dump(),
+            "ambiguity": (_production_diagnostic_ambiguity(raw.get("ambiguity"))
+                          if relation_aware else ambiguity.model_dump()),
         }

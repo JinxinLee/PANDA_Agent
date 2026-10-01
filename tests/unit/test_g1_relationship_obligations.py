@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 import json
+from unittest.mock import patch
 
 import pytest
 
@@ -36,6 +37,33 @@ def test_production_relations_get_host_ids_and_literal_question_support():
     assert value["schema_version"] == "e1.question_decomposition.v3"
     assert value["points"][0]["required_relations"][0]["relation_id"] == "point.1.rel.1"
     assert value["points"][0]["required_relations"][0]["support_spans"] == [QUESTION]
+
+
+def test_production_unavailable_ambiguity_is_confined_to_diagnostics(tmp_path):
+    outcomes = []
+    for status in ("clear", "none"):
+        proposal = {"points": [production_point()], "ambiguity": {"status": status, "reason": ""}}
+        coverage = c1_review([named_point([
+            named_check("point.1.rel.1", satisfied=True, supporters=["c1"])])], {"c1": ["point.1"]})
+        vertex = RecordingVertex(decomposition=proposal, answers=[claim()], reviews=[coverage])
+        runner = agent(tmp_path, vertex)
+        with patch.object(runner.graph, "invoke", wraps=runner.graph.invoke) as invoke:
+            out = runner._run_detailed(QUESTION, mode=qa.DEFAULT_ANSWER_POINT_MODE)
+            invoke.assert_called_once()
+            initial = deepcopy(invoke.call_args.args[0])
+        payloads = [json.loads(p) for p, _, _ in vertex.exact_calls]
+        assert sum(p["task"] == "decompose_user_question" for p in payloads) == 1
+        assert "ambiguity" not in initial
+        assert all("ambiguity" not in json.dumps(p) for p in payloads[1:])
+        assert out["diagnostics"]["revision_count"] == 0
+        outcomes.append((out, initial["runtime_answer_points"], vertex.exact_calls))
+    baseline, repaired = outcomes
+    assert repaired[1:] == baseline[1:]
+    assert repaired[0]["result"] == baseline[0]["result"]
+    assert repaired[0]["diagnostics"]["question_decomposition"] == {
+        **baseline[0]["diagnostics"]["question_decomposition"],
+        "ambiguity": {"status": "unavailable", "reason": ""},
+    }
 
 
 @pytest.mark.parametrize("change", [
