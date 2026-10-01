@@ -2,13 +2,13 @@
 
 ## 1. Status, authority and present scope
 
-**PASS / DESIGN COMPLETE / EXECUTION_READY, subject to separate execution authorization and the frozen preflight below.** This task performs offline design/review only. No live run, provider request, test execution, source/prompt/schema change or protected-data access occurred. Execution-ready describes a specified protocol, not authorization or an empirical result.
+**PASS / DESIGN COMPLETE / CORRECTED / EXECUTION_READY, subject to separate execution authorization and the frozen preflight below.** This task performs offline design/review only. No live run, provider request, test execution, source/prompt/schema change or protected-data access occurred. Execution-ready describes a specified protocol, not authorization or an empirical result.
 
-Starting clean `main` HEAD and product lineage: `5b9588ec552deb91a59a8176d6ce0429c2133b1e`, message `Clarify V1 proof-basis provenance contract`; parent `c1d6084045efe9b05d9d0073e48a846b6fe58e11`. Previous product lineage: `cd0a65df7576a736e83fdfe3da5998b766173ffc`.
+Original design entry: clean `main` HEAD and product lineage `5b9588ec552deb91a59a8176d6ce0429c2133b1e`, message `Clarify V1 proof-basis provenance contract`; parent `c1d6084045efe9b05d9d0073e48a846b6fe58e11`. Previous product lineage: `cd0a65df7576a736e83fdfe3da5998b766173ffc`.
 
 Authority: [V1 repair design](G5_V1_DISPOSITION_PROVENANCE_FALSE_INSUFFICIENCY_REPAIR_DESIGN.md), [V1 implementation](G5_V1_DISPOSITION_PROVENANCE_FALSE_INSUFFICIENCY_REPAIR_IMPLEMENTATION.md), [failure-family review](G5_INTEGRATED_FAILURE_FAMILY_REVIEW.md), [D1 implementation](G5_D1_DIAGNOSTIC_METADATA_ROBUSTNESS_REPAIR_IMPLEMENTATION.md), [original G5 report](G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION.md) and its [machine result](G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION_RESULT.json), [separate n018 report](G5_N018_SEPARATELY_AUTHORIZED_RERUN.md) and [machine result](G5_N018_SEPARATELY_AUTHORIZED_RERUN_RESULT.json), [G1 design](G1_RELATIONSHIP_AWARE_ANSWER_OBLIGATION_DESIGN.md), [G2 design](G2_COVERAGE_REVIEW_LOCAL_FAILURE_ROBUSTNESS_DESIGN.md), current status/roadmap and actual source/raw stores. Historical records remain unchanged.
 
-This document's delivery commit, `Design targeted post-V1 live verification`, advances repository history only. Resolve its SHA from Git history; delivery reports the exact value. Product lineage remains `5b9588...`.
+Original design delivery: `7fcd51097cdc5a1197191229cbfe687891541889`, message `Design targeted post-V1 live verification`. Its execution-ready claim is superseded by this control semantic-gate correction: the original control veto language was ambiguous until corrected. Correction entry was clean `main` at that exact commit. The correction delivery commit, `Correct targeted V1 control semantic baseline`, advances repository history only; resolve its SHA from Git history, with exact value reported on delivery. Product lineage remains `5b9588...`. Authorization covers only this design/current-state documentation correction and commit, not live execution or protocol expansion.
 
 ## 2. Frozen product identity
 
@@ -64,7 +64,15 @@ The execution order follows the existing dataset-preserved ordering; preflight m
 
 The three primaries are the minimum nonredundant failure-family/path set: removing any drops quote reliability, ordinary proof selection, or canonical proof selection. n018 adds shared-source/preparation and D1 interaction information but is not a fourth primary gate. Two controls add distinct safety observations that none of the three failed targets can supply. The valid-V1 inventory was inspected offline across the original store; selection uses historical structural features, not new outcomes or final-answer quality. Other candidates (e.g. n010's shared-basis proof or n023's two-basis named proof) duplicate these features without n019's combined formatting/path coverage. No broader control cohort is selected.
 
-Historical n008/n019 answers had independently documented completeness limitations. Their controls establish provenance nonregression only, not a semantic-completeness certification or Gold-derived gate. Control semantic inspection still checks for new underchecking relative to the raw question.
+Historical n008/n019 answers had independently documented completeness limitations. Their controls establish provenance nonregression and regression-relative semantic safety, not an absolute answer-completeness certification or Gold-derived gate. Primary semantic evaluation remains absolute. Control interpretation distinguishes pre-existing limitations from additional underchecking against the historical raw-question-defined baseline in section 13.
+
+### Frozen control semantic baselines
+
+**n019:** The raw question requests input `PndTrack` to fitted output, fitter selection, particle hypothesis and construction of each persisted result. The [completed failure-family review](G5_INTEGRATED_FAILURE_FAMILY_REVIEW.md#n018-original-n019-n020-n021) records that D1 captures all four components; A0 provides array/type, fitter flags/default hypothesis and output fields but acknowledges missing `Exec` body; V1 accepts 4/4, and the final answer lacks actual construction. Relevant implementation-body retrieval loss is also documented. This is a question-defined, pre-repair semantic limitation: an explicit need is represented but accepted too coarsely. It is not a new Gold obligation or proof of a host-validator bug.
+
+The new n019 control audit must preserve or improve that historical semantic representation and valid multi-basis/ordinary-plus-named/CRLF provenance without additional proof-selection or inventory underchecking. The known construction limitation need not disappear for this provenance control to be clean. Its persistence remains explicitly reported as incomplete, not treated as repair success; any additional weakening still vetoes support.
+
+**n008:** Historical raw-question needs are algorithm identity and comparison; A0 supplies track-following/cellular-automaton identity and multiplicity tradeoffs, and V1 accepts 2/2. The review separately notes omitted low-hit qualification and finer numerical/source depth; it does not derive an additional mandatory numerical-performance obligation from the raw question. Preserve the historical question-defined identification/comparison meaning and shared-basis multi-supporter feature. Do not manufacture Gold-derived needs. Additional question-defined underchecking is a new control regression.
 
 ## 5. Exact historical comparison authority
 
@@ -188,7 +196,7 @@ For every provenance-valid primary, and controls when assessing nonregression, i
 
 Record before/after basis IDs and quotes, supporter sets/citations, check meaning, raw-question/canonical need, and whether removed supporters/evidence were genuinely unnecessary. Preserve necessary combined meaning, direction, polarity and explanations. A one-claim witness must actually answer the full check; common citations alone do not prove a small basis adequate. Each supporter must contribute, not merely carry citations.
 
-Outcomes:
+Primary outcomes (the semantic gate for n022/n025/n028 remains absolute):
 
 - **NO_SEMANTIC_EVASION_OBSERVED**: the new inventory represents necessary raw-question content, evidence genuinely supports the selected meaning, and any smaller proof remains sufficient. A truthful unsatisfied disposition may qualify when the new supplied claims/evidence cannot form a complete closure-valid witness; report incomplete coverage independently.
 - **SEMANTIC_EVASION_OR_UNDERCHECK_OBSERVED**: V1 drops necessary ordinary content, omits an existing canonical relation, invents an alternate path, selects an incomplete witness/inadequate basis, or declares unsatisfied despite an available complete closure-valid witness solely to avoid proof validation. Do not infer motive from unsatisfied alone: document the available witness and the missing substantive judgment.
@@ -196,13 +204,28 @@ Outcomes:
 
 Available evidence that is genuinely inadequate, changed generation or retained distributed-proof overconstraint is not automatically evasion. No repair benefit is claimed from a vacuous empty/blocked row with no comparable proof opportunity. Unresolved semantics never enter the positive mechanism numerator.
 
+### Control audit: absolute observation and regression-relative interpretation
+
+For each control record two distinct layers: **A. the new absolute observed semantic state**, including any incompleteness; **B. regression relative to the frozen historical raw-question-defined baseline**. A known historical limitation is not erased and does not by itself trigger the primary absolute semantic veto. Determine whether the new proof selection/check inventory introduces additional weakening, not whether every pre-existing defect has been repaired.
+
+| Control semantic classification | Definition | Eligible as clean, subject to valid assessable provenance |
+|---|---|---|
+| `CONTROL_SEMANTIC_BASELINE_CLEAN` | New realization is semantically adequate for the question-defined baseline and no known historical semantic limitation remains applicable. | Yes |
+| `CONTROL_PREEXISTING_SEMANTIC_LIMITATION_UNCHANGED` | A documented historical question-defined limitation remains, with no additional omission/underchecking from new proof selection or inventory and with the controlled provenance features assessable. Record any reduction of the known limitation separately; this classification does not claim absolute completeness. | Yes |
+| `CONTROL_NEW_SEMANTIC_REGRESSION` | New realization weakens question-defined meaning beyond the documented baseline: a previously represented necessary subrequest/relation disappears or is weakened, additional content is underchecked by a smaller proof/inventory, or an unsatisfied disposition avoids an available proof. | No; safety veto |
+| `CONTROL_SEMANTIC_COMPARABILITY_UNRESOLVED` | Artifacts cannot determine whether the new realization preserves or weakens the historical question-defined baseline. | No; INCOMPLETE absent a higher-priority observed veto |
+
+For n019, an absolute observation of persisting actual-construction incompleteness can coexist with `CONTROL_PREEXISTING_SEMANTIC_LIMITATION_UNCHANGED`. Report both: the answer is still incomplete, but the pre-existing defect alone does not fail this targeted provenance control. New additional underchecking does fail it. For n008, evaluate new question-defined weakening against its historical identification/comparison baseline, without converting finer Gold depth into a mandatory request.
+
+Control provenance remains an **absolute** requirement on all relevant checks/features: assessable `V1_TARGET_OBSERVED` and `PROVENANCE_VALID`. Any new `BAD_QUOTE`, `INVALID_SUPPORTER`, invalid basis/admission/owner or wrong completeness path is a control regression regardless of its historical semantic limitations. A clean control requires (1) assessable target/proof feature, (2) valid provenance, (3) no new semantic regression relative to the frozen baseline and (4) resolved semantic interpretation. Only `CONTROL_SEMANTIC_BASELINE_CLEAN` or `CONTROL_PREEXISTING_SEMANTIC_LIMITATION_UNCHANGED` meets the semantic portion. Neither an unresolved comparison nor a new semantic regression is clean. Observe and report owning-layer/causal uncertainty separately; these exposed comparisons do not establish isolated prompt causality.
+
 ## 14. Ordinary and canonical comparability
 
 n022/n028/n018: new canonical relation IDs are fixed before retrieval **within the new run**. Their numeric IDs may change across decompositions; match meaning and literal raw-question support, direction/polarity and necessary explanation, not cross-run ID equality. Inspect all new relations covering that historical need and ensure none is omitted or weakened. Historical IDs are locator hints, not runtime constraints.
 
 n025: its historical point is relation-free. Verifier-derived ordinary check text/count need not match old text bytes. Audit the entire new ordinary inventory for both combinatorial management and displaced-vertex efficiency requested by the raw question. Two genuinely independent necessary checks are legitimate if both validate; a reduced inventory omitting necessary meaning is underchecking. If the new question decomposition legitimately changes path, establish semantic equivalence explicitly or classify not comparable; do not force old rows into the product. A canonical relation may never be replaced with invented ordinary subchecks.
 
-Controls use the same rules for their raw question-defined needs. Historical host acceptance is not a semantic oracle; inspect any change without importing previously missed Gold specifics as new runtime requirements.
+Controls use the same question/identity/proof comparability rules, with the regression-relative semantic baseline and classifications in section 13. Historical host acceptance is not a semantic oracle; inspect any change without importing previously missed Gold specifics as new runtime requirements. Preserve the distinction between absolute semantic observation and whether the new control realization worsens its known baseline.
 
 ## 15. Independent downstream and final observations
 
@@ -216,16 +239,17 @@ Neither an answered status nor V2 acceptance repairs first-pass V1 evidence retr
 
 ## 16. Frozen experiment verdict, exact precedence
 
-Define a positive primary as `V1_TARGET_OBSERVED + PROVENANCE_VALID + NO_SEMANTIC_EVASION_OBSERVED` with a nonvacuous comparable proof declaration. A clean control has assessable equivalent question needs/proof feature, valid provenance on all checks, no new observed underchecking and resolved semantic interpretation. Supplemental results never add to the three-primary denominator or become a hidden gate.
+Define a positive primary as `V1_TARGET_OBSERVED + PROVENANCE_VALID + NO_SEMANTIC_EVASION_OBSERVED` with a nonvacuous comparable proof declaration. This primary semantic gate is absolute, not regression-relative. A clean control has assessable question needs/proof feature, valid provenance on all relevant checks, no new semantic regression relative to its historical raw-question-defined baseline and resolved interpretation: its semantic class is either `CONTROL_SEMANTIC_BASELINE_CLEAN` or `CONTROL_PREEXISTING_SEMANTIC_LIMITATION_UNCHANGED`. Persisting known incompleteness alone is not a clean-control veto or a claim of recovery. Primary denominator remains 3, required controls 2; supplemental n018 has no gating denominator.
 
 Apply these mutually exclusive rules in order:
 
 1. Protocol/lineage/budget/evidence-integrity breach: **TARGETED_V1_VERIFICATION_INCOMPLETE**, reason `PROTOCOL_INVALID`; no acceptance regardless of apparent passes.
-2. Any observed primary/control semantic evasion, or any assessable control provenance regression: **TARGETED_V1_MECHANISM_NOT_SUPPORTED** (safety veto). Preserve all missing observations separately; a positive target cannot override this veto.
-3. Any primary or required control observation is missing, errored, not comparable, or has unresolved semantic audit: **TARGETED_V1_VERIFICATION_INCOMPLETE**. Report observed positives/negatives without converting a partial denominator to PASS.
-4. All three primaries positive and both controls clean: **TARGETED_V1_MECHANISM_SUPPORTED**.
-5. All primary/control observations assessable, controls clean, one or two primaries positive and the remaining primary targets have malformed provenance: **TARGETED_V1_MECHANISM_PARTIAL**.
-6. All observations assessable, controls clean, zero positive primaries: **TARGETED_V1_MECHANISM_NOT_SUPPORTED**.
+2. Any observed primary `SEMANTIC_EVASION_OR_UNDERCHECK_OBSERVED`: **TARGETED_V1_MECHANISM_NOT_SUPPORTED** (absolute primary safety veto). Preserve missing observations separately; a positive target cannot override this veto.
+3. Any assessable control provenance regression or `CONTROL_NEW_SEMANTIC_REGRESSION`: **TARGETED_V1_MECHANISM_NOT_SUPPORTED** (control safety veto). A pre-existing limitation alone is not this veto.
+4. Any primary or required control observation is missing, errored, not comparable, or has unresolved semantic interpretation, including `CONTROL_SEMANTIC_COMPARABILITY_UNRESOLVED`: **TARGETED_V1_VERIFICATION_INCOMPLETE**. Report observed positives/negatives without converting a partial denominator to PASS.
+5. All three primaries positive and both controls clean, each with either allowed control semantic class above: **TARGETED_V1_MECHANISM_SUPPORTED**.
+6. All primary/control observations assessable, controls clean, one or two primaries positive and the remaining primary targets have malformed provenance: **TARGETED_V1_MECHANISM_PARTIAL**.
+7. All observations assessable, controls clean, zero positive primaries: **TARGETED_V1_MECHANISM_NOT_SUPPORTED**.
 
 No post-hoc percentages, subjective majority or supplemental substitution. A supplemental n018 exception or unresolved result alone cannot defeat or improve an otherwise assessable primary/control verdict. A global stop caused during any case can leave required observations incomplete. Report fixed denominator 3, observed denominator, both controls, supplemental separately and every unattempted ID. Mechanism-supported maps to PASS at this bounded scope; partial/not-supported maps to FAIL of the all-primary success criterion; incomplete maps to INCONCLUSIVE. None maps to a G5/G6 gate verdict.
 
@@ -279,6 +303,8 @@ During execution: ordinary per-case malformed provenance, insufficient answer or
 
 Report actual launch SHA/product lineage, prompt identity, interpreter/packages/models/corpus/index/dataset identity, selected roles/order, start/end times, accounting-reader binding and one-attempt receipts through existing artifacts. Label new counters all-role and historical counters generation-client-only; no synthetic reconciliation of old missing verification usage. For every case provide raw paths and trace stage pointers; historical and new owner scope; observability; V1 raw/receipt status; exact reason codes and missing citation edges/quote membership; provenance outcome; before/after basis/supporters; semantic audit rationale and unresolved questions.
 
+For **every control**, additionally report its historical semantic baseline, new absolute semantic observation, regression-relative control semantic classification, provenance status and whether it is clean for this experiment. For n019 report the pre-existing actual-construction limitation independently of its provenance-control verdict. Never label persisting incompleteness semantically complete or omit it because the control qualifies as clean; record any improvement separately without making it a prerequisite.
+
 Separately report target/whole coverage, sibling containment, A1 authorization/execution, V2 original inventory, final status/claims/composition and actual call/token totals. Report logical attempts, generation/embedding invocations and supported retry accounting with unavailable metadata labeled. Distinguish complete/errored/unattempted cases; do not make observed-case percentages look like the fixed cohort.
 
 Provide the frozen experiment verdict and evidence class. No claim that all four historical answers recovered, original G5 completed, all false insufficiency resolved, distributed-proof limits removed, or fresh/release readiness achieved. Narrow provider compliance support describes only the actual exposed observations, not a population probability or isolated causal attribution.
@@ -328,7 +354,9 @@ Read-only Python parsing/package/configuration inspection and documentation/diff
 ## 24. Current design closeout
 
 ```text
-G5_POST_V1_TARGETED_LIVE_VERIFICATION_DESIGN = COMPLETE / EXECUTION_READY
+G5_POST_V1_TARGETED_LIVE_VERIFICATION_DESIGN = COMPLETE / CORRECTED / EXECUTION_READY
+PRIMARY_SEMANTIC_GATE = ABSOLUTE
+CONTROL_SEMANTIC_GATE = REGRESSION_RELATIVE
 TARGETED_LIVE_EVIDENCE_CLASS = EXPOSED_TARGETED_MECHANISM_EVIDENCE
 TARGETED_LIVE_EXECUTION = NOT_STARTED
 G5_ORIGINAL_VERDICT = INCOMPLETE / PRODUCT ERROR
