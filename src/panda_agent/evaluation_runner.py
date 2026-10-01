@@ -61,7 +61,8 @@ from panda_agent.prompts import (
     REVISION_SYSTEM_PROMPT,
 )
 from panda_agent.qa import (DEFAULT_ANSWER_POINT_MODE, QAAgent, COVERAGE_SATISFACTION_SCHEMA_VERSION,
-                           PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA)
+                           PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SCHEMA,
+                           QADetailedExecutionError, _copy_failure_diagnostics)
 from panda_agent.retrieval import Retriever
 from panda_agent.retrieval_trace import build_retrieval_trace, write_retrieval_trace
 from panda_agent.storage import Storage, iter_jsonl
@@ -1843,13 +1844,20 @@ def run_evaluation(
                 }
             )
         except Exception as exc:
-            retryable, category = classify_evaluation_exception(exc)
+            effective = exc.original_exception if isinstance(exc, QADetailedExecutionError) else exc
+            retryable, category = classify_evaluation_exception(effective)
             record["exception"] = {
-                "type": type(exc).__name__,
-                "message": str(exc)[:2000],
+                "type": type(effective).__name__,
+                "message": str(effective)[:2000],
                 "retryable": retryable,
                 "category": category,
             }
+            if isinstance(exc, QADetailedExecutionError):
+                try:
+                    record["failure_diagnostics"] = _copy_failure_diagnostics(exc.failure_diagnostics)
+                except Exception:
+                    # Optional capture cannot prevent the original failure record.
+                    pass
         record["duration_ms"] = round((time.perf_counter() - started) * 1000, 3)
         runtime_usage = _stats_delta(before_runtime, _stats_snapshot(engine))
         judge_usage = (

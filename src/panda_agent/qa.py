@@ -1865,6 +1865,13 @@ def render_composed_answer(paragraphs: list[dict], claims: list[ClaimCitation]) 
 
 _QA_TRACE_MAX_EVENTS = 16
 _QA_TRACE_MAX_BYTES = 2_097_152
+_QA_FAILURE_DECOMPOSITION_MAX_BYTES = 65_536
+_QA_FAILURE_MAX_BYTES = 2_166_784
+_QA_FAILURE_CODES = frozenset({
+    "QA_EXECUTION_FAILED", "DECOMPOSITION_UNAVAILABLE", "DECOMPOSITION_NOT_APPLICABLE",
+    "DECOMPOSITION_SIZE_BOUND_EXCEEDED", "DECOMPOSITION_COPY_FAILED",
+    "TRACE_SNAPSHOT_FAILED", "TRACE_COLLECTOR_UNAVAILABLE",
+})
 _QA_TRACE_STAGES = (
     ("EA_ADMISSION", 0), ("A0_OUTPUT", 0), ("V1_INPUT", 1), ("V1_OUTPUT", 1),
     ("EA_ADMISSION", 1), ("A1_INPUT", 1), ("A1_OUTPUT", 1), ("A1_POST_MERGE", 1),
@@ -1946,6 +1953,18 @@ class _QAStageTrace:
             return
         self.events, self.registry = events, registry
 
+    def snapshot_on_failure(self) -> dict[str, Any]:
+        """Export observations only; missing output is not proof of nonexecution."""
+        events = [e for e in self.events if e["status"] in {"CAPTURED", "NOT_CAPTURED"}]
+        if len(events) > _QA_TRACE_MAX_EVENTS:
+            return _trace_incomplete("TRACE_EVENT_BOUND_EXCEEDED")
+        envelope = {**self._envelope(), "capture_status": "INCOMPLETE", "events": events,
+                    "failure_codes": list(dict.fromkeys([*self.failure_codes, "QA_EXECUTION_FAILED"]))}
+        try:
+            return _bounded_json_copy(envelope, _QA_TRACE_MAX_BYTES)
+        except _QADiagnosticsSizeError:
+            return _trace_incomplete("TRACE_SIZE_BOUND_EXCEEDED")
+
     def finish(self) -> dict[str, Any]:
         for stage, round_ in _QA_TRACE_STAGES:
             if not any((e["stage"], e["round"]) == (stage, round_) for e in self.events):
@@ -1966,6 +1985,124 @@ class _QAStageTrace:
 def _trace_incomplete(code: str) -> dict[str, Any]:
     return {"schema_version": "qa-stage-trace-v1", "capture_status": "INCOMPLETE",
             "reason_code": code, "events": [], "evidence_registry": {}}
+
+
+class _QADiagnosticsSizeError(ValueError):
+    """Optional diagnostic export exceeds its persisted byte budget."""
+
+
+def _bounded_json_copy(value: Any, max_bytes: int) -> Any:
+    chunks = []
+    size = 0
+    encoder = json.JSONEncoder(ensure_ascii=False, sort_keys=True, allow_nan=False)
+    for chunk in encoder.iterencode(value):
+        size += len(chunk.encode("utf-8"))
+        if size > max_bytes:
+            raise _QADiagnosticsSizeError("QA diagnostic export size bound exceeded")
+        chunks.append(chunk)
+    return json.loads("".join(chunks))
+
+
+def _copy_failure_diagnostics(value: Any) -> dict[str, Any]:
+    """Validate/copy the sole optional failure-record field before persistence."""
+    copied = _bounded_json_copy(value, _QA_FAILURE_MAX_BYTES)
+    fields = {"schema_version", "capture_status", "failure_codes",
+              "question_decomposition", "qa_stage_trace"}
+    if not isinstance(copied, dict) or set(copied) != fields:
+        raise ValueError("invalid QA failure diagnostics fields")
+    codes = copied["failure_codes"]
+    if (copied["schema_version"] != "qa-failure-diagnostics-v1"
+            or copied["capture_status"] != "INCOMPLETE"
+            or not isinstance(codes, list) or len(codes) > 8
+            or not all(isinstance(code, str) and code in _QA_FAILURE_CODES for code in codes)
+            or len(set(codes)) != len(codes) or "QA_EXECUTION_FAILED" not in codes):
+        raise ValueError("invalid QA failure diagnostics status/codes")
+    decomposition_codes = [code for code in codes if code.startswith("DECOMPOSITION_")]
+    decomposition = copied["question_decomposition"]
+    if len(decomposition_codes) != (1 if decomposition is None else 0):
+        raise ValueError("invalid QA failure decomposition status")
+    if decomposition is not None:
+        if not isinstance(decomposition, dict):
+            raise ValueError("invalid QA failure decomposition")
+        _bounded_json_copy(decomposition, _QA_FAILURE_DECOMPOSITION_MAX_BYTES)
+    trace = copied["qa_stage_trace"]
+    trace_fields = {"schema_version", "capture_status", "events", "evidence_registry"}
+    if (not isinstance(trace, dict) or trace.get("schema_version") != "qa-stage-trace-v1"
+            or trace.get("capture_status") != "INCOMPLETE"
+            or not isinstance(trace.get("events"), list)
+            or len(trace["events"]) > _QA_TRACE_MAX_EVENTS
+            or not isinstance(trace.get("evidence_registry"), dict)
+            or set(trace) not in (trace_fields | {"failure_codes"}, trace_fields | {"reason_code"})
+            or any(not isinstance(e, dict)
+                   or set(e) != {"stage", "round", "status", "reason_code", "payload"}
+                   or not isinstance(e["stage"], str) or type(e["round"]) is not int
+                   or not isinstance(e["payload"], dict)
+                   or e.get("status") not in {"CAPTURED", "NOT_CAPTURED"}
+                   for e in trace["events"])):
+        raise ValueError("invalid QA failure trace")
+    if "failure_codes" in trace:
+        trace_codes = trace["failure_codes"]
+        if (not isinstance(trace_codes, list) or not all(isinstance(c, str) for c in trace_codes)
+                or "QA_EXECUTION_FAILED" not in trace_codes):
+            raise ValueError("invalid QA failure trace codes")
+    elif (trace["events"] or trace["evidence_registry"] or trace["reason_code"] not in {
+            "TRACE_SIZE_BOUND_EXCEEDED", "TRACE_EVENT_BOUND_EXCEEDED", "CAPTURE_ASSEMBLY_FAILED",
+            "CAPTURE_INITIALIZATION_FAILED", "CAPTURE_NOT_INITIALIZED"}):
+        raise ValueError("invalid minimal QA failure trace")
+
+    def check_refs(value: Any) -> None:
+        if isinstance(value, dict):
+            if "evidence_projection_ref" in value and value["evidence_projection_ref"] not in trace["evidence_registry"]:
+                raise ValueError("unresolved QA failure evidence projection")
+            for child in value.values():
+                check_refs(child)
+        elif isinstance(value, list):
+            for child in value:
+                check_refs(child)
+
+    check_refs(trace["events"])
+    _bounded_json_copy(trace, _QA_TRACE_MAX_BYTES)
+    return copied
+
+
+def _build_failure_diagnostics(decomposition: Any, collector: _QAStageTrace | None, *,
+                               decomposition_applicable: bool,
+                               trace_initialization_failed: bool) -> dict[str, Any]:
+    codes = ["QA_EXECUTION_FAILED"]
+    copied_decomposition = None
+    if not decomposition_applicable:
+        codes.append("DECOMPOSITION_NOT_APPLICABLE")
+    elif decomposition is None:
+        codes.append("DECOMPOSITION_UNAVAILABLE")
+    else:
+        try:
+            copied_decomposition = _bounded_json_copy(decomposition, _QA_FAILURE_DECOMPOSITION_MAX_BYTES)
+        except _QADiagnosticsSizeError:
+            codes.append("DECOMPOSITION_SIZE_BOUND_EXCEEDED")
+        except Exception:
+            codes.append("DECOMPOSITION_COPY_FAILED")
+    if collector is None:
+        codes.append("TRACE_COLLECTOR_UNAVAILABLE")
+        trace = _trace_incomplete("CAPTURE_INITIALIZATION_FAILED" if trace_initialization_failed
+                                  else "CAPTURE_NOT_INITIALIZED")
+    else:
+        try:
+            trace = collector.snapshot_on_failure()
+        except Exception:
+            codes.append("TRACE_SNAPSHOT_FAILED")
+            trace = _trace_incomplete("CAPTURE_ASSEMBLY_FAILED")
+    return _copy_failure_diagnostics({"schema_version": "qa-failure-diagnostics-v1",
+        "capture_status": "INCOMPLETE", "failure_codes": codes,
+        "question_decomposition": copied_decomposition, "qa_stage_trace": trace})
+
+
+class QADetailedExecutionError(RuntimeError):
+    """Capture-scoped transport; the original exception remains outcome authority."""
+
+    def __init__(self, original_exception: Exception, failure_diagnostics: dict[str, Any]):
+        super().__init__("detailed QA execution failed; partial diagnostics available")
+        self.original_exception = original_exception
+        self.failure_diagnostics = failure_diagnostics
 
 
 def _trace(state: Any, stage: str, round_: int, payload: Callable[[], Any],
@@ -4130,106 +4267,124 @@ class QAAgent:
             "runtime_e1_v2",
             "production_answer_obligations_v1",
         }
-        started = time.perf_counter()
-        stats_before = self._stats_snapshot()
-        initial: QAState = {"question": question, "_ea_cache": {}}
-        trace_initialization_failed = False
-        if capture_stage_trace:
-            try:
-                initial["_stage_trace"] = _QAStageTrace()
-            except Exception:
-                trace_initialization_failed = True
         decomposition = None
-        decomposition_ms = 0
-        if coverage_shadow:
-            decomposition_started = time.perf_counter()
-            decomposition = (self.decompose_question(question, relation_aware=True)
-                if mode == "production_answer_obligations_v1" else self.decompose_question(question))
-            initial.update(answer_point_coverage_mode=mode, runtime_answer_points=decomposition["points"])
-            initial["runtime_answer_points"] = _active_runtime_answer_points(initial)
-            decomposition_ms = int(round((time.perf_counter() - decomposition_started) * 1000))
-        state = self.graph.invoke(initial)
-        duration_ms = int(round((time.perf_counter() - started) * 1000))
-        result = QAResult.model_validate(state["result"])
-        bundle = state.get("bundle", {})
-        diagnostics = {
-            "plan": bundle.get("plan", {}),
-            "rankings": bundle.get("rankings", {}),
-            "fusion_scores": bundle.get("fusion_scores", {}),
-            "rerank_pool_entries": bundle.get("rerank_pool_entries", []),
-            "reranked_object_ids": bundle.get("reranked_object_ids", []),
-            "ranked_object_ids": bundle.get("ranked_object_ids", []),
-            "excluded": bundle.get("excluded", []),
-            "selected_evidence": bundle.get("evidence", []),
-            "selected_evidence_ids": [
-                item.get("evidence_id") for item in bundle.get("evidence", [])
-            ],
-            "retrieval_count": state.get("retrieval_count", 0),
-            "initial_retrieval_count": 1,
-            "targeted_retrieval_count": state.get("retrieval_count", 0),
-            "selected_evidence_count": len(bundle.get("evidence", [])),
-            "revision_count": state.get("revision_count", 0),
-            "verification_errors": state.get("errors", []),
-            "claim_audit": state.get("claim_audit", []),
-        }
-        diagnostics["model_roles"] = self._model_roles_diagnostics()
-        if state.get("composer_diagnostics") is not None:
-            diagnostics["composer"] = state["composer_diagnostics"]
-        if coverage_shadow:
-            diagnostics.update(question_decomposition=decomposition, answer_point_audit=state["answer_point_audit"])
-        if mode == "runtime_e1_v2":
-            e3_trace = state.get("e3_trace")
-            if e3_trace is None:
-                plan = bundle.get("plan", {})
-                reason = "version_conflicts" if plan.get("version_conflicts") else "insufficient_evidence"
-                e3_trace = {
-                    "triggered": False,
-                    "trigger_reason": reason,
-                    "missing_answer_point_ids": [],
-                    "missing_answer_points": [],
-                    "retrieval_objective": None,
-                    "missing_point_retrieval_count": state.get("missing_point_retrieval_count", 0),
-                    "pre_answer_retrieval_count": state.get("retrieval_count", 0),
-                    "initial_selected_evidence_ids": [item.get("evidence_id") for item in bundle.get("evidence", [])],
-                    "candidate_pass_provenance": [],
-                    "targeted_candidate_object_ids": [],
-                    "dedup_result": {},
-                    "pass_occurrences": {},
-                    "global_fused_candidate_object_ids": [],
-                    "globally_selected_evidence_ids": [item.get("evidence_id") for item in bundle.get("evidence", [])],
-                    "global_selected_object_ids": [item.get("object_id") for item in bundle.get("evidence", [])],
-                    "newly_admitted_object_ids": [],
-                    "displaced_selected_evidence_ids": [],
-                    "retained_support_evidence_ids": [],
-                    "retained_supported_claims": [],
-                    "selected_evidence_count": len(bundle.get("evidence", [])),
-                    "selected_evidence_budget": getattr(getattr(self.retriever, "policies", None), "final_evidence_limit", 12),
-                    "retained_support_context_count": 0,
-                    "atomic_update_status": "not_triggered",
-                    "no_gain": False,
-                    "failure_reason": None,
-                    "post_retrieval_missing_point_result": None,
-                    "post_retrieval_coverage_evaluable": None,
-                    "recovered_answer_point_ids": [],
-                    "remaining_missing_answer_point_ids": [],
-                }
-            diagnostics["e3_trace"] = e3_trace
-        if capture_stage_trace:
+        initial: QAState = {}
+        trace_initialization_failed = False
+        try:
+            started = time.perf_counter()
+            stats_before = self._stats_snapshot()
+            initial: QAState = {"question": question, "_ea_cache": {}}
+            if capture_stage_trace:
+                try:
+                    initial["_stage_trace"] = _QAStageTrace()
+                except Exception:
+                    trace_initialization_failed = True
+            decomposition_ms = 0
+            if coverage_shadow:
+                decomposition_started = time.perf_counter()
+                decomposition = (self.decompose_question(question, relation_aware=True)
+                    if mode == "production_answer_obligations_v1" else self.decompose_question(question))
+                initial.update(answer_point_coverage_mode=mode, runtime_answer_points=decomposition["points"])
+                initial["runtime_answer_points"] = _active_runtime_answer_points(initial)
+                decomposition_ms = int(round((time.perf_counter() - decomposition_started) * 1000))
+            state = self.graph.invoke(initial)
+            duration_ms = int(round((time.perf_counter() - started) * 1000))
+            result = QAResult.model_validate(state["result"])
+            bundle = state.get("bundle", {})
+            diagnostics = {
+                "plan": bundle.get("plan", {}),
+                "rankings": bundle.get("rankings", {}),
+                "fusion_scores": bundle.get("fusion_scores", {}),
+                "rerank_pool_entries": bundle.get("rerank_pool_entries", []),
+                "reranked_object_ids": bundle.get("reranked_object_ids", []),
+                "ranked_object_ids": bundle.get("ranked_object_ids", []),
+                "excluded": bundle.get("excluded", []),
+                "selected_evidence": bundle.get("evidence", []),
+                "selected_evidence_ids": [
+                    item.get("evidence_id") for item in bundle.get("evidence", [])
+                ],
+                "retrieval_count": state.get("retrieval_count", 0),
+                "initial_retrieval_count": 1,
+                "targeted_retrieval_count": state.get("retrieval_count", 0),
+                "selected_evidence_count": len(bundle.get("evidence", [])),
+                "revision_count": state.get("revision_count", 0),
+                "verification_errors": state.get("errors", []),
+                "claim_audit": state.get("claim_audit", []),
+            }
+            diagnostics["model_roles"] = self._model_roles_diagnostics()
+            if state.get("composer_diagnostics") is not None:
+                diagnostics["composer"] = state["composer_diagnostics"]
+            if coverage_shadow:
+                diagnostics.update(question_decomposition=decomposition, answer_point_audit=state["answer_point_audit"])
+            if mode == "runtime_e1_v2":
+                e3_trace = state.get("e3_trace")
+                if e3_trace is None:
+                    plan = bundle.get("plan", {})
+                    reason = "version_conflicts" if plan.get("version_conflicts") else "insufficient_evidence"
+                    e3_trace = {
+                        "triggered": False,
+                        "trigger_reason": reason,
+                        "missing_answer_point_ids": [],
+                        "missing_answer_points": [],
+                        "retrieval_objective": None,
+                        "missing_point_retrieval_count": state.get("missing_point_retrieval_count", 0),
+                        "pre_answer_retrieval_count": state.get("retrieval_count", 0),
+                        "initial_selected_evidence_ids": [item.get("evidence_id") for item in bundle.get("evidence", [])],
+                        "candidate_pass_provenance": [],
+                        "targeted_candidate_object_ids": [],
+                        "dedup_result": {},
+                        "pass_occurrences": {},
+                        "global_fused_candidate_object_ids": [],
+                        "globally_selected_evidence_ids": [item.get("evidence_id") for item in bundle.get("evidence", [])],
+                        "global_selected_object_ids": [item.get("object_id") for item in bundle.get("evidence", [])],
+                        "newly_admitted_object_ids": [],
+                        "displaced_selected_evidence_ids": [],
+                        "retained_support_evidence_ids": [],
+                        "retained_supported_claims": [],
+                        "selected_evidence_count": len(bundle.get("evidence", [])),
+                        "selected_evidence_budget": getattr(getattr(self.retriever, "policies", None), "final_evidence_limit", 12),
+                        "retained_support_context_count": 0,
+                        "atomic_update_status": "not_triggered",
+                        "no_gain": False,
+                        "failure_reason": None,
+                        "post_retrieval_missing_point_result": None,
+                        "post_retrieval_coverage_evaluable": None,
+                        "recovered_answer_point_ids": [],
+                        "remaining_missing_answer_point_ids": [],
+                    }
+                diagnostics["e3_trace"] = e3_trace
+            if capture_stage_trace:
+                try:
+                    diagnostics["qa_stage_trace"] = (
+                        _trace_incomplete("CAPTURE_INITIALIZATION_FAILED") if trace_initialization_failed
+                        else initial["_stage_trace"].finish()
+                    )
+                except Exception:
+                    diagnostics["qa_stage_trace"] = _trace_incomplete("CAPTURE_ASSEMBLY_FAILED")
+            return {
+                "result": result.model_dump(mode="json"),
+                "diagnostics": diagnostics,
+                "node_timings_ms": {**state.get("node_timings_ms", {}),
+                                    **({"question_decomposition": decomposition_ms} if coverage_shadow else {}),
+                                    "workflow": duration_ms},
+                "model_usage": self._model_usage_delta(stats_before),
+            }
+        except Exception as original:
+            if not capture_stage_trace:
+                raise
             try:
-                diagnostics["qa_stage_trace"] = (
-                    _trace_incomplete("CAPTURE_INITIALIZATION_FAILED") if trace_initialization_failed
-                    else initial["_stage_trace"].finish()
+                failure_diagnostics = _build_failure_diagnostics(
+                    decomposition, initial.get("_stage_trace"),
+                    decomposition_applicable=coverage_shadow,
+                    trace_initialization_failed=trace_initialization_failed,
                 )
+                failure = QADetailedExecutionError(original, failure_diagnostics)
             except Exception:
-                diagnostics["qa_stage_trace"] = _trace_incomplete("CAPTURE_ASSEMBLY_FAILED")
-        return {
-            "result": result.model_dump(mode="json"),
-            "diagnostics": diagnostics,
-            "node_timings_ms": {**state.get("node_timings_ms", {}),
-                                **({"question_decomposition": decomposition_ms} if coverage_shadow else {}),
-                                "workflow": duration_ms},
-            "model_usage": self._model_usage_delta(stats_before),
-        }
+                # Capture construction must not mask the scientific failure.
+                failure = None
+            if failure is None:
+                raise
+            raise failure from original
 
     def _role_clients(self) -> list[Any]:
         """Distinct role clients in deterministic order; a shared legacy injected
