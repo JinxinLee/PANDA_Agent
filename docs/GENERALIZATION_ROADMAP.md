@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G5 post-observability forward-protocol design commit (Design post-observability targeted live protocol; resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G5 post-observability targeted live verification commit (Run post-observability targeted live verification; resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 5b9588ec552deb91a59a8176d6ce0429c2133b1e
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = cd0a65df7576a736e83fdfe3da5998b766173ffc
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -71,7 +71,7 @@ SELECTED_V1_REPAIR = PROMPT_CLARIFICATION_WITH_NEUTRAL_EXAMPLES
 G5_V1_PROVENANCE_REPAIR_IMPLEMENTATION = COMPLETE / DETERMINISTIC VERIFICATION PASS
 V1_PROVENANCE_PROMPT_ALIGNMENT = VERIFIED
 HOST_ACCEPTANCE_RULE_CHANGE = false
-PROVIDER_COMPLIANCE = NOT_EMPIRICALLY_ESTABLISHED
+PROVIDER_COMPLIANCE = SUPPORTED_FOR_SIX_EXPOSED_V1_PROVENANCE_OBSERVATIONS / SEMANTIC_COMPLETENESS_NOT_UNIVERSALLY_ESTABLISHED
 FALSE_INSUFFICIENCY_RECOVERY = NOT_EMPIRICALLY_ESTABLISHED
 G5_ORIGINAL_VERDICT = INCOMPLETE / PRODUCT ERROR
 G5_INTEGRATED_RUN_COMPLETE = false
@@ -82,16 +82,18 @@ G5_POST_V1_TARGETED_LIVE_VERIFICATION_DESIGN = COMPLETE / CORRECTED / EXECUTION_
 PRIMARY_SEMANTIC_GATE = ABSOLUTE
 CONTROL_SEMANTIC_GATE = REGRESSION_RELATIVE
 TARGETED_LIVE_EVIDENCE_CLASS = EXPOSED_TARGETED_MECHANISM_EVIDENCE
-TARGETED_LIVE_EXECUTION = EXECUTED / SIX ATTEMPTS / SIX INFRASTRUCTURE ERRORS / INCOMPLETE
-TARGETED_V1_VERDICT = TARGETED_V1_VERIFICATION_INCOMPLETE
-TARGETED_V1_PROMPT_MECHANISM = NOT_ESTABLISHED
-REAL_PROVIDER_CONTRACT_COMPLIANCE = NOT_ESTABLISHED / NO ASSESSABLE V1 OUTPUT
+HISTORICAL_POST_V1_TARGETED_LIVE_EXECUTION = EXECUTED / SIX ATTEMPTS / SIX INFRASTRUCTURE ERRORS / INCOMPLETE
+TARGETED_LIVE_EXECUTION = EXECUTED / SIX ATTEMPTS / SIX QA RESULTS / COMPLETE
+TARGETED_V1_VERDICT = TARGETED_V1_MECHANISM_SUPPORTED
+TARGETED_V1_PROMPT_MECHANISM = SUPPORTED_ON_EXPOSED_REPAIR_TARGETS
+REAL_PROVIDER_CONTRACT_COMPLIANCE = SUPPORTED_IN_SIX_EXPOSED_V1_PROVENANCE_OBSERVATIONS / N018_FIRST_PASS_FALSE_MISSING_REMAINS
 G5_TARGETED_PROVIDER_429_BLOCKER_DIAGNOSIS = COMPLETE / PASS / BOTH_PROVIDER_AND_OBSERVABILITY_BLOCKERS
 PROVIDER_429_OBSERVATION = CONFIRMED
 PROVIDER_429_PERSISTENCE_DURING_BATCH = CONFIRMED
 PROVIDER_429_RESOURCE_SUBTYPE = PROVIDER_RESOURCE_EXHAUSTED_SUBTYPE_UNRESOLVED
 FAILED_QA_INTERMEDIATE_PERSISTENCE_BLIND_SPOT = REPAIRED_FOR_CAPTURE_SCOPED_ESCAPING_EXCEPTIONS
-TARGETED_V1_PROVIDER_STAGE = CONFIRMED_NOT_REACHED
+HISTORICAL_POST_V1_TARGETED_V1_PROVIDER_STAGE = CONFIRMED_NOT_REACHED
+TARGETED_V1_PROVIDER_STAGE = OBSERVED_IN_ALL_SIX_FORWARD_CASES
 G5_FAILED_QA_OBSERVABILITY_REPAIR_DESIGN = COMPLETE / IMPLEMENTATION_READY
 SELECTED_FAILED_QA_OBSERVABILITY_REPAIR = CAPTURE_SCOPED_FAILURE_BOUNDARY_PARTIAL_DIAGNOSTICS_EXPORT
 G5_FAILED_QA_OBSERVABILITY_REPAIR_IMPLEMENTATION = COMPLETE / DETERMINISTIC VERIFICATION PASS
@@ -99,10 +101,26 @@ FAILED_QA_PARTIAL_DIAGNOSTICS_EXPORT = DETERMINISTICALLY_VERIFIED
 LATE_FAILURE_PRESERVES_PRIOR_V1_TRACE = DETERMINISTICALLY_VERIFIED_WITH_FAKES
 G5_POST_OBSERVABILITY_REPAIR_TARGETED_LIVE_FORWARD_PROTOCOL_DESIGN = COMPLETE / EXECUTION_READY
 FORWARD_TARGETED_RUN_ID = g5-post-observability-repair-targeted-live-v2
-FORWARD_TARGETED_EXECUTION = NOT_STARTED
+FORWARD_TARGETED_EXECUTION = EXECUTED / SIX ATTEMPTS / SIX QA RESULTS / COMPLETE
+G5_POST_OBSERVABILITY_REPAIR_TARGETED_LIVE_VERIFICATION = COMPLETE / PASS / RULE_5
+FORWARD_LAUNCH_HEAD = fd6c04aab4a7fb25bad5a93b7c335eff49021e32
+OBSERVABILITY_IMPLEMENTATION_HEAD = 2e7cdf6378d381b629a5510380ef1e8d05e8022d
+FIXED_PRIMARY_DENOMINATOR = 3
+ASSESSABLE_PRIMARY_COUNT = 3
+POSITIVE_PRIMARY_COUNT = 3
+CONTROL_N008_CLEAN = true
+CONTROL_N019_CLEAN = true / PREEXISTING_CONSTRUCTION_LIMITATION_UNCHANGED
+SUPPLEMENTAL_N018_FIRST_PASS = SEMANTIC_EVASION_OR_UNDERCHECK_OBSERVED / NON-GATING
+LIVE_FAILED_QA_PARTIAL_EXPORT = NOT_EXERCISED_NO_ESCAPING_QA_EXCEPTION
+LIVE_LATE_FAILURE_PRESERVES_PRIOR_V1 = NOT_EXERCISED
 PROVIDER_AVAILABILITY_PREFLIGHT = GENERATION_ONLY_CANARY
+FORWARD_STATIC_PREFLIGHT = PASS
+FORWARD_CANARY = PASS / G1 / E0 / METADATA_TOKENS_249
+FORWARD_SCIENTIFIC_USAGE = G45 / E6 / TOTAL51 / METADATA_TOKENS_463745
+FORWARD_PROVIDER_RECURRENCE_STOP = NOT_TRIGGERED
+FORWARD_NATIVE_RUNNER = complete / COMPLETE / FAIL / stop_reason_null
 REPEATED_PROVIDER_FAILURE_STOP_RULE = TWO_CONSECUTIVE_CASE_LEVEL_TERMINAL_GENERATION_RESOURCE_ERRORS
-NEXT_TASK_RECOMMENDATION = G5 POST-OBSERVABILITY-REPAIR TARGETED LIVE VERIFICATION EXECUTION
+NEXT_TASK_RECOMMENDATION = G5 BOUNDED POST-FORWARD V1 SEMANTIC FAILURE-FAMILY REVIEW
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -135,6 +153,8 @@ The separately authorized [G5 minimal failed-QA observability repair design](../
 The separately authorized [G5 failed-QA observability implementation](../evaluation/G5_FAILED_QA_OBSERVABILITY_REPAIR_IMPLEMENTATION.md) is **COMPLETE / DETERMINISTIC VERIFICATION PASS**. Three pre-edit fake D1/V1/late-A1 failures were RED for missing persisted partial diagnostics; all become GREEN. The frozen repair adds a capture-scoped failure snapshot/envelope and dedicated wrapper, with runner classification/serialization of the exact original exception plus optional separate `failure_diagnostics`. Existing trace events/projections and bounded canonical D1 survive escaping failures; missing stages are not synthesized as NOT_EXECUTED, and late successful-finish placeholders are removed from failure snapshots. Bounds remain 16 events/2 MiB trace, 64 KiB D1 export and 2,166,784 bytes whole envelope; malformed/copy/capture failures cannot replace the original exception, and genuine store errors still propagate. There are 355 distinct passing post-edit pytest items (48 new focused, 45 O1, 25 recovery, 27 finalization, 210 QA), plus 25 passing QA subtests; no post-edit failures or full-suite claim. The critical fake actual A1 fault preserves prior V1 input/output/host validation, exact resolvable projections and A1 input, with no A1 output or successful score. Successful/capture-disabled behavior, model/retrieval/answer/retry/composer semantics, default accounting and generic recovery remain unchanged. The internal record shape gains only an additive optional field; public/model/provider schemas and prompts do not change. The blind spot is repaired only for capture-enabled escaping Exception while the process remains alive and runner reaches normal exception persistence; bounded capture loss and crash/store failures remain limitations. Product lineage stays exact `5b9588ec552deb91a59a8176d6ce0429c2133b1e` and prompt fingerprint unchanged. Scientific calls/tokens/new runs/attempts/judge/protected access remain zero, all historical records remain immutable, provider subtype unresolved and targeted verification INCOMPLETE with no mechanism/provider-compliance evidence. Original G5 stays incomplete, G6 blocked and fresh/release evidence false. The next recommendation is **G5 POST-OBSERVABILITY-REPAIR TARGETED LIVE VERIFICATION FORWARD-PROTOCOL DESIGN**, separately authorized and not started; it must address external provider availability, new run identity, new one-attempt protocol and new explicit authorization. No probe, rerun or resume follows this PASS. Next-task execution remains false; earlier implementation scheduling is superseded by this completed task.
 
 The separately authorized [G5 post-observability forward-protocol design](../evaluation/G5_POST_OBSERVABILITY_REPAIR_TARGETED_LIVE_FORWARD_PROTOCOL_DESIGN.md) is **COMPLETE / EXECUTION_READY / PASS** at design scope. It freezes a new, uncreated `g5-post-observability-repair-targeted-live-v2`, the same exposed six-case order n008/n018/n019/n022/n025/n028, three absolute-gate primaries, two regression-relative controls and non-gating n018. Static zero-call launch preflight must precede exactly one existing generation-only canary on the identical generation/verification project/location/model configuration; no embedding/full health probe is selected. Canary normal return/status ok on frozen identity is required, with at most three infrastructure invocations counted separately. Failure ends execution authorization before scientific store creation, with zero attempts and no new scientific verdict; a later authorization needs a new forward identity. Science remains one attempt per case, 30 generation plus 10 embedding invocations per case, 180/60/240 total, absolute infrastructure-plus-science bound 243, no token cap and judge zero. Future explicit authorization must include reversible process-local all-role accounting and persisted-case observer/loop-stop bindings, without source edits: preserve the second matching original VertexCallError record before stopping on two consecutive terminal structured-generation 429 RESOURCE_EXHAUSTED infrastructure errors. Remaining cases are UNATTEMPTED_BY_PROTOCOL_STOP, never replaced/resumed; missing required observations yield INCOMPLETE unless an already observed higher-priority primary/control safety veto applies. Optional failure_diagnostics is inspected separately; preserved V1 is assessable only with captured V1 input/output, host validation, complete resolvable projections and sufficient comparable proof/semantic material. A later A1/V2 exception cannot erase such first-pass evidence, while the case remains failed/unscored and downstream completion separate. Rule 0 preflight not-started precedes the frozen Rules 1-7 integrity, safety, completeness and support/partial/not-supported logic. Existing implementation/fake verification states, product lineage `5b9588ec552deb91a59a8176d6ce0429c2133b1e`, implementation head `2e7cdf6378d381b629a5510380ef1e8d05e8022d` and prompt identity remain unchanged; actual future launch must match the accepted design SHA or explicitly accepted documentation-only descendants. No source/test/prompt/schema/config/dependency/dataset edits, tests, SDK client, provider canary/calls, new run/store/attempt or protected access occurred. Historical checkpoints and the closed old run remain immutable. Targeted scientific verification is still INCOMPLETE, mechanism/provider compliance unestablished, original G5 incomplete, G6 blocked and fresh/release evidence false. The next recommendation is **G5 POST-OBSERVABILITY-REPAIR TARGETED LIVE VERIFICATION EXECUTION**, separately authorized and not started; NEXT_TASK_EXECUTION_AUTHORIZED remains false. Earlier forward-design scheduling is superseded by this completed design.
+
+The separately authorized [G5 post-observability targeted live execution](../evaluation/G5_POST_OBSERVABILITY_REPAIR_TARGETED_LIVE_VERIFICATION.md) is **COMPLETE / PASS / TARGETED_V1_MECHANISM_SUPPORTED**, under frozen Rule 5. Exact clean launch HEAD `fd6c04aab4a7fb25bad5a93b7c335eff49021e32`, implementation parent `2e7cdf6378d381b629a5510380ef1e8d05e8022d`, frozen environment/prompt/manifest compatibility and zero-call preflight passed before a dedicated generation-only canary passed with G1/E0 and 249 metadata tokens. One new runner/store `g5-post-observability-repair-targeted-live-v2` attempted n008/n018/n019/n022/n025/n028 once in frozen order: six answered results, no exceptions/unattempted cases, no resume/replacement or recurrence stop. Reversible all-role accounting, persisted-record observer and native stop-guard bindings were verified and restored; all three durable record representations agree. Actual scientific usage is G45/E6/total51 and 463,745 available metadata tokens; combined with canary total52/463,994, within all frozen call bounds, judge zero. All first-pass V1 inputs/outputs/host validations/projections are assessable. Manual literal-quote, all-to-all citation, contribution, completeness and raw-question semantic review supports all three primaries; n008 retains its shared-basis comparison and n019 is clean only relative to its unchanged construction-explanation limitation. Fixed denominator 3, assessable 3, positive 3, both controls clean; no integrity, primary safety, control regression or missing-observation veto applies. Supplemental NON-GATING n018 still falsely marks an adequately witnessed GetMcTruth point missing in V1; A1/V2 final recovery does not erase that first-pass undercheck. False-insufficiency recovery remains unestablished. No failed QA occurred, so live failed-QA export and late-failure preservation were NOT_EXERCISED; existing deterministic fake flags remain. Native generic runner quality-gate FAIL is preserved separately from targeted Rule-5 PASS. Historical checkpoints/raw stores remain unchanged, including the closed old infrastructure run and unresolved 429 subtype; this batch does not certify permanent provider recovery. Product lineage/prompt remain unchanged, original G5 incomplete, G6 blocked and fresh/release evidence false. Only this report and current documentation changed; no source/test/config/data/dependency changes, new tests, post-run provider calls or protected access occurred. The next recommendation is **G5 BOUNDED POST-FORWARD V1 SEMANTIC FAILURE-FAMILY REVIEW**, not authorized or executed. This forward execution supersedes prior not-started and no-assessable-V1 current scheduling statements while preserving their historical checkpoint prose.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 
