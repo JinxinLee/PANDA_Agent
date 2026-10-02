@@ -18,7 +18,7 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G5 deterministic identifier-evidence eligibility design commit (Design deterministic identifier evidence eligibility; resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G5 coarse-completeness repair-surface design commit (Design coarse completeness repair surface; resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 5b9588ec552deb91a59a8176d6ce0429c2133b1e
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = cd0a65df7576a736e83fdfe3da5998b766173ffc
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -138,8 +138,22 @@ CLAIM_TEXT_REWRITE = false
 CITATION_REWRITE = false
 V1_CONTRACT_CHANGE = false
 PRODUCT_BEHAVIOR_LINEAGE_CHANGE = false
-SELECTED_NEXT_REPAIR_SURFACE = NONE / STRICT_RULE_RETAINED
-NEXT_TASK_RECOMMENDATION = NO_IDENTIFIER_ELIGIBILITY_IMPLEMENTATION / RETAIN_STRICT_RULE_AND_DOCUMENTED_LIMITATION
+G5_COARSE_COMPLETENESS_OVERACCEPTANCE_REPAIR_SURFACE_DESIGN = COMPLETE / PASS
+COARSE_COMPLETENESS_FAMILY = CONFIRMED_ON_N006_N019_N023
+N006_FIRST_LIMITING_STAGE = SELECTED_EVIDENCE_GAP / R2_EXTENSION_VALUE_OPPORTUNITY_LOSS
+N019_FIRST_LIMITING_STAGE = SELECTED_EVIDENCE_GAP / R2_IMPLEMENTATION_ROLE_OPPORTUNITY_LOSS
+N023_FIRST_LIMITING_STAGE = SELECTED_EVIDENCE_GAP / R2_BRANCH_INITIALIZATION_OPPORTUNITY_LOSS
+N006_FIRST_WRONG_SEMANTIC_DECISION = V1_ORDINARY_CHECK_SCOPE_AND_COMPLETE_DISPOSITION
+N019_FIRST_WRONG_SEMANTIC_DECISION = V1_ORDINARY_CHECK_SCOPE_AND_COMPLETE_DISPOSITION
+N023_FIRST_WRONG_SEMANTIC_DECISION = V1_CANONICAL_RELATION_SATISFACTION_AND_COMPLETE_DISPOSITION
+ORDINARY_CHECK_SCOPE_WEAKENING = CONFIRMED_ON_N006_N019 / N023_CANONICAL_PATH
+COMMON_RETRIEVAL_POLICY_DEFECT = NOT_ESTABLISHED
+HOST_DETERMINISTIC_COMPLETENESS_GUARD = NOT_JUSTIFIED
+PROMPT_CONTRACT_GAP = NOT_ESTABLISHED
+STRUCTURED_ORDINARY_CONTRACT_REDESIGN = NOT_JUSTIFIED
+SELECTED_REPAIR_SURFACE = SPLIT_RESPONSIBILITY / NO_SINGLE_REPAIR
+SELECTED_NEXT_REPAIR_SURFACE = SPLIT_RESPONSIBILITY / NO_SINGLE_REPAIR
+NEXT_TASK_RECOMMENDATION = NO_PRODUCT_CHANGE / RETAIN_DOCUMENTED_COMPLETENESS_LIMITATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -230,6 +244,12 @@ The same review separates n019's selected construction-evidence gap and V1 coars
 The [deterministic identifier-evidence eligibility design](../evaluation/G5_IDENTIFIER_EVIDENCE_ELIGIBILITY_REPAIR_DESIGN.md) is COMPLETE / PASS / NO_IMPLEMENTATION_READY. Its single selected outcome is STRICT_RULE_RETAINED / NO_SAFE_RELAXATION. The current cited evidence does not establish a small safe owner/member equivalence predicate covering both motivating cases: n018's RhoCandidate return-object context does not establish the receiver/declaring scope, while n007's flattened class documentation lacks a certified member-to-scope binding. Existing locator.symbol values already participate in exact acceptance; section headings and caller symbols do not supply the missing authority. The strict rule retains both known false exclusions. No identifier-eligibility implementation or additional immediate task is selected.
 
 The retained deterministic predicate is case-sensitive contiguous substring presence of each normalized qualified token in its own cited text/path/symbol/URL/section aggregate. Its existing nested-scope substring and complex-token limitations are explicitly documented. Claim text, citations, path/version checks and V1/A1/V2 contracts are preserved; no qualifier deletion, owner/member union heuristic or new model call is selected. Counterexamples and a future acceptance matrix are design expectations only, with zero test executions. Product lineage and prompt fingerprint are unchanged. Rule 5, n019's separate absolute semantic limitation and the safe-smaller-proof result remain unchanged; there is no new scientific or protected-data access, generalization evidence or release evidence. Future execution remains unauthorized.
+
+The [bounded evidence-gap/coarse-completeness repair-surface design](../evaluation/G5_COARSE_COMPLETENESS_OVERACCEPTANCE_REPAIR_SURFACE_DESIGN.md) is COMPLETE / PASS at offline design scope. Three independent exposed questions (O/n006, O/n019 and O/n023; F/n019 is a second realization of the same question) confirm selected-evidence limitations plus semantic completeness overacceptance. D1 already retains the explicit obligations. n006 replaces extension-value enumeration with member/getter inventory; n019 replaces actual persisted-result construction with result structure. These two exhibit ordinary-check scope weakening. n023 instead preserves a canonical relation ID while accepting partial branch enumeration; it is not an ordinary-check weakening example. Each first-pass review is host-accepted with complete points, no A1 target and final preservation of the gap. Valid admission, mapping and all-to-all provenance do not establish full semantic adequacy.
+
+The selected outcome is E / SPLIT RESPONSIBILITY / NO SINGLE REPAIR. The existing production prompt already requires necessary full-point/full-relation answers and adequate complete witnesses; no missing generic rule or safe deterministic host contradiction is established. Existing fields can represent the correct obligations and conservative dispositions, so a question-derived ordinary-ID redesign is not justified. Upstream opportunities have different dense/graph/sparse geometries and source/body roles; no common current R2 policy defect is established. Saved traces lack complete omitted payloads/origins and exchange witness vectors, making exact G4 candidate classifications NOT_ASSESSABLE; observed misses are compatible with bounded retention, not proof of a G4 regression or guaranteed recovery. Frontier capacity remains distinct from entitlement. Exactly one recommendation is NO PRODUCT CHANGE / RETAIN DOCUMENTED COMPLETENESS LIMITATION; no implementation or additional mandatory investigation is selected, and NEXT_TASK_EXECUTION_AUTHORIZED remains false. Earlier next-task scheduling in retained checkpoint prose is superseded by this completed decision.
+
+This design preserves identifier strict-rule/no-safe-relaxation, its known false exclusions, Rule 5 / TARGETED_V1_MECHANISM_SUPPORTED, n019's absolute semantic limitation and the smaller-complete-proof invariant. Product lineage and prompt fingerprint are unchanged. Only this design and current-state documentation change; source/tests/prompts/schemas/configuration/dependencies/datasets/Gold/calibration/raw stores remain unchanged. New provider/preflight/retrieval/live/evaluation runs, logical attempts, scientific invocations/tokens, judge calls, tests and protected access are zero. Original G5 remains INCOMPLETE / PRODUCT ERROR, integrated completion and G6 readiness false, with no fresh generalization or release evidence. PASS certifies the repair-surface decision; the observed product limitation remains.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 
