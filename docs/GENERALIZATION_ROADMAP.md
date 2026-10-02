@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G5 post-forward V1 semantic failure-family review commit (Review post-forward V1 semantic failure families; resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G5 deterministic identifier-evidence eligibility design commit (Design deterministic identifier evidence eligibility; resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 5b9588ec552deb91a59a8176d6ce0429c2133b1e
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = cd0a65df7576a736e83fdfe3da5998b766173ffc
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -132,8 +132,21 @@ GENERIC_V1_MAPPING_IMPLEMENTATION_CHANGE = NOT_ESTABLISHED
 IDENTIFIER_ELIGIBILITY_FAILURE_FAMILY = CONFIRMED_ON_F_N018_AND_O_N007
 HOST_DETERMINISTIC_V1_CONTRADICTION_GUARD = NOT_JUSTIFIED
 V1_PROMPT_REPAIR = NOT_JUSTIFIED_BY_THIS_REVIEW
-SELECTED_NEXT_REPAIR_SURFACE = DETERMINISTIC_IDENTIFIER_EVIDENCE_ELIGIBILITY_REPAIR_DESIGN
-NEXT_TASK_RECOMMENDATION = G5 DETERMINISTIC IDENTIFIER-EVIDENCE ELIGIBILITY REPAIR DESIGN
+G5_IDENTIFIER_EVIDENCE_ELIGIBILITY_REPAIR_DESIGN = COMPLETE / PASS / NO_IMPLEMENTATION_READY
+IDENTIFIER_ELIGIBILITY_DESIGN_OUTCOME = STRICT_RULE_RETAINED / NO_SAFE_RELAXATION
+SELECTED_IDENTIFIER_ELIGIBILITY_CONTRACT = STRICT_EXACT_MATCH_RETAINED
+KNOWN_FALSE_EXCLUSION_FAMILY = F_N018 / O_N007
+SAFE_RELAXATION = NOT_ESTABLISHED
+IMPLEMENTATION_READY = false
+EXACT_QUALIFIED_MATCH = PRESERVED / EXISTING_SUBSTRING_SEMANTICS
+WRONG_OWNER_FAIL_CLOSED = DESIGN_VERIFIED_FOR_ABSENT_QUALIFIED_LITERAL
+AMBIGUOUS_OWNER_FAIL_CLOSED = DESIGN_VERIFIED_FOR_ABSENT_QUALIFIED_LITERAL
+CLAIM_TEXT_REWRITE = false
+CITATION_REWRITE = false
+V1_CONTRACT_CHANGE = false
+PRODUCT_BEHAVIOR_LINEAGE_CHANGE = false
+SELECTED_NEXT_REPAIR_SURFACE = NONE / STRICT_RULE_RETAINED
+NEXT_TASK_RECOMMENDATION = NO_IDENTIFIER_ELIGIBILITY_IMPLEMENTATION / RETAIN_STRICT_RULE_AND_DOCUMENTED_LIMITATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -172,6 +185,10 @@ The separately authorized [G5 post-observability targeted live execution](../eva
 The [bounded post-forward V1 semantic failure-family review](../evaluation/G5_POST_FORWARD_V1_SEMANTIC_FAILURE_FAMILY_REVIEW.md) is COMPLETE / PASS at offline review scope. It corrects the preceding n018 interpretation from saved first-pass evidence: `claim.1` has `unsupported identifier RhoCandidate::GetMcTruth`, and the actual V1 `model_input.untrusted_claims` contains only claim.2 and claim.3. Its useful A0 assertion was excluded before V1; no V1 mapping loss of a supplied claim is established. A1 restates the useful semantics with eligible unqualified spelling. O/n007 independently shares this identifier-eligibility family. The previous execution report and checkpoint prose remain historical; this forward correction controls current interpretation without changing the NON-GATING role or Rule-5 verdict.
 
 The same review separates n019's selected construction-evidence gap and V1 coarse-completeness overacceptance from n018's deterministic exclusion. n022/n025/n028 remain consistent with the frozen smaller-complete-proof invariant. No new safe host V1 contradiction guard or generic V1 prompt gap is established. Exactly one next step is recommended: G5 DETERMINISTIC IDENTIFIER-EVIDENCE ELIGIBILITY REPAIR DESIGN, not authorized for execution. No product, test, prompt, schema, configuration, dataset or raw-store change occurred; new provider calls, scientific tokens, live runs, case attempts, tests and protected-data access are all zero. G5 remains INCOMPLETE / PRODUCT ERROR, not ready for G6, with no fresh generalization or release evidence.
+
+The [deterministic identifier-evidence eligibility design](../evaluation/G5_IDENTIFIER_EVIDENCE_ELIGIBILITY_REPAIR_DESIGN.md) is COMPLETE / PASS / NO_IMPLEMENTATION_READY. Its single selected outcome is STRICT_RULE_RETAINED / NO_SAFE_RELAXATION. The current cited evidence does not establish a small safe owner/member equivalence predicate covering both motivating cases: n018's RhoCandidate return-object context does not establish the receiver/declaring scope, while n007's flattened class documentation lacks a certified member-to-scope binding. Existing locator.symbol values already participate in exact acceptance; section headings and caller symbols do not supply the missing authority. The strict rule retains both known false exclusions. No identifier-eligibility implementation or additional immediate task is selected.
+
+The retained deterministic predicate is case-sensitive contiguous substring presence of each normalized qualified token in its own cited text/path/symbol/URL/section aggregate. Its existing nested-scope substring and complex-token limitations are explicitly documented. Claim text, citations, path/version checks and V1/A1/V2 contracts are preserved; no qualifier deletion, owner/member union heuristic or new model call is selected. Counterexamples and a future acceptance matrix are design expectations only, with zero test executions. Product lineage and prompt fingerprint are unchanged. Rule 5, n019's separate absolute semantic limitation and the safe-smaller-proof result remain unchanged; there is no new scientific or protected-data access, generalization evidence or release evidence. Future execution remains unauthorized.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 
