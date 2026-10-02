@@ -25,7 +25,7 @@ The roadmap is governed by the following core development principles:
 ## Current planning state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G5 coarse-completeness repair-surface design commit (Design coarse completeness repair surface; resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G5 coarse-completeness n023 D1 correction commit (Correct n023 D1 completeness attribution; resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 5b9588ec552deb91a59a8176d6ce0429c2133b1e
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = cd0a65df7576a736e83fdfe3da5998b766173ffc
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -145,22 +145,31 @@ CLAIM_TEXT_REWRITE = false
 CITATION_REWRITE = false
 V1_CONTRACT_CHANGE = false
 PRODUCT_BEHAVIOR_LINEAGE_CHANGE = false
-G5_COARSE_COMPLETENESS_OVERACCEPTANCE_REPAIR_SURFACE_DESIGN = COMPLETE / PASS
+G5_COARSE_COMPLETENESS_OVERACCEPTANCE_REPAIR_SURFACE_DESIGN = COMPLETE / CORRECTED / PASS
+CORRECTION_STATUS = COMPLETE / CORRECTED / PASS
 COARSE_COMPLETENESS_FAMILY = CONFIRMED_ON_N006_N019_N023
 N006_FIRST_LIMITING_STAGE = SELECTED_EVIDENCE_GAP / R2_EXTENSION_VALUE_OPPORTUNITY_LOSS
 N019_FIRST_LIMITING_STAGE = SELECTED_EVIDENCE_GAP / R2_IMPLEMENTATION_ROLE_OPPORTUNITY_LOSS
-N023_FIRST_LIMITING_STAGE = SELECTED_EVIDENCE_GAP / R2_BRANCH_INITIALIZATION_OPPORTUNITY_LOSS
+N023_FIRST_LIMITING_STAGE = D1_RELATION_EXTRACTION_BOUNDARY / REQUIRED_RELATION_SEMANTIC_NORMALIZATION
 N006_FIRST_WRONG_SEMANTIC_DECISION = V1_ORDINARY_CHECK_SCOPE_AND_COMPLETE_DISPOSITION
 N019_FIRST_WRONG_SEMANTIC_DECISION = V1_ORDINARY_CHECK_SCOPE_AND_COMPLETE_DISPOSITION
-N023_FIRST_WRONG_SEMANTIC_DECISION = V1_CANONICAL_RELATION_SATISFACTION_AND_COMPLETE_DISPOSITION
-ORDINARY_CHECK_SCOPE_WEAKENING = CONFIRMED_ON_N006_N019 / N023_CANONICAL_PATH
+N023_FIRST_WRONG_SEMANTIC_DECISION = D1_RELATION_OVEREXTRACTION / ORDINARY_ENUMERATION_MISCLASSIFIED_AS_RELATION
+N023_FIRST_WRONG_STAGE = D1_RELATION_EXTRACTION_BOUNDARY / REQUIRED_RELATION_SEMANTIC_NORMALIZATION
+N023_D1_CLASSIFICATION = D1_REQUIRED_RELATION_SEMANTIC_DEFECT / RELATION_OVEREXTRACTION
+N023_V1_CANONICAL_OVERACCEPTANCE = DOWNSTREAM_CONTRIBUTOR / INDEPENDENT_V1_ERROR_NOT_ESTABLISHED
+N023_DOWNSTREAM_WRONG_DECISIONS = V1_ACCEPTED_WEAKENED_CANONICAL_RELATION / POINT_COMPLETE
+ORDINARY_CHECK_SCOPE_WEAKENING = CONFIRMED_ON_N006_N019 / N023_D1_RELATION_OVEREXTRACTION
+COMMON_D1_GRANULARITY_DEFECT = false
+COMMON_D1_DEFECT = false
+D1_RELATION_EXTRACTION_BOUNDARY_GAP = ESTABLISHED
+D1_RELATION_SEMANTICS_PROMPT_GAP = NOT_ESTABLISHED
 COMMON_RETRIEVAL_POLICY_DEFECT = NOT_ESTABLISHED
 HOST_DETERMINISTIC_COMPLETENESS_GUARD = NOT_JUSTIFIED
-PROMPT_CONTRACT_GAP = NOT_ESTABLISHED
+V1_PROMPT_CONTRACT_GAP_FOR_N006_N019 = NOT_ESTABLISHED
 STRUCTURED_ORDINARY_CONTRACT_REDESIGN = NOT_JUSTIFIED
-SELECTED_REPAIR_SURFACE = SPLIT_RESPONSIBILITY / NO_SINGLE_REPAIR
-SELECTED_NEXT_REPAIR_SURFACE = SPLIT_RESPONSIBILITY / NO_SINGLE_REPAIR
-NEXT_TASK_RECOMMENDATION = NO_PRODUCT_CHANGE / RETAIN_DOCUMENTED_COMPLETENESS_LIMITATION
+SELECTED_REPAIR_SURFACE = D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_DESIGN
+SELECTED_NEXT_REPAIR_SURFACE = D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_DESIGN
+NEXT_TASK_RECOMMENDATION = G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -204,11 +213,11 @@ The [deterministic identifier-evidence eligibility design](../evaluation/G5_IDEN
 
 The retained deterministic predicate is case-sensitive contiguous substring presence of each normalized qualified token in its own cited text/path/symbol/URL/section aggregate. Its existing nested-scope substring and complex-token limitations are explicitly documented. Claim text, citations, path/version checks and V1/A1/V2 contracts are preserved; no qualifier deletion, owner/member union heuristic or new model call is selected. Counterexamples and a future acceptance matrix are design expectations only, with zero test executions. Product lineage and prompt fingerprint are unchanged. Rule 5, n019's separate absolute semantic limitation and the safe-smaller-proof result remain unchanged; there is no new scientific or protected-data access, generalization evidence or release evidence. Future execution remains unauthorized.
 
-The [bounded evidence-gap/coarse-completeness repair-surface design](../evaluation/G5_COARSE_COMPLETENESS_OVERACCEPTANCE_REPAIR_SURFACE_DESIGN.md) is COMPLETE / PASS at offline design scope. Three independent exposed questions (O/n006, O/n019 and O/n023; F/n019 is a second realization of the same question) confirm selected-evidence limitations plus semantic completeness overacceptance. D1 already retains the explicit obligations. n006 replaces extension-value enumeration with member/getter inventory; n019 replaces actual persisted-result construction with result structure. These two exhibit ordinary-check scope weakening. n023 instead preserves a canonical relation ID while accepting partial branch enumeration; it is not an ordinary-check weakening example. Each first-pass review is host-accepted with complete points, no A1 target and final preservation of the gap. Valid admission, mapping and all-to-all provenance do not establish full semantic adequacy.
+The [corrected bounded evidence-gap/coarse-completeness repair-surface design](../evaluation/G5_COARSE_COMPLETENESS_OVERACCEPTANCE_REPAIR_SURFACE_DESIGN.md) is COMPLETE / CORRECTED / PASS at offline design scope. Three independent exposed questions (O/n006, O/n019 and O/n023; F/n019 is a second realization of the same question) confirm the family, but not one common D1 mechanism. n006 replaces extension-value enumeration with member/getter inventory; n019 replaces actual persisted-result construction with result structure. n023 is corrected: its raw output-set request was over-extracted into `required_relations`, and the canonical relation text lost the requested branch identity set. The exact n023 D1 point and relation bytes are recorded in the corrected design. V1 accepts the weakened relation; an independent V1 error is not established. The previous authoritative `N023_D1_CLASSIFICATION = D1_SUFFICIENT` finding is superseded by `D1_REQUIRED_RELATION_SEMANTIC_DEFECT / RELATION_OVEREXTRACTION`.
 
-The selected outcome is E / SPLIT RESPONSIBILITY / NO SINGLE REPAIR. The existing production prompt already requires necessary full-point/full-relation answers and adequate complete witnesses; no missing generic rule or safe deterministic host contradiction is established. Existing fields can represent the correct obligations and conservative dispositions, so a question-derived ordinary-ID redesign is not justified. Upstream opportunities have different dense/graph/sparse geometries and source/body roles; no common current R2 policy defect is established. Saved traces lack complete omitted payloads/origins and exchange witness vectors, making exact G4 candidate classifications NOT_ASSESSABLE; observed misses are compatible with bounded retention, not proof of a G4 regression or guaranteed recovery. Frontier capacity remains distinct from entitlement. Exactly one recommendation is NO PRODUCT CHANGE / RETAIN DOCUMENTED COMPLETENESS LIMITATION; no implementation or additional mandatory investigation is selected, and NEXT_TASK_EXECUTION_AUTHORIZED remains false. Earlier next-task scheduling in retained checkpoint prose is superseded by this completed decision.
+The corrected outcome is C / G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR DESIGN. G1 says relation-bearing completeness uses only canonical required relations, while definitions, locators, argument lists and property/list requests remain ordinary unless the user asks to establish a relation. The current D1 prompt has a generic boundary ambiguity between output-set questions and input/output relations; a clarification design is warranted. V1's production contract remains sufficient for n006/n019, and no host semantic guard, schema redesign or common R2 defect is established. Retrieval/G4 fields remain frozen, including `COMMON_RETRIEVAL_POLICY_DEFECT = NOT_ESTABLISHED` and exact candidate assessment `NOT_ASSESSABLE`. No implementation or follow-up execution is authorized; exactly one next recommendation is `G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR DESIGN`.
 
-This design preserves identifier strict-rule/no-safe-relaxation, its known false exclusions, Rule 5 / TARGETED_V1_MECHANISM_SUPPORTED, n019's absolute semantic limitation and the smaller-complete-proof invariant. Product lineage and prompt fingerprint are unchanged. Only this design and current-state documentation change; source/tests/prompts/schemas/configuration/dependencies/datasets/Gold/calibration/raw stores remain unchanged. New provider/preflight/retrieval/live/evaluation runs, logical attempts, scientific invocations/tokens, judge calls, tests and protected access are zero. Original G5 remains INCOMPLETE / PRODUCT ERROR, integrated completion and G6 readiness false, with no fresh generalization or release evidence. PASS certifies the repair-surface decision; the observed product limitation remains.
+The correction preserves identifier strict-rule/no-safe-relaxation, its known false exclusions, Rule 5 / TARGETED_V1_MECHANISM_SUPPORTED, n019's absolute semantic limitation and the smaller-complete-proof invariant. Product lineage and prompt fingerprint are unchanged. Only this design and current-state documentation change; source/tests/prompts/schemas/configuration/dependencies/datasets/Gold/calibration/raw stores remain unchanged. New provider/preflight/retrieval/live/evaluation runs, logical attempts, scientific invocations/tokens, judge calls, tests and protected access are zero. Original G5 remains INCOMPLETE / PRODUCT ERROR, integrated completion and G6 readiness false, with no fresh generalization or release evidence. PASS certifies the corrected design review, not product repair.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 

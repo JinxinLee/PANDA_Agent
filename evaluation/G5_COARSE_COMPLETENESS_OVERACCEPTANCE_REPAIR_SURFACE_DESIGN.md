@@ -1,19 +1,26 @@
 # G5 Bounded Evidence-Gap / Coarse-Completeness Overacceptance Repair-Surface Design
 
+> **CORRECTION_STATUS = COMPLETE / CORRECTED / PASS**
+>
+> This document supersedes its earlier n023 D1 classification. The bounded
+> correction finds that n023's output-list request was over-extracted into a
+> required relation. The original n006/n019 findings and frozen lifecycle
+> conclusions remain unchanged.
+
 ## 1. Status and scope
 
 ```text
-G5_COARSE_COMPLETENESS_OVERACCEPTANCE_REPAIR_SURFACE_DESIGN = COMPLETE / PASS
-PRIMARY_OUTCOME = E / SPLIT_RESPONSIBILITY / NO_SINGLE_REPAIR
-SELECTED_REPAIR_SURFACE = SPLIT_RESPONSIBILITY / NO_SINGLE_REPAIR
+G5_COARSE_COMPLETENESS_OVERACCEPTANCE_REPAIR_SURFACE_DESIGN = COMPLETE / CORRECTED / PASS
+PRIMARY_OUTCOME = C / D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_DESIGN
+SELECTED_REPAIR_SURFACE = D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_DESIGN
 IMPLEMENTATION_READY = false
-NEXT_TASK_RECOMMENDATION = NO_PRODUCT_CHANGE / RETAIN_DOCUMENTED_COMPLETENESS_LIMITATION
+NEXT_TASK_RECOMMENDATION = G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
-PASS applies to the bounded review and repair-surface decision. The observed semantic defects remain. This task performs offline review, static source inspection, saved exposed-artifact inspection and documentation only. It closes this family as a documented limitation; no implementation task is selected.
+PASS applies to the corrected bounded review and repair-surface decision. The observed semantic defects remain. This task performs offline review, static source inspection, saved exposed-artifact inspection and documentation only; it does not implement the next design.
 
-Entry: clean `main`, HEAD `4bdf73e75509aa868ccb4fb78ec34350fd994e64`, message `Design deterministic identifier evidence eligibility`, parent `696cd23354a0d6de606a7e974b174c7a96a198bd`. The requested documentation commit has the entry HEAD as parent; its SHA is resolved from Git history and reported on delivery. No push.
+Correction entry: clean `main`, HEAD `30f726cbe67a2f6461b993e34dfb7f32010518d7`, message `Design coarse completeness repair surface`, parent `4bdf73e75509aa868ccb4fb78ec34350fd994e64`. The correction commit has this entry HEAD as parent; its SHA is resolved from Git history and reported on delivery. No push.
 
 Product behavior lineage remains `5b9588ec552deb91a59a8176d6ce0429c2133b1e`; prompt set remains `3.12.1`, fingerprint `08083fffd968f5903293e927759cf0d2de72871bbadc66741af87f1d0de49abc`. These existing identities are retained, not regenerated. No frozen candidate or new integrity manifest is created.
 
@@ -21,7 +28,7 @@ Product behavior lineage remains `5b9588ec552deb91a59a8176d6ce0429c2133b1e`; pro
 
 Current interpretation follows the [post-forward semantic review](G5_POST_FORWARD_V1_SEMANTIC_FAILURE_FAMILY_REVIEW.md) and [identifier-eligibility design](G5_IDENTIFIER_EVIDENCE_ELIGIBILITY_REPAIR_DESIGN.md). Historical context comes from the [integrated failure-family review](G5_INTEGRATED_FAILURE_FAMILY_REVIEW.md), [integrated execution report](G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION.md), [G4 exposed diagnostic](G4_EXPOSED_DEVELOPMENT_FALSE_INSUFFICIENCY_DIAGNOSTIC.md), [R2 design](G4_R2_FUSION_EVIDENCE_RETENTION_REPAIR_DESIGN.md), [collateral-retention implementation](G4_R2_COLLATERAL_RETENTION_IMPLEMENTATION_RESULT.md), [normal-product integration correction](G4_R2_NORMAL_PRODUCT_POOL_INTEGRATION_CORRECTION.md), [post-correction exposed verification](G4_R2_POST_CORRECTION_EXPOSED_VERIFICATION.md), [collateral completeness review](G4_R2_COLLATERAL_RETENTION_COMPLETENESS_FAILURE_REVIEW.md), [G4 targeted live verification](G4_POST_CORRECTION_TARGETED_LIVE_VERIFICATION.md) and [G5 forward execution report](G5_POST_OBSERVABILITY_REPAIR_TARGETED_LIVE_VERIFICATION.md).
 
-Static implementation authority: [prompts.py](../src/panda_agent/prompts.py), [qa.py](../src/panda_agent/qa.py), [retrieval.py](../src/panda_agent/retrieval.py). Current lifecycle authority: [evaluation status](../docs/EVALUATION_STATUS.md) and [roadmap](../docs/GENERALIZATION_ROADMAP.md). Source inspection establishes behavior, not execution authorization.
+Static implementation authority: [question_decomposition.py](../src/panda_agent/question_decomposition.py), [prompts.py](../src/panda_agent/prompts.py), [qa.py](../src/panda_agent/qa.py), [retrieval.py](../src/panda_agent/retrieval.py). Current lifecycle authority: [evaluation status](../docs/EVALUATION_STATUS.md) and [roadmap](../docs/GENERALIZATION_ROADMAP.md). Source inspection establishes behavior, not execution authorization.
 
 Aliases below:
 
@@ -43,9 +50,9 @@ No other raw case was opened. No all-28 sweep, fresh retrieval, source-body fetc
 
 ## 3. Family hypothesis and finding
 
-The broad family **EVIDENCE_GAP_WITH_COARSE_COMPLETENESS_ACCEPTANCE** is confirmed on n006/n019/n023. All three have an explicit detail obligation retained by D1, a selected-evidence limitation, related but incomplete A0 claims, accepted first-pass completeness and final preservation of the gap.
+The broad family **EVIDENCE_GAP_WITH_COARSE_COMPLETENESS_ACCEPTANCE** remains confirmed across n006/n019/n023, but its D1 mechanisms are not uniform. n006 and n019 retain their explicit obligations and exhibit ordinary-check scope weakening. n023 has an earlier decomposition boundary defect: its output-set request was represented as a required relation whose text loses the identity-set question.
 
-The narrower **ORDINARY_CHECK_SCOPE_WEAKENING** mechanism is confirmed on n006 and n019 only. n023 uses a canonical required relation: its ID is preserved, but partial enumeration is accepted as satisfying it. This counterexample matters to ownership: stronger ordinary IDs alone would not address the entire family.
+The narrower **ORDINARY_CHECK_SCOPE_WEAKENING** mechanism is confirmed on n006 and n019 only. The corrected n023 path is **RELATION_OVEREXTRACTION / ORDINARY_ENUMERATION_MISCLASSIFIED_AS_RELATION**. V1 then evaluates the weakened canonical relation and accepts it; that downstream result is retained as a consequence, not treated as the first owner. This correction removes the earlier claim that n023 was a D1-sufficient canonical counterexample.
 
 F/O n019 are two realizations of one question, not two independent examples. The four records do not measure population incidence, causal effects of a prompt change, recovery probability or fresh generalization. Historical evaluator incompleteness alone is not the defect criterion; sections 4-7 establish the runtime discrepancy independently.
 
@@ -67,7 +74,11 @@ D1 separately represents transformation (canonical `point.1.rel.1`), fitter sele
 
 > I need to modify forward tracking for the forward spectrometer. Where in the PandaRoot source tree is the FTS track finder implemented, and which track branches does it write out?
 
-D1 point 1 asks the source locator. Point 2 says "Identify which track branches the FTS track finder writes out," with canonical `point.2.rel.1`, "The FTS track finder writes out track branches." Its parent text and raw question establish enumeration, even though the relation text is broad. A field holding an unknown branch name is not that branch's actual name. Gold-only payload-type or internal producer details are not added as runtime obligations.
+D1 point 1 asks the source locator. Point 2 says "Identify which track branches the FTS track finder writes out," with canonical `point.2.rel.1`, "The FTS track finder writes out track branches." The parent text and raw question establish enumeration, but the relation-bearing completeness path makes the relation text operative and that text is broad. A field holding an unknown branch name is not that branch's actual name. Gold-only payload-type or internal producer details are not added as runtime obligations.
+
+The exact persisted D1 bytes are: point 2 text `Identify which track branches the FTS track finder writes out.`; point 2 support span `which track branches does it write out?`; relation ID `point.2.rel.1`; relation text `The FTS track finder writes out track branches.`; relation support span `which track branches does it write out?`; no `relation_type` field. The relation is therefore not merely a report paraphrase: the raw point and relation both omit the requested `which` identity-set semantics from the canonical relation text.
+
+Under G1, this is not a sufficient relation-bearing representation. “Which track branches does task X write out?” is analogous to which outputs, fields or extensions a component defines: it asks for an ordinary property/list enumeration. It does not ask to establish a connection, ordering, dependency or other relation between distinct participants. The correct D1 shape is the existing point text with `required_relations=[]`, leaving enumeration scope to ordinary C1 rather than assigning it to a generic input/output edge.
 
 ## 5. n006 trace reconstruction
 
@@ -142,15 +153,16 @@ A0's source-location claim correctly locates `tracking/PndFtsTrackFinder`. Its `
 
 V1's locator ordinary check is grounded. The output point is **canonical**, with copied `point.2.rel.1`, `relationship_checks=[]`, not a V1-generated ordinary relationship. Its basis is the header quote "Sets the name of the output branch containing generated PndTracks." Its supporter is the output-branches claim. This exact comment and admitted own-citation closure are valid, but the comment is not a complete enumeration witness. V1 sets the canonical check satisfied, point complete/established, missing points empty; host validation accepts.
 
-No A1 target/execution or V2 execution follows, `revision_count=0`; the accepted composer preserves the two claims, including the unknown analytic branch variable, in the final answered result. This is canonical satisfaction/completeness overacceptance. **Ordinary-check scope weakening is not established for this point.** The parent enumeration obligation is already present; no D1 omission is needed to explain the failure.
+No A1 target/execution or V2 execution follows, `revision_count=0`; the accepted composer preserves the two claims, including the unknown analytic branch variable, in the final answered result. V1's `complete=true` is a downstream consequence of evaluating the weakened canonical relation. The supplied claim and header do support the broad relation that output branches exist, so an independent V1 failure against that weakened relation is not established. V1 cannot recover the `which` semantics removed before it.
 
 The saved dense-rank-11 source-file chunk for `PndFtsTrackFinderTask.cxx:1-18` misses legacy top 30, offered pool, reranked set and final evidence. Historical review associates implementation initialization with the missing analytic name. The current trace stores locator/rank but no candidate body; it cannot prove that this short chunk alone supplies the complete answer. No new body fetch or guaranteed recovery claim is made.
 
 ```text
-N023_FIRST_LIMITING_STAGE = SELECTED_EVIDENCE_GAP / R2_BRANCH_INITIALIZATION_OPPORTUNITY_LOSS
-N023_FIRST_WRONG_SEMANTIC_DECISION = V1_CANONICAL_RELATION_SATISFACTION_AND_COMPLETE_DISPOSITION
-N023_PROXIMATE_CAUSE = PARTIAL_BRANCH_ENUMERATION_ACCEPTED_AS_FULL_CANONICAL_ANSWER
-N023_UPSTREAM_CONTRIBUTORS = UNSELECTED_INITIALIZATION_OPPORTUNITY / PARTIAL_A0
+N023_FIRST_LIMITING_STAGE = D1_RELATION_EXTRACTION_BOUNDARY / REQUIRED_RELATION_SEMANTIC_NORMALIZATION
+N023_FIRST_WRONG_SEMANTIC_DECISION = D1_RELATION_OVEREXTRACTION / ORDINARY_ENUMERATION_MISCLASSIFIED_AS_RELATION
+N023_PROXIMATE_CAUSE = IDENTITY_SET_REQUEST_LOST_FROM_CANONICAL_RELATION_TEXT
+N023_UPSTREAM_CONTRIBUTORS = PARTIAL_SELECTED_EVIDENCE / UNSELECTED_INITIALIZATION_OPPORTUNITY
+N023_DOWNSTREAM_WRONG_DECISIONS = V1_ACCEPTED_WEAKENED_CANONICAL_RELATION / POINT_COMPLETE
 N023_DOWNSTREAM_EFFECTS = NO_A1_TARGET / FINAL_BRANCH_ENUMERATION_GAP_PRESERVED
 ```
 
@@ -160,7 +172,7 @@ The matrix describes the observed deficient point; it does not declare every oth
 
 | Layer | O/n006 | O/F n019 | O/n023 |
 | --- | --- | --- | --- |
-| D1 obligation correctness | Sufficient explicit extensions point | Sufficient separate construction point | Sufficient branch-enumeration parent with canonical relation |
+| D1 obligation correctness | Sufficient explicit extensions point | Sufficient separate construction point | **Defective:** ordinary branch enumeration over-extracted into a generic required relation |
 | Retrieval availability | Constructor/getter metadata upstream | Init and fork Exec metadata upstream; complete compatible witness unresolved | Initial source-file metadata upstream; full initializer text unresolved |
 | Selected evidence | Header/member inventory, not extension defaults | Array constructor/result schema, no task Exec construction | Header/locator, no actual analytic branch name |
 | Admission | Cited basis admitted; no admission loss | Cited basis admitted; no admission loss | Cited basis admitted; no admission loss |
@@ -168,10 +180,10 @@ The matrix describes the observed deficient point; it does not declare every oth
 | V1 claim support/relevance | Supported coarse assertions remain useful | Supported coarse assertions remain useful | Locator/default names supported; full enumeration not established |
 | V1 mapping | Correct helper/extensions parents | Correct four parents | Correct locator/branches parents |
 | V1 ordinary/canonical inventory | Helper canonical; extensions ordinary | Transformation canonical; construction ordinary | Locator ordinary; branches canonical |
-| V1 scope wording | Members/getters substitute extension values | Structure/contents substitute construction | Canonical ID preserved; no ordinary wording substitution |
+| V1 scope wording | Members/getters substitute extension values | Structure/contents substitute construction | Evaluates already-weakened relation; no further V1 wording substitution |
 | V1 basis adequacy | Declaration proves member, not extension value | Allocation/signature prove structure, not per-track procedure | Setter comment proves output role, not all branch names |
-| V1 satisfied decision | Incorrect for full requested enumeration | Incorrect for construction obligation | Incorrect for full canonical enumeration |
-| Point complete decision | Incorrect point 2 complete | Incorrect point 4 complete | Incorrect point 2 complete |
+| V1 satisfied decision | Incorrect for full requested enumeration | Incorrect for construction obligation | Satisfies the weakened generic relation; independent V1 error not established |
+| Point complete decision | Incorrect point 2 complete | Incorrect point 4 complete | Complete only under the weakened D1 contract; wrong for raw question downstream |
 | A1 authorization | No targets | No targets in either realization | No targets |
 | Final rendering | Preserves gap/caveat | Preserves gap; caveat difference precedes composer | Preserves gap/variable |
 
@@ -179,7 +191,7 @@ Across all four: first-pass claims have no deterministic rejection; cited basis 
 
 ## 9. Evidence gap versus overacceptance
 
-The earliest observed limitation is the absence of the explicit-detail witness from selected evidence. The first wrong *completeness* decision is V1's weaker ordinary check or coarse canonical satisfaction. A0 is already semantically partial; in O/n006 and O/n019 it says so. Useful grounded partial claims need not be discarded merely because the whole point is incomplete.
+The earliest observed limitation is case-specific. For n006/n019 it is the selected-evidence gap, followed by V1's weaker ordinary check. For n023 it is D1 relation normalization: the identity-set request is absent from the canonical relation before V1 sees it. The selected-evidence gap remains an upstream contributor, but it is no longer the first limiting stage. A0 is already semantically partial; in O/n006 and O/n019 it says so. Useful grounded partial claims need not be discarded merely because the whole point is incomplete.
 
 Retrieval repair alone is **not established sufficient**: candidate semantic/version sufficiency is unresolved in saved payloads, and an improved pool would not guarantee selection, generation or reliable review. Conversely, with the current coarse evidence V1 should already preserve the explicit need and mark the deficient point incomplete rather than complete. This does not require speculative new evidence or Gold.
 
@@ -189,27 +201,33 @@ Use the existing truthful disposition: admitted-backed unsatisfied only when the
 
 The recurring ordinary mechanism has two independent examples: n006 replaces extension values by member/getter categories; n019 replaces actual construction by result structure. Valid `relationship_text`/`necessity_reason`, mappings and citation closure cannot prove equivalence with the raw obligation. A plausible necessity sentence can accompany a weaker relationship.
 
-`EXPLICIT_SEMANTIC_COMPONENT` is useful as a review concept: preserve requested enumeration, requested process and explicit included subparts. D1 already supplies their separation here. It is not a proposed runtime parser, keyword classifier, expected answer list or new intermediate schema. A broad question can be fully answered at its actual requested abstraction level; the existence of the word "how" does not require an implementation body.
+`EXPLICIT_SEMANTIC_COMPONENT` is useful as a review concept: preserve requested enumeration, requested process and explicit included subparts. D1 supplies the distinction for n006/n019, but fails to retain it in n023's relation text. It is not a proposed runtime parser, keyword classifier, expected answer list or new intermediate schema. A broad question can be fully answered at its actual requested abstraction level; the existence of the word "how" does not require an implementation body.
 
-n023 demonstrates a broader satisfaction-reliability issue even with a stable canonical ID. Its defect cannot be fixed merely by preventing ordinary-text generation. There is no basis to combine its canonical path with n006/n019 into three ordinary-scope failures.
+n023 demonstrates a decomposition boundary failure, not a third ordinary-check scope failure. Its downstream canonical acceptance cannot be repaired by V1 alone because V1 receives the weakened relation. The same evidence gap still matters after a corrected ordinary point, but it does not establish that retrieval alone would recover every branch name.
 
 ## 11. D1 adequacy and structured-contract assessment
 
 ```text
 N006_D1_CLASSIFICATION = D1_SUFFICIENT
 N019_D1_CLASSIFICATION = D1_SUFFICIENT
-N023_D1_CLASSIFICATION = D1_SUFFICIENT
-COMMON_D1_GRANULARITY_DEFECT = NOT_ESTABLISHED
+N023_D1_CLASSIFICATION = D1_REQUIRED_RELATION_SEMANTIC_DEFECT / RELATION_OVEREXTRACTION
+COMMON_D1_GRANULARITY_DEFECT = false
+COMMON_D1_DEFECT = false
+N023_RELATION_EXTRACTION_BOUNDARY = ORDINARY_ENUMERATION_MISCLASSIFIED_AS_RELATION
 STRUCTURED_ORDINARY_CONTRACT_REDESIGN = NOT_JUSTIFIED
 ```
 
-Each explicit need is retained in the actual runtime inventory. n023's relation text could be more descriptive, but its parent already requests enumeration; a D1 defect or necessary granularity change is not established by that broad wording alone.
+N006 and n019 retain their explicit needs in the actual runtime inventory. n023's parent retains the wording, but G1 assigns completeness authority for a relation-bearing point only to its canonical required relation. Because the canonical relation says only that tracks are written out, it cannot carry the raw `which` identity-set obligation. The correct classification is a D1 relation-extraction boundary defect, not a common D1 granularity defect.
 
-Free-text ordinary checks leave semantic judgment to V1, yet the existing representation can express full extension enumeration, a construction-process check, and incomplete/uncertain dispositions. No representational impossibility is demonstrated. The proposed larger redesign threshold is not met: repeated ordinary failures and lack of a safe host semantic oracle do not establish that the representation cannot state the correct obligation. Question-derived ordinary IDs/components may bind identity, but n023 already preserves a canonical identity and still overaccepts. Do not redesign G1 or split canonical relations to evade all-to-all closure.
+The G1 decomposition implementation and focused contract inventory provide ordinary examples for a locator, definition, API argument list and unstructured explanation (`Where is Cedar implemented?`, `Define Birch.`, `Which file defines Maple?`, `What arguments does SensorFrame accept?`, `How does Cedar work?`). They do not provide a neutral output/field/branch/extension-list example. This is bounded evidence of a missing boundary example, not a test result and not a reason to add a PANDA-specific rule.
+
+G1 is binding here: for `required_relations == []`, ordinary C1 owns completeness; when the list is nonempty, the canonical required-relation dispositions are the sole completeness path. Current `_active_runtime_answer_points` preserves `point.text` but projects the canonical relation list, and `_validate_coverage_satisfaction` validates relation IDs and derives the relation-bearing `complete` value from those named checks. Parent `point.text` is context and provenance; it is not an independent second completeness axis.
+
+The existing representation can express full extension enumeration, a construction-process check, and incomplete/uncertain dispositions. No structured-contract redesign is needed. The narrower correction is to keep output/property/list questions ordinary unless the user explicitly asks to establish a relation between distinct participants. Do not split canonical relations to evade all-to-all closure.
 
 ## 12. Current production prompt sufficiency
 
-The production prompt concatenates `EVIDENCE_REVIEW_SYSTEM_PROMPT` with `PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT` prose. Static inspection confirms:
+The production V1 prompt concatenates `EVIDENCE_REVIEW_SYSTEM_PROMPT` with `PRODUCTION_COVERAGE_SATISFACTION_REVIEW_SYSTEM_PROMPT` prose. Static inspection confirms:
 
 - Ordinary checks must be necessary, evidence-grounded and materially answer the point; all necessary checks need admitted satisfaction for completeness.
 - Canonical checks must actually answer the canonical relation, including requested explanation; participant mentions and mappings alone cannot satisfy it.
@@ -219,12 +237,14 @@ The production prompt concatenates `EVIDENCE_REVIEW_SYSTEM_PROMPT` with `PRODUCT
 
 The literal sentence "mapping relevance alone does not imply completeness" occurs in the separate shadow coverage prompt, **not in the production prompt's inheritance chain**. The attachment's shorthand is therefore not an exact production quotation. The production rules above nevertheless impose the relevant logical distinction. This precision does not weaken the sufficiency finding.
 
-Adding "do not replace process with schema or enumeration with category" would illustrate the already-required preservation of what answers the point. This review identifies no missing generic logical rule, conflicting production instruction or requirement to weaken explicit detail. The observed provider decisions fail that existing contract. Prompt text sufficiency is a normative finding, not a guarantee of provider reliability.
+The V1 prompt remains sufficient for n006/n019 and is not the owner of the corrected n023 finding: it cannot recover semantics removed from D1. The D1 decomposition prompt does say that ordinary definitions, locators, API arguments and unstructured explanations use an empty relation list, and says not to invent an edge from a verb or property. It also permits input/output relations without explicitly distinguishing an output-set/property question from a relation between participants. The n023 realization demonstrates this generic category-boundary ambiguity. A clarification should state that enumeration/property/list requests such as which outputs, fields, branches or extensions remain ordinary unless the user asks to establish a relation itself; this is a generic boundary rule, not a PANDA-specific trigger.
 
 ```text
-PROMPT_CONTRACT_GAP = NOT_ESTABLISHED
-PROMPT_ASSESSMENT = PROMPT_CONTRACT_ALREADY_SUFFICIENT / PROVIDER_COMPLETENESS_RELIABILITY_FAILURE
-PROMPT_REPAIR_SELECTED = false
+D1_RELATION_EXTRACTION_BOUNDARY_GAP = ESTABLISHED
+D1_RELATION_SEMANTICS_PROMPT_GAP = NOT_ESTABLISHED
+V1_PROMPT_CONTRACT_GAP_FOR_N006_N019 = NOT_ESTABLISHED
+V1_PROMPT_ASSESSMENT = PROMPT_CONTRACT_ALREADY_SUFFICIENT / PROVIDER_COMPLETENESS_RELIABILITY_FAILURE
+PROMPT_REPAIR_SELECTED = D1_BOUNDARY_DESIGN_ONLY / NOT_IMPLEMENTED
 ```
 
 ## 13. Deterministic host-guard assessment
@@ -234,6 +254,8 @@ PROMPT_REPAIR_SELECTED = false
 Those rules work as specified on these receipts. They do not deterministically infer that a result schema is equivalent to a construction process, that a member declaration supplies an extension value, or that a setter comment proves full branch enumeration. No foreign ID, impossible aggregate, missing citation edge or admission contradiction supplies a generic host rejection here.
 
 Raw point text, check wording, necessity prose, mapped claim text and evidence content are semantic inputs; they do not provide a machine-certified component inventory or exhaustive source interpretation. Correct paraphrases and abstraction levels vary. Keyword overlap, string containment, embedding thresholds, caveat-word vetoes, Gold nouns and PANDA-specific terms would create unsafe false exclusions. F/n019 also omits the caveat already in A0, so a caveat veto would not cover the confirmed family.
+
+The host also cannot safely infer from the words `which`, `writes` or `branches` that D1 should have emitted an ordinary point. That is a decomposition/model-semantic decision, not a deterministic coverage-receipt invariant. A host check for this case would be a question-specific keyword guard and is rejected.
 
 ```text
 HOST_DETERMINISTIC_COMPLETENESS_GUARD = NOT_JUSTIFIED
@@ -293,9 +315,9 @@ Final evidence selection can use full fused order in fallback paths as well as t
 
 ## 15. Genericity and change threshold
 
-The generic semantic observation is supported by three independent raw questions; ordinary scope weakening by two. Both are question-derived and require no protected data or Gold. They identify a reliability limitation, not automatically a safe executable repair.
+The generic semantic observation is supported by three independent raw questions; ordinary scope weakening by two; the n023 D1 extraction boundary is a third mechanism. All are question-derived and require no protected data or Gold. They identify a repairable design surface, not an implemented fix.
 
-The change threshold remains unmet: no missing prompt rule, deterministic contradiction, representational impossibility or common R2 policy defect is established. The broader family has split causes and a canonical counterexample. A fixture that demands the observed PANDA literals, source paths, page locations, extra quotas or expected symbols would overfit measurement data.
+The threshold for a narrow D1 boundary-design task is met by the G1 category rule, the exact n023 D1 loss, and the neutral analogies in the authorized review. The threshold for a V1, host, structured-schema or retrieval change remains unmet. A fixture that demands the observed PANDA literals, source paths, page locations, extra quotas or expected symbols would overfit measurement data.
 
 Grounded partial assertions may remain relevant while the point is incomplete. Do not force unsupported-claim exclusion merely to imitate missing-point detection. Correct abstention must remain safe; a universal demand for deeper implementation evidence would harm valid high-level questions and schema questions.
 
@@ -314,7 +336,7 @@ These are expected properties for separately authorized future work. No fixture 
 | Extra detail appears only in Gold, absent from raw question/D1 | No hidden runtime obligation or false insufficiency |
 | Genuinely ambiguous, uncitable or incompatible evidence | Conservative disposition; no fabricated admitted witness or A1 entitlement |
 | Broad explanation requested at an abstract level; coherent abstract evidence supplied | Complete when it answers that level; no blanket Exec/body requirement |
-| Stable canonical relation ID with only partial enumeration | Incomplete despite correct ID/mapping/closure; covers n023's distinct mechanism |
+| Legitimate relational point with a stable canonical relation ID but only partial enumeration | Incomplete despite correct ID/mapping/closure; this remains a neutral control for relation semantics, not the corrected n023 category |
 | Full canonical enumeration supported by one adequate shared basis | Complete; preserve the smaller-complete-proof invariant and exact quote closure |
 | Several partial claims collectively supply all explicit parts with valid proof | Complete when the actual contract is met; do not require one artificial monolithic sentence |
 
@@ -324,47 +346,61 @@ Full/partial enumeration and process/schema pairs test opposite directions. A la
 
 | Candidate | Assessment |
 | --- | --- |
-| A: NO_CHANGE / PROVIDER_RELIABILITY_LIMITATION | Consistent with the semantic findings, but the selected outcome explicitly records both retrieval opportunity loss and provider overacceptance rather than naming only the reviewer limitation |
+| A: NO_CHANGE / PROVIDER_RELIABILITY_LIMITATION | Rejected after correction: n023 identifies a bounded D1 extraction-boundary design issue under G1 authority |
 | B: V1 ordinary-check prompt repair | Not selected: no concrete missing generic rule; n023 is canonical, not ordinary |
-| C: question-derived ordinary obligation redesign | Not selected: existing representation can express the needed obligations/dispositions; IDs alone do not fix canonical overacceptance; architectural threshold unmet |
-| D: residual retrieval role-opportunity repair | Not selected: heterogeneous geometries, incomplete exact exchange inputs, no common current-lineage contradiction or certified complete replacement witness |
-| E: split responsibility / no single repair | Selected: both upstream opportunity loss and semantic overacceptance are real, with no single smallest generic repair justified |
+| C: D1 relation-extraction boundary repair design | **Selected:** output/property/list questions should remain ordinary unless the user explicitly asks to establish a relation; implementation is not authorized here |
+| D: question-derived ordinary obligation/schema redesign | Not selected: existing representation can express the needed obligations/dispositions once the point is classified correctly |
+| E: residual retrieval role-opportunity repair | Not selected: heterogeneous geometries, incomplete exact exchange inputs, no common current-lineage contradiction or certified complete replacement witness |
+| F: split responsibility / no single repair | Retained as the family-level causal description, but it is no longer the single next task: the corrected n023 boundary has higher causal leverage |
 
-D1 change is not justified by sufficient inventories. A0 already lacks selected detailed evidence; forcing it to invent details is unsafe. Composer claims are preserved rather than first lost, and composer review is not a new full original-obligation auditor. Admission/host provenance do not originate the observed semantic weakening. No compensating downstream source/schema rewrite is selected.
+D1 boundary design is selected without changing source, prompt or schema in this task. A0 still lacks selected detailed evidence; forcing it to invent details is unsafe. Composer claims are preserved rather than first lost, and composer review is not a new full original-obligation auditor. Admission/host provenance do not originate the n023 boundary loss. No compensating downstream source/schema rewrite is selected.
 
 ## 18. Selected outcome and exactly one recommendation
 
-**E — SPLIT RESPONSIBILITY / NO SINGLE REPAIR.** Explicitly close this bounded family as a documented completeness limitation. No parallel implementation tasks or mandatory additional investigation are created.
+**C — G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR DESIGN.** The family-level split remains true, but the corrected n023 first owner selects one bounded next design task. It must cover generic output/property/list enumeration versus actual relational requests, without case-specific terms or runtime implementation in this task.
 
 ```text
-SELECTED_REPAIR_SURFACE = SPLIT_RESPONSIBILITY / NO_SINGLE_REPAIR
-NEXT_TASK_RECOMMENDATION = NO_PRODUCT_CHANGE / RETAIN_DOCUMENTED_COMPLETENESS_LIMITATION
+SELECTED_REPAIR_SURFACE = D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_DESIGN
+NEXT_TASK_RECOMMENDATION = G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
-This is a completed negative repair-surface decision, not an unfinished implementation or a claim that the product is correct. New work would require separate authorization and concrete generic evidence changing the thresholds above. The identifier design remains strict/no safe relaxation with its known false exclusions; this task supplies no authorization or mechanism to revisit it.
+This is a completed correction and design selection, not implementation. The selected next design requires separate authorization. The identifier design remains strict/no safe relaxation with its known false exclusions; this task supplies no authorization or mechanism to revisit it.
 
 ## 19. Retained limitations and static delivery validation
 
-Semantic overacceptance remains on the exposed cases. Exact upstream text/constructor exchange evidence is unavailable in the bounded saved traces, fork equivalence is unresolved, and no guaranteed retrieval recovery is shown. No before/after answer metric, new empirical benefit or reliability rate is measured. Reasoned future controls are not tests. No new retrieval/body capture is requested merely to improve this report's evidence.
+Semantic incompleteness remains on the exposed cases. Exact upstream text/constructor exchange evidence is unavailable in the bounded saved traces, fork equivalence is unresolved, and no guaranteed retrieval recovery is shown. n023's first owner is corrected to D1 relation extraction; the saved V1 acceptance is a downstream consequence of the weakened relation. No before/after answer metric, new empirical benefit or reliability rate is measured. Reasoned future controls are not tests. No new retrieval/body capture is requested merely to improve this report's evidence.
 
 The original integrated run remains incomplete. The n019 absolute construction limitation coexists with its unchanged regression-relative control status; it does not revoke Rule 5 or targeted provenance mechanism support. The safe smaller-complete-proof result is preserved without reopening n022/n025/n028. No integrity contradiction requiring historical correction is established; historical prose, reports and raw stores remain immutable.
 
-Delivery changes exactly this report and the two current-state documents. Static checks cover the allowed path set, retained prior checkpoint prose and historical chronology, unchanged frozen fields, resolvable document links and `git diff --check`. No product imports, tests, validator calls or frozen acceptance comparison are performed. Commit message: `Design coarse completeness repair surface`; delivery SHA is reported externally to avoid self-referential identity.
+Delivery changes exactly this report and the two current-state documents. Static checks cover the allowed path set, retained prior checkpoint prose and historical chronology, corrected n023 fields, resolvable document links and `git diff --check`. No product imports, tests, validator calls or frozen acceptance comparison are performed. Commit message: `Correct n023 D1 completeness attribution`; delivery SHA is reported externally to avoid self-referential identity.
 
 ## 20. Lifecycle and boundary receipt
 
 ```text
-G5_COARSE_COMPLETENESS_OVERACCEPTANCE_REPAIR_SURFACE_DESIGN = COMPLETE / PASS
+G5_COARSE_COMPLETENESS_OVERACCEPTANCE_REPAIR_SURFACE_DESIGN = COMPLETE / CORRECTED / PASS
+CORRECTION_STATUS = COMPLETE / CORRECTED / PASS
 COARSE_COMPLETENESS_FAMILY = CONFIRMED_ON_N006_N019_N023
 BOUNDED_QUESTION_COUNT = 3
 BOUNDED_SAVED_REALIZATION_COUNT = 4
-ORDINARY_CHECK_SCOPE_WEAKENING = CONFIRMED_ON_N006_N019 / N023_CANONICAL_PATH
+ORDINARY_CHECK_SCOPE_WEAKENING = CONFIRMED_ON_N006_N019 / N023_D1_RELATION_OVEREXTRACTION
+N006_D1_CLASSIFICATION = D1_SUFFICIENT
+N019_D1_CLASSIFICATION = D1_SUFFICIENT
+N023_D1_CLASSIFICATION = D1_REQUIRED_RELATION_SEMANTIC_DEFECT / RELATION_OVEREXTRACTION
+N023_FIRST_LIMITING_STAGE = D1_RELATION_EXTRACTION_BOUNDARY / REQUIRED_RELATION_SEMANTIC_NORMALIZATION
+N023_FIRST_WRONG_STAGE = D1_RELATION_EXTRACTION_BOUNDARY / REQUIRED_RELATION_SEMANTIC_NORMALIZATION
+N023_FIRST_WRONG_SEMANTIC_DECISION = D1_RELATION_OVEREXTRACTION / ORDINARY_ENUMERATION_MISCLASSIFIED_AS_RELATION
+N023_V1_CANONICAL_OVERACCEPTANCE = DOWNSTREAM_CONTRIBUTOR / INDEPENDENT_V1_ERROR_NOT_ESTABLISHED
+N023_DOWNSTREAM_WRONG_DECISIONS = V1_ACCEPTED_WEAKENED_CANONICAL_RELATION / POINT_COMPLETE
+COMMON_D1_GRANULARITY_DEFECT = false
+COMMON_D1_DEFECT = false
+D1_RELATION_EXTRACTION_BOUNDARY_GAP = ESTABLISHED
+D1_RELATION_SEMANTICS_PROMPT_GAP = NOT_ESTABLISHED
 COMMON_RETRIEVAL_POLICY_DEFECT = NOT_ESTABLISHED
 HOST_DETERMINISTIC_COMPLETENESS_GUARD = NOT_JUSTIFIED
-PROMPT_CONTRACT_GAP = NOT_ESTABLISHED
+V1_PROMPT_CONTRACT_GAP_FOR_N006_N019 = NOT_ESTABLISHED
 STRUCTURED_ORDINARY_CONTRACT_REDESIGN = NOT_JUSTIFIED
-SELECTED_REPAIR_SURFACE = SPLIT_RESPONSIBILITY / NO_SINGLE_REPAIR
+SELECTED_REPAIR_SURFACE = D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_DESIGN
 IMPLEMENTATION_READY = false
 TARGETED_V1_VERDICT = TARGETED_V1_MECHANISM_SUPPORTED
 G5_POST_OBSERVABILITY_REPAIR_TARGETED_LIVE_VERIFICATION = COMPLETE / PASS / RULE_5
@@ -379,7 +415,7 @@ G5_INTEGRATED_RUN_COMPLETE = false
 G5_INTEGRATED_CANDIDATE_READY_FOR_G6 = false
 FRESH_GENERALIZATION_EVIDENCE = false
 RELEASE_EVIDENCE = false
-NEXT_TASK_RECOMMENDATION = NO_PRODUCT_CHANGE / RETAIN_DOCUMENTED_COMPLETENESS_LIMITATION
+NEXT_TASK_RECOMMENDATION = G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR DESIGN
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 
 PRODUCT_SOURCE_CHANGE = false
