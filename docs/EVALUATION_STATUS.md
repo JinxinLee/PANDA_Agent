@@ -18,7 +18,7 @@ The single `Current authoritative state` section is authoritative over historica
 ## Current authoritative state
 
 ```text
-CURRENT_REPOSITORY_HEAD = G5 coarse-completeness n023 D1 correction commit (Correct n023 D1 completeness attribution; resolve from Git history; exact SHA reported on delivery).
+CURRENT_REPOSITORY_HEAD = G5 D1 relation-extraction boundary repair design commit (Design D1 relation extraction boundary repair; resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 5b9588ec552deb91a59a8176d6ce0429c2133b1e
 PREVIOUS_PRODUCT_BEHAVIOR_LINEAGE_HEAD = cd0a65df7576a736e83fdfe3da5998b766173ffc
 NORMAL_PRODUCT_MODE = production_answer_obligations_v1
@@ -130,7 +130,7 @@ IDENTIFIER_ELIGIBILITY_DESIGN_OUTCOME = STRICT_RULE_RETAINED / NO_SAFE_RELAXATIO
 SELECTED_IDENTIFIER_ELIGIBILITY_CONTRACT = STRICT_EXACT_MATCH_RETAINED
 KNOWN_FALSE_EXCLUSION_FAMILY = F_N018 / O_N007
 SAFE_RELAXATION = NOT_ESTABLISHED
-IMPLEMENTATION_READY = false
+IDENTIFIER_ELIGIBILITY_IMPLEMENTATION_READY = false
 EXACT_QUALIFIED_MATCH = PRESERVED / EXISTING_SUBSTRING_SEMANTICS
 WRONG_OWNER_FAIL_CLOSED = DESIGN_VERIFIED_FOR_ABSENT_QUALIFIED_LITERAL
 AMBIGUOUS_OWNER_FAIL_CLOSED = DESIGN_VERIFIED_FOR_ABSENT_QUALIFIED_LITERAL
@@ -160,9 +160,20 @@ COMMON_RETRIEVAL_POLICY_DEFECT = NOT_ESTABLISHED
 HOST_DETERMINISTIC_COMPLETENESS_GUARD = NOT_JUSTIFIED
 V1_PROMPT_CONTRACT_GAP_FOR_N006_N019 = NOT_ESTABLISHED
 STRUCTURED_ORDINARY_CONTRACT_REDESIGN = NOT_JUSTIFIED
-SELECTED_REPAIR_SURFACE = D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_DESIGN
-SELECTED_NEXT_REPAIR_SURFACE = D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_DESIGN
-NEXT_TASK_RECOMMENDATION = G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR DESIGN
+G5_D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_DESIGN = COMPLETE / PASS / D1_RELATION_EXTRACTION_AND_QUALIFIER_PRESERVATION_CLARIFICATION
+SELECTED_D1_BOUNDARY_POLICY = B2_BOUNDARY_AND_RELATIONAL_QUALIFIER_CLARIFICATION
+ORDINARY_PROPERTY_LIST_REQUEST_CONTRACT = An anchor's property/value/item inventory is ordinary unless the requested answer itself establishes a relationship among independently relevant participants; preserve requested identities/count in point.text and use required_relations=[].
+GENUINE_RELATION_REQUEST_CONTRACT = Extract only a requested relationship among independently relevant participants; preserve its full question-derived semantics in relation.text, including identities/subsets/counts/participant selection.
+RELATION_IDENTITY_SET_QUALIFIER_PRESERVATION = REQUIRED
+PROMPT_CHANGE_PROPOSED = true
+SCHEMA_CHANGE_REQUIRED = false
+HOST_SEMANTIC_RECLASSIFICATION = NOT_JUSTIFIED
+IMPLEMENTATION_READY = true
+N006_D1_CLASSIFICATION = D1_SUFFICIENT
+N019_D1_CLASSIFICATION = D1_SUFFICIENT
+SELECTED_REPAIR_SURFACE = D1_PRODUCTION_PROMPT_BOUNDARY_AND_QUALIFIER_CLARIFICATION
+SELECTED_NEXT_REPAIR_SURFACE = D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_IMPLEMENTATION
+NEXT_TASK_RECOMMENDATION = G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR IMPLEMENTATION
 NEXT_TASK_EXECUTION_AUTHORIZED = false
 ```
 
@@ -259,6 +270,10 @@ The [corrected bounded evidence-gap/coarse-completeness repair-surface design](.
 The corrected outcome is C / G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR DESIGN. G1 says relation-bearing completeness uses only canonical required relations, while definitions, locators, argument lists and property/list requests remain ordinary unless the user asks to establish a relation. The current D1 prompt has a generic boundary ambiguity between output-set questions and input/output relations; a clarification design is warranted. V1's production contract remains sufficient for n006/n019, and no host semantic guard, schema redesign or common R2 defect is established. Retrieval/G4 fields remain frozen, including `COMMON_RETRIEVAL_POLICY_DEFECT = NOT_ESTABLISHED` and exact candidate assessment `NOT_ASSESSABLE`. No implementation or follow-up execution is authorized; exactly one next recommendation is `G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR DESIGN`.
 
 The correction preserves identifier strict-rule/no-safe-relaxation, its known false exclusions, Rule 5 / TARGETED_V1_MECHANISM_SUPPORTED, n019's absolute semantic limitation and the smaller-complete-proof invariant. Product lineage and prompt fingerprint are unchanged. Only this design and current-state documentation change; source/tests/prompts/schemas/configuration/dependencies/datasets/Gold/calibration/raw stores remain unchanged. New provider/preflight/retrieval/live/evaluation runs, logical attempts, scientific invocations/tokens, judge calls, tests and protected access are zero. Original G5 remains INCOMPLETE / PRODUCT ERROR, integrated completion and G6 readiness false, with no fresh generalization or release evidence. PASS certifies the corrected design review, not product repair.
+
+The [D1 relation-extraction boundary repair design](../evaluation/G5_D1_RELATION_EXTRACTION_BOUNDARY_REPAIR_DESIGN.md) is COMPLETE / PASS / D1_RELATION_EXTRACTION_AND_QUALIFIER_PRESERVATION_CLARIFICATION. Select B2: classify by the requested fact, keeping ordinary property/value/item inventories on the ordinary path while extracting a relation only when the relationship itself is requested among independently relevant participants. Name count and verbs are not classification rules. Genuine relations retain requested identity sets, subsets, counts and participant selection in canonical relation text; mixed independently omittable inventory and handoff requests split into two points. The qualifier invariant is a repair safety requirement, not a new empirical finding: D1_RELATION_SEMANTICS_PROMPT_GAP remains NOT_ESTABLISHED. n023 retains its corrected D1 relation-overextraction attribution and no independently established V1 error; n006/n019 remain D1_SUFFICIENT.
+
+The new design is implementation-ready for a separately authorized production D1 prompt clarification, focused neutral contract fixtures and existing prompt identity updates. Schema and host semantic reclassification are not required or selected. The R1–R12 matrix distinguishes a future prompt-contract RED/GREEN assertion from fake proposal preservation, which does not measure provider classification. Source/tests/prompts/schemas/configuration/data/raw stores and current product lineage/fingerprint remain unchanged; new provider/preflight/decomposition/retrieval/live calls, scientific invocations/tokens, tests and protected access are zero. Earlier corrected coarse-completeness, identifier no-safe-relaxation, targeted V1 and n019 limitations are preserved; implementation readiness refers only to this D1 design. Exactly one forward next recommendation now supersedes the preceding boundary-design scheduling: G5 D1 RELATION-EXTRACTION BOUNDARY REPAIR IMPLEMENTATION. Execution is unauthorized; G5 remains incomplete, G6 readiness false, and fresh generalization/release evidence false. PASS certifies design quality, not product repair or final-answer recovery.
 
 Authority: [Phase-F closeout](../evaluation/PHASE_F_CLOSEOUT.md) and [Phase-G roadmap](GENERALIZATION_ROADMAP.md#phase-g--answer-semantics--robustness). Historical Attempts 1–5, T1/T2, evaluator/Gold corrections, O1/EA1/C1/C1-R1, and Vertex compatibility records retain their original outcomes. Older planning and next-task recommendations below are historical and confer no current authorization.
 
