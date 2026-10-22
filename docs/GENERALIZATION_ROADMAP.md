@@ -24,6 +24,12 @@ The roadmap is governed by the following core development principles:
 
 ## Current planning state
 
+**Development pause (2026-10-22):** Phase G is paused at the user's explicit
+request. Existing implementation, designs, and evaluation outcomes are preserved.
+Pending Phase-G recommendations below are deferred and do not authorize execution;
+resumption requires a new user instruction. The README uses F6-A Attempt 5 as its
+evaluation reference without reverting the current product or changing any verdict.
+
 ```text
 CURRENT_REPOSITORY_HEAD = G5 D1 relation-extraction boundary repair design commit (Design D1 relation extraction boundary repair; resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 5b9588ec552deb91a59a8176d6ce0429c2133b1e
@@ -53,7 +59,7 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION_INCOMPLETE
+PHASE_G = PAUSED / USER_REQUEST / G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION_INCOMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
@@ -532,8 +538,9 @@ No further Phase-F production task is currently authorized. POST-ATTEMPT-3 FAILU
 
   F5 established bounded composer safety; empirical readability benefit remains unestablished. F6 completed with an exposed release-gate FAIL, and Post-A5 replacement T2 also failed. Phase F is closed without release readiness or independent generalization evidence; see [the closeout](../evaluation/PHASE_F_CLOSEOUT.md).
 
-- **Phase G — Answer Semantics & Robustness:** `IN_PROGRESS / DESIGN_ONLY / IMPLEMENTATION_READY`
-  Ordinary product development around requested relationships, local review failure containment, evidence-to-answer continuity, and false-insufficiency control. G1 design is corrected and implementation-ready; G1 implementation is the next recommendation and remains unauthorized. G2–G6 remain planning only.
+- **Phase G — Answer Semantics & Robustness:** `PAUSED / USER_REQUEST`
+  Existing G1–G5 work and its verification history are preserved in the current
+  planning state above. Further development is deferred until a new user instruction.
 
 ## Phase A — Evaluation infrastructure and versioned baseline
 

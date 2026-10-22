@@ -17,6 +17,12 @@ The single `Current authoritative state` section is authoritative over historica
 
 ## Current authoritative state
 
+**Development pause (2026-10-22):** Phase G is paused at the user's explicit
+request. Existing implementation, designs, and evaluation outcomes are preserved.
+Pending Phase-G recommendations below are deferred and do not authorize execution;
+resumption requires a new user instruction. The README uses F6-A Attempt 5 as its
+evaluation reference without reverting the current product or changing any verdict.
+
 ```text
 CURRENT_REPOSITORY_HEAD = G5 D1 relation-extraction boundary repair design commit (Design D1 relation extraction boundary repair; resolve from Git history; exact SHA reported on delivery).
 CURRENT_PRODUCT_BEHAVIOR_LINEAGE_HEAD = 5b9588ec552deb91a59a8176d6ce0429c2133b1e
@@ -46,7 +52,7 @@ GENERALIZATION_RELEASE_EVIDENCE = NOT_ESTABLISHED
 C1_VERTEX_SCHEMA_COMPATIBILITY = COMPLETE / PASS / PROVIDER_SCHEMA_COMPATIBILITY_REPAIRED
 POST_A5_REPAIR_VALIDATION = COMPLETE / FAIL / REPLACEMENT_T2_VALIDATION
 
-PHASE_G = IN_PROGRESS / G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION_INCOMPLETE
+PHASE_G = PAUSED / USER_REQUEST / G5_INTEGRATED_CANDIDATE_EXPOSED_REGRESSION_INCOMPLETE
 G1 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G2 = IMPLEMENTATION COMPLETE / DETERMINISTIC VERIFICATION PASS / EMPIRICAL BENEFIT NOT_ESTABLISHED
 G3 = SCOPED AUDIT COMPLETE / NO_CHANGE / PRODUCT CHANGE NOT_AUTHORIZED
