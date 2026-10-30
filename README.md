@@ -13,7 +13,7 @@ support before presenting an answer. It is designed for researchers and develope
 working with PANDA luminosity analysis, simulation, and reconstruction software.
 
 > **Project status:** Local research prototype. The evaluation snapshot below is
-> F6-A Attempt 5, which completed its 59-question exposed benchmark but **did not
+> F6-A Attempt 4, which completed its 59-question exposed benchmark but **did not
 > pass the pre-release gate**. Phase G development is paused; later changes on
 > this branch are not represented by those measurements.
 
@@ -77,7 +77,7 @@ flowchart TD
 3. **Answer against explicit obligations.** The question is decomposed into a
    bounded set of requested points. The workflow assesses evidence sufficiency,
    generates claims, and reviews support and coverage, with at most one answer
-   revision in the Attempt-5 production path.
+   revision in the current production path.
 4. **Keep support visible.** Deterministic checks validate citation integrity and
    provenance; a separate semantic-verification role reviews claim support.
    A bounded composer works from verified claims, with deterministic rendering as
@@ -93,41 +93,41 @@ flowchart TD
 
 ## Measured performance
 
-The reference run is **F6-A Attempt 5**, candidate `f6a-rc5-20260919`, using
-`production_answer_obligations_v1`. It evaluated **59 formal-English questions
-from the exposed Gold v2.10 benchmark**. All 59 completed after recovery of ten
-retryable transport failures.
+The reference run is **F6-A Attempt 4**, candidate `f6a-rc4-20260916`, using
+`legacy_question_core`. It evaluated **59 formal-English questions from the
+exposed Gold v2.10 benchmark**. All 59 completed after one case recovered from two
+retryable transport failures; successful cases were not rerun.
 
 | Measure | Observed result | Required gate |
 | --- | ---: | ---: |
-| Gold evidence recall@10 | 97.96% | At least 95% — PASS |
-| Final evidence recall | 90.82% | At least 90% — PASS |
-| Critical final evidence recall | 91.84% | 100% — **FAIL** |
-| Expected answer-status accuracy | 100% | At least 97.5% — PASS |
+| Gold evidence recall@10 | 98.98% | At least 95% — PASS |
+| Final evidence recall | 91.84% | At least 90% — PASS |
+| Critical final evidence recall | 92.86% | 100% — **FAIL** |
+| Expected answer-status accuracy | 98.31% | At least 97.5% — PASS |
 | Citation integrity | 100% | 100% — PASS |
-| Answer-point coverage | 94.92% | At least 90% — PASS |
-| Identifier hallucination rate | 4.62% | Below 3% — **FAIL** |
-| Critical answer points missed | 4 | Zero — **FAIL** |
+| Answer-point coverage | 97.18% | At least 90% — PASS |
+| Identifier hallucination rate | 1.16% | Below 3% — PASS |
+| Critical answer points missed | 2 | Zero — **FAIL** |
 
 These metrics cover evidence retrieval and retention, answer completeness, and
 identifier accuracy. Citation integrity measures valid references, not overall
 factual correctness. The identifier rate uses the evaluator's identifier
 denominator, rather than the number of questions.
 
-The aggregate release score was **0.9492**, but three mandatory gates failed,
-so the overall result was **FAIL**. Observed weaknesses included missing critical
-evidence, incomplete answers, and invented technical identifiers. Ablation,
-novel-question stages, and the composer audit were not reached; the protected
+The aggregate release score was **0.9718**, but two mandatory gates failed,
+so the overall result was **FAIL**. The failed gates concerned missing critical
+evidence and incomplete answers. Ablation, novel-question stages, and the composer
+audit were not reached; the protected
 blind release evaluation was not run. This exposed benchmark does not establish
 independent generalization or release readiness.
 
 The run used `gemini-3.8-flash` for generation, effective verification, composition,
 and the offline judge, with `gemini-embedding-2` embeddings at 3,072 dimensions.
 The index held 104,973 points. Total recorded usage, including retryable failed
-attempts and evaluation, was **563 model calls / 3,201,331 tokens**. This is a
+attempts and evaluation, was **388 model calls / 3,647,993 tokens**. This is a
 benchmark-run total, not a per-question runtime price.
 
-The [Attempt-5 report](evaluation/F6_A5_PRERELEASE_VALIDATION_RESULT.md) provides
+The [Attempt-4 report](evaluation/F6_A4_PRERELEASE_VALIDATION_RESULT.md) provides
 the full gate table, methodology, usage, and candidate identity. These historical
 measurements apply to that candidate; running the current checkout or an older
 knowledge bundle does not reproduce the evaluated configuration by itself.
@@ -181,7 +181,7 @@ and JSON download.
 
 The [bundle first-run guide](docs/NEW_USER_BUNDLE_GUIDE.md) covers acquisition,
 Windows/macOS/Linux setup, authentication, and troubleshooting. The older public
-v2.0.0 bundle documented there is not the Attempt-5 evaluation index. See the
+v2.0.0 bundle documented there is not the Attempt-4 evaluation index. See the
 [bundle reference](docs/KNOWLEDGE_BUNDLE_PROTOTYPE.md) for compatibility and restore
 preconditions.
 
